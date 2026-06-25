@@ -1,14 +1,24 @@
 import { useState } from 'react'
+import LandingPostulante from './pages/LandingPostulante'
 import ConfirmacionDatos from './pages/ConfirmacionDatos'
 import ConfirmacionInstitucion from './pages/ConfirmacionInstitucion'
 import AltaPostulante from './pages/AltaPostulante'
 
 function App() {
-  const [page, setPage] = useState<'confirmacion' | 'confirmacion-institucion' | 'alta'>('confirmacion')
-  const [cidiData, setCidiData] = useState<{ represented: string; category: string } | null>(null)
+  const [page, setPage] = useState<'landing' | 'confirmacion' | 'confirmacion-institucion' | 'alta'>('landing')
+  const [cidiData, setCidiData] = useState<{ represented: string; category: string; cuit: string } | null>(null)
+  const [submittedList, setSubmittedList] = useState<Array<{
+    categoria: string
+    profesion: string
+    estado: string
+  }>>([])
 
-  const handleConfirmCidi = (represented: string, category: string) => {
-    setCidiData({ represented, category })
+  const handleStartPostulacion = () => {
+    setPage('confirmacion')
+  }
+
+  const handleConfirmCidi = (represented: string, category: string, cuit: string) => {
+    setCidiData({ represented, category, cuit })
     if (represented === 'Sanatorio Allende S.A.') {
       setPage('confirmacion-institucion')
     } else {
@@ -25,7 +35,23 @@ function App() {
   }
 
   const handleGoBack = () => {
-    setPage('confirmacion')
+    setPage('landing')
+  }
+
+  const handleCompletePostulacion = (profesion: string) => {
+    setSubmittedList(prev => [
+      ...prev,
+      {
+        categoria: cidiData?.category || 'Profesional de la salud',
+        profesion: profesion || 'Médico',
+        estado: 'En revisión'
+      }
+    ])
+    setPage('landing')
+  }
+
+  if (page === 'landing') {
+    return <LandingPostulante onStart={handleStartPostulacion} submittedList={submittedList} />
   }
 
   if (page === 'confirmacion') {
@@ -41,7 +67,14 @@ function App() {
     )
   }
 
-  return <AltaPostulante cidiData={cidiData} onGoBack={handleGoBack} />
+  return (
+    <AltaPostulante
+      cidiData={cidiData}
+      onGoBack={handleGoBack}
+      onComplete={handleCompletePostulacion}
+    />
+  )
 }
 
 export default App
+

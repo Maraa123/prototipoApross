@@ -50,7 +50,7 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
   )
 }
 
-export default function ConfirmacionDatos({ onConfirm }: { onConfirm: (represented: string, category: string) => void }) {
+export default function ConfirmacionDatos({ onConfirm }: { onConfirm: (represented: string, category: string, cuit: string) => void }) {
   const [confirmed, setConfirmed] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
   
@@ -72,9 +72,11 @@ export default function ConfirmacionDatos({ onConfirm }: { onConfirm: (represent
   }
 
   const handleModalConfirm = () => {
+    const isCamila = represented === 'camila'
     onConfirm(
-      represented === 'camila' ? 'Camila Gonzales' : 'Sanatorio Allende S.A.',
-      category === 'profesional' ? 'Profesional de la salud' : category === 'institucion' ? 'Institución' : 'Prestador de discapacidad'
+      isCamila ? 'Camila Gonzales' : 'Sanatorio Allende S.A.',
+      category === 'profesional' ? 'Profesional de la salud' : category === 'institucion' ? 'Institución' : 'Prestador de discapacidad',
+      isCamila ? '27-12345678-9' : '30-12345678-9' // Pass CUIT
     )
     setIsModalOpen(false)
   }
@@ -238,7 +240,7 @@ export default function ConfirmacionDatos({ onConfirm }: { onConfirm: (represent
         }}>
           <div style={{
             backgroundColor: '#fff', borderRadius: '12px',
-            padding: '32px', width: '640px', maxWidth: '90%',
+            padding: '40px 48px', width: '1200px', maxWidth: '95%',
             boxShadow: '0 8px 30px rgba(0, 0, 0, 0.15)',
             boxSizing: 'border-box',
           }}>

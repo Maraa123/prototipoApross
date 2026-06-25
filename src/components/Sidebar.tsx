@@ -3,8 +3,7 @@ import {
   HomeIcon, PersonIcon, FileIcon, ChevronDownIcon
 } from './Icons'
 
-const menuItems = [
-  { label: 'Inicio', icon: <HomeIcon />, active: true },
+const subMenuItems = [
   { label: 'Datos Personales', icon: <PersonIcon /> },
   { label: 'Datos de la Institución', icon: <PersonIcon /> },
   { label: 'Datos Fiscales', icon: <PersonIcon /> },
@@ -16,12 +15,13 @@ const menuItems = [
   { label: 'CBU', icon: <PersonIcon /> },
 ]
 
-const extraItems = [
+const extraItems: any[] = [ /*
   { label: 'Preliquidaciones', icon: <FileIcon /> },
-  { label: 'Facturación / Pagos', icon: <FileIcon /> },
+  { label: 'Facturación / Pagos', icon: <FileIcon /> },*/
 ]
 
 export default function Sidebar() {
+  const [cuentaOpen, setCuentaOpen] = useState(false)
   const [ayudaOpen, setAyudaOpen] = useState(true)
 
   return (
@@ -43,27 +43,67 @@ export default function Sidebar() {
       <nav style={{ flex: 1, overflowY: 'auto', padding: '10px 0' }}>
         <p style={{ fontSize: '10px', fontWeight: 700, color: '#aaa', letterSpacing: '0.08em', textTransform: 'uppercase', padding: '8px 16px 4px' }}>MENÚ</p>
 
-        {menuItems.map((item) => (
-          <button
-            key={item.label}
-            style={{
-              display: 'flex', alignItems: 'center', gap: '10px',
-              padding: '8px 16px', fontSize: '13px',
-              border: 'none', cursor: 'pointer', textAlign: 'left',
-              backgroundColor: item.active ? '#00AC99' : 'transparent',
-              color: item.active ? '#fff' : '#555',
-              fontWeight: item.active ? 600 : 400,
-              borderRadius: item.active ? '6px' : '0',
-              margin: item.active ? '0 8px' : '0',
-              width: item.active ? 'calc(100% - 16px)' : '100%',
-            }}
-          >
-            <span style={{ opacity: item.active ? 1 : 0.7 }}>{item.icon}</span>
-            {item.label}
-          </button>
-        ))}
+        {/* Inicio (Home) */}
+        <button
+          style={{
+            display: 'flex', alignItems: 'center', gap: '10px',
+            padding: '8px 16px', fontSize: '13px',
+            border: 'none', cursor: 'pointer', textAlign: 'left',
+            backgroundColor: '#00AC99',
+            color: '#fff',
+            fontWeight: 600,
+            borderRadius: '6px',
+            margin: '0 8px 4px 8px',
+            width: 'calc(100% - 16px)',
+          }}
+        >
+          <span><HomeIcon /></span>
+          Inicio
+        </button>
 
-        <div style={{ borderTop: '1px solid #f0f0f0', margin: '8px 0' }} />
+        {/* Mi Cuenta (Collapsible) */}
+        <button
+          onClick={() => setCuentaOpen(!cuentaOpen)}
+          style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            width: '100%', padding: '8px 16px', fontSize: '13px',
+            border: 'none', cursor: 'pointer', backgroundColor: 'transparent', color: '#555',
+            fontWeight: cuentaOpen ? 600 : 400,
+          }}
+        >
+          <span style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <PersonIcon />
+            Mi Cuenta
+          </span>
+          <span style={{ transform: cuentaOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s', color: '#6B7280' }}>
+            <ChevronDownIcon />
+          </span>
+        </button>
+
+        {/* Nested Submenu Items under Mi Cuenta */}
+        {cuentaOpen && (
+          <div style={{ backgroundColor: '#F9FAFB', padding: '4px 0', borderLeft: '3px solid #E5E7EB', margin: '2px 0 6px 8px' }}>
+            {subMenuItems.map((subItem) => (
+              <button
+                key={subItem.label}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: '8px',
+                  width: '100%', padding: '6px 16px 6px 20px', fontSize: '12px',
+                  border: 'none', cursor: 'pointer', textAlign: 'left',
+                  backgroundColor: 'transparent', color: '#6B7280',
+                  transition: 'color 0.15s ease',
+                }}
+                onMouseEnter={e => e.currentTarget.style.color = '#00AC99'}
+                onMouseLeave={e => e.currentTarget.style.color = '#6B7280'}
+              >
+                <span style={{ opacity: 0.6, display: 'flex', alignItems: 'center' }}>{subItem.icon}</span>
+                {subItem.label}
+              </button>
+            ))}
+          </div>
+        )}
+
+        <div style={{ borderTop: '1px solid #ffffffff', margin: '8px 0' }} />
 
         {extraItems.map((item) => (
           <button

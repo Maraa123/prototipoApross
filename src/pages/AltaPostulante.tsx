@@ -7,8 +7,9 @@ import {
 } from '../components/Icons'
 
 interface AltaPostulanteProps {
-  cidiData: { represented: string; category: string } | null
+  cidiData: { represented: string; category: string; cuit: string } | null
   onGoBack: () => void
+  onComplete?: (profesion: string) => void
 }
 
 const steps = [
@@ -214,7 +215,7 @@ const especialidadesMedicas = [
   { isHeader: false, label: 'Auditoría Médica' }
 ]
 
-export default function AltaPostulante({ cidiData, onGoBack }: AltaPostulanteProps) {
+export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaPostulanteProps) {
   const isDisabilityCategory = cidiData?.category === 'Prestador de discapacidad'
   const isInstitucionDiscapacidad = cidiData?.represented === 'Sanatorio Allende S.A.' && cidiData?.category === 'Prestador de discapacidad'
   const isInstitucionNivel = cidiData?.represented === 'Sanatorio Allende S.A.' && cidiData?.category === 'Institución'
@@ -223,40 +224,34 @@ export default function AltaPostulante({ cidiData, onGoBack }: AltaPostulantePro
   const [hasExtension, setHasExtension] = useState(true) // Poseo extension IIBB
   
   // Paso 1: Fiscal fields state
-  const [cuit, setCuit] = useState('27-12345678-9')
-  const [inicioActividades, setInicioActividades] = useState('10/02/2022')
-  const [responsabilidadFiscal, setResponsabilidadFiscal] = useState('IVA Responsable Inscripto')
-  const [ingresosBrutos, setIngresosBrutos] = useState('453224')
-  const [telAdministrativo, setTelAdministrativo] = useState('3541-234455')
-  const [emailAdministrativo, setEmailAdministrativo] = useState('camila@gmail.com')
+  const [cuit] = useState(cidiData?.cuit || '')
+  const [inicioActividades, setInicioActividades] = useState('')
+  const [responsabilidadFiscal, setResponsabilidadFiscal] = useState('Selecciona')
+  const [ingresosBrutos, setIngresosBrutos] = useState('')
+  const [telAdministrativo, setTelAdministrativo] = useState('')
+  const [emailAdministrativo, setEmailAdministrativo] = useState('')
 
   // Paso 1: Domicilio Fiscal
-  const [calle, setCalle] = useState('Los tordos')
-  const [puerta, setPuerta] = useState('231')
-  const [apartamento, setApartamento] = useState('N/A')
-  const [codigoPostal, setCodigoPostal] = useState('5111')
-  const [barrio, setBarrio] = useState('Flores')
-  const [localidad, setLocalidad] = useState('Cordoba Capital')
-  const [otrosDatos, setOtrosDatos] = useState('N/A')
+  const [calle, setCalle] = useState('')
+  const [puerta, setPuerta] = useState('')
+  const [apartamento, setApartamento] = useState('')
+  const [codigoPostal, setCodigoPostal] = useState('')
+  const [barrio, setBarrio] = useState('')
+  const [localidad, setLocalidad] = useState('')
+  const [otrosDatos, setOtrosDatos] = useState('')
 
   // Paso 2: Datos del Perfil fields state
-  const [tipoProfesion, setTipoProfesion] = useState(
-    isDisabilityCategory ? 'DAI (docente de apoyo a la integración)' : 'Acompañante terapéutico'
-  )
-  const [ambitoMatricula, setAmbitoMatricula] = useState('Nacional')
-  const [numMatricula, setNumMatricula] = useState(
-    isDisabilityCategory ? '222311' : 'A001MPX29223'
-  )
-  const [especialidadMedica, setEspecialidadMedica] = useState('Clínica Médica (o Medicina Interna)')
-  const [certificadoRnp, setCertificadoRnp] = useState('A001MPX29223')
+  const [tipoProfesion, setTipoProfesion] = useState('Selecciona')
+  const [ambitoMatricula, setAmbitoMatricula] = useState('Selecciona')
+  const [numMatricula, setNumMatricula] = useState('')
+  const [especialidadMedica, setEspecialidadMedica] = useState('Selecciona')
+  const [certificadoRnp, setCertificadoRnp] = useState('')
 
   // Paso 2 (Institución Discapacidad): Tipo de Institución & transport state
-  const [tipoInstitucion, setTipoInstitucion] = useState('Centro de Rehabilitación')
+  const [tipoInstitucion, setTipoInstitucion] = useState('Selecciona')
   const [tipoInstitucionDropdownOpen, setTipoInstitucionDropdownOpen] = useState(false)
-  const [disposicionAndis, setDisposicionAndis] = useState('DI-2026-12345678-APN-DNDI#ANDIS')
-  const [conductoresList, setConductoresList] = useState<any[]>([
-    { nombre: 'JORGE ROSARIO', cuit: '20403532880', licenciaConducir: true, autorizacionManejo: true, cargo: 'Chofer suplente' }
-  ])
+  const [disposicionAndis, setDisposicionAndis] = useState('')
+  const [conductoresList, setConductoresList] = useState<any[]>([])
   const [showConductorModal, setShowConductorModal] = useState(false)
   const [conductorNombre, setConductorNombre] = useState('')
   const [conductorApellido, setConductorApellido] = useState('')
@@ -266,62 +261,36 @@ export default function AltaPostulante({ cidiData, onGoBack }: AltaPostulantePro
   // Paso 2 (Institución Nivel): clasificación, tipo, checkboxes
   const [nivelAtencion, setNivelAtencion] = useState('Selecciona')
   const [nivelAtencionOpen, setNivelAtencionOpen] = useState(false)
-  const [tipoInstitucionNivel, setTipoInstitucionNivel] = useState('')
+  const [tipoInstitucionNivel, setTipoInstitucionNivel] = useState('Selecciona')
   const [tipoInstitucionNivelOpen, setTipoInstitucionNivelOpen] = useState(false)
   const [opcionesChecks, setOpcionesChecks] = useState<Record<string,boolean>>({
-    'Atención ambulatoria': true,
+    'Atención ambulatoria': false,
     'Medicina general': false,
     'Odontología general': false,
     'Enfermería permanente': false,
-    'Consultoría especializada (psicología, nutrición).': true,
+    'Consultoría especializada (psicología, nutrición).': false,
   })
   const [tecnologiaChecks, setTecnologiaChecks] = useState<Record<string,boolean>>({
     'Laboratorio': false,
-    'Diagnóstico por imágenes': true,
-    'Otros (Especifique)': true,
+    'Diagnóstico por imágenes': false,
+    'Otros (Especifique)': false,
   })
   const [diagnosticoSubChecks, setDiagnosticoSubChecks] = useState<Record<string,boolean>>({
-    'RX (Radiología simple)': true,
+    'RX (Radiología simple)': false,
   })
   const [otrosTecnologiaText, setOtrosTecnologiaText] = useState('')
 
   // Paso 3: Staff State
-  const [staffList, setStaffList] = useState<any[]>([
-    {
-      cuit: '20403532880',
-      nombre: 'Carolina, Rodriguez',
-      especialidad: 'Medico',
-      prescriptor: true,
-      matricula: 'A001MPX29223'
-    }
-  ])
+  const [staffList, setStaffList] = useState<any[]>([])
   const [showStaffModal, setShowStaffModal] = useState(false)
-  const [staffCuit, setStaffCuit] = useState('20403532880')
-  const [staffNombre, setStaffNombre] = useState('Carolina, Rodriguez')
-  const [staffEspecialidad, setStaffEspecialidad] = useState('Medico')
-  const [staffPrescriptor, setStaffPrescriptor] = useState(true)
-  const [staffMatricula, setStaffMatricula] = useState('A001MPX29223')
+  const [staffCuit, setStaffCuit] = useState('')
+  const [staffNombre, setStaffNombre] = useState('')
+  const [staffEspecialidad, setStaffEspecialidad] = useState('')
+  const [staffPrescriptor, setStaffPrescriptor] = useState(false)
+  const [staffMatricula, setStaffMatricula] = useState('')
 
   // Paso 4: Lugar de atención State
-  const [locationsList, setLocationsList] = useState<any[]>([
-    {
-      nombre: 'Sanatorio Allende - Cerro de las rosas',
-      guardia: false,
-      calle: 'Los tordos',
-      puerta: '231',
-      depto: 'N/A',
-      cp: '5111',
-      barrio: 'Flores',
-      localidad: 'Cordoba Capital',
-      otros: 'N/A',
-      telTurnos: '351-13222432',
-      telEmergencia: '3541-123432',
-      email: 'consultas@hospital.com',
-      dia: 'Lunes',
-      horaInicio: '08:00hs',
-      horaFin: '18:00hs'
-    }
-  ])
+  const [locationsList, setLocationsList] = useState<any[]>([])
   const [showLocationModal, setShowLocationModal] = useState(false)
   const [editingLocationIndex, setEditingLocationIndex] = useState<number | null>(null)
   
@@ -329,21 +298,21 @@ export default function AltaPostulante({ cidiData, onGoBack }: AltaPostulantePro
   const [locationToDeleteIndex, setLocationToDeleteIndex] = useState<number | null>(null)
 
   // Modal input fields
-  const [locNombre, setLocNombre] = useState('Sanatorio Allende - Cerro de las rosas')
+  const [locNombre, setLocNombre] = useState('')
   const [locGuardia, setLocGuardia] = useState(false)
-  const [locCalle, setLocCalle] = useState('Los tordos')
-  const [locPuerta, setLocPuerta] = useState('231')
-  const [locDepto, setLocDepto] = useState('N/A')
-  const [locCP, setLocCP] = useState('5111')
-  const [locBarrio, setLocBarrio] = useState('Flores')
-  const [locLocalidad, setLocLocalidad] = useState('Cordoba Capital')
-  const [locOtros, setLocOtros] = useState('N/A')
-  const [locTelTurnos, setLocTelTurnos] = useState('351-13222432')
-  const [locTelEmergencia, setLocTelEmergencia] = useState('3541-123432')
-  const [locEmail, setLocEmail] = useState('consultas@hospital.com')
-  const [locDia, setLocDia] = useState('Lunes')
-  const [locHoraInicio, setLocHoraInicio] = useState('08:00hs')
-  const [locHoraFin, setLocHoraFin] = useState('18:00hs')
+  const [locCalle, setLocCalle] = useState('')
+  const [locPuerta, setLocPuerta] = useState('')
+  const [locDepto, setLocDepto] = useState('')
+  const [locCP, setLocCP] = useState('')
+  const [locBarrio, setLocBarrio] = useState('')
+  const [locLocalidad, setLocLocalidad] = useState('')
+  const [locOtros, setLocOtros] = useState('')
+  const [locTelTurnos, setLocTelTurnos] = useState('')
+  const [locTelEmergencia, setLocTelEmergencia] = useState('')
+  const [locEmail, setLocEmail] = useState('')
+  const [locDia, setLocDia] = useState('Selecciona')
+  const [locHoraInicio, setLocHoraInicio] = useState('')
+  const [locHoraFin, setLocHoraFin] = useState('')
 
   // UI State
   const [respFiscalDropdownOpen, setRespFiscalDropdownOpen] = useState(false)
@@ -354,26 +323,31 @@ export default function AltaPostulante({ cidiData, onGoBack }: AltaPostulantePro
   const [locDiaDropdownOpen, setLocDiaDropdownOpen] = useState(false)
 
   // Paso 5: Seguro y Habilitaciones State
-  const [aseguradoraRazonSocial, setAseguradoraRazonSocial] = useState('Sancor Cooperativa de Seguros Ltda.')
-  const [aseguradoraCuit, setAseguradoraCuit] = useState('30-23252188-0')
-  const [aseguradoraVencimiento, setAseguradoraVencimiento] = useState('26/11/2030')
-  const [aseguradoraNoPoliza, setAseguradoraNoPoliza] = useState('123456789')
+  const [aseguradoraRazonSocial, setAseguradoraRazonSocial] = useState('')
+  const [aseguradoraCuit, setAseguradoraCuit] = useState('')
+  const [aseguradoraVencimiento, setAseguradoraVencimiento] = useState('')
+  const [aseguradoraNoPoliza, setAseguradoraNoPoliza] = useState('')
   const [step5AttachedFiles, setStep5AttachedFiles] = useState<{[key: string]: string}>({})
 
   // Paso 6: Documentacion legal State
   const [antecedentesList, setAntecedentesList] = useState<any[]>([])
   const [showAntecedentesModal, setShowAntecedentesModal] = useState(false)
   const [antecedenteDescripcion, setAntecedenteDescripcion] = useState('')
-  const [antecedentePeriodoInicio, setAntecedentePeriodoInicio] = useState('26/11/2010')
-  const [antecedentePeriodoFin, setAntecedentePeriodoFin] = useState('26/11/2025')
-  const [antecedenteEstablecimiento, setAntecedenteEstablecimiento] = useState('Colegio San Antonio')
-  const [antecedenteEstablecimientoCuit, setAntecedenteEstablecimientoCuit] = useState('30-12343212')
+  const [antecedentePeriodoInicio, setAntecedentePeriodoInicio] = useState('')
+  const [antecedentePeriodoFin, setAntecedentePeriodoFin] = useState('')
+  const [antecedenteEstablecimiento, setAntecedenteEstablecimiento] = useState('')
+  const [antecedenteEstablecimientoCuit, setAntecedenteEstablecimientoCuit] = useState('')
   const [step6AttachedFiles, setStep6AttachedFiles] = useState<{[key: string]: string}>({})
 
   // Paso 7: CBU State
   const [cbuLoaded, setCbuLoaded] = useState(false)
   const [selectedCbuIndex, setSelectedCbuIndex] = useState(0)
   const [showSuccessModal, setShowSuccessModal] = useState(false)
+  const [showReviewModal, setShowReviewModal] = useState(false)
+  const [declaracionJuradaAceptada, setDeclaracionJuradaAceptada] = useState(false)
+
+  // Validation state
+  const [validationErrors, setValidationErrors] = useState<string[]>([])
 
 
 
@@ -581,24 +555,81 @@ export default function AltaPostulante({ cidiData, onGoBack }: AltaPostulantePro
     'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'
   ]
 
+  const validateCurrentStep = (): string[] => {
+    const errors: string[] = []
+
+    if (activeStep === 1) {
+      if (!cuit.trim()) errors.push('CUIT')
+      if (!inicioActividades.trim()) errors.push('Inicio de Actividades')
+      if (!responsabilidadFiscal.trim()) errors.push('Responsabilidad Fiscal')
+      if (!ingresosBrutos.trim()) errors.push('Ingresos Brutos')
+      if (!telAdministrativo.trim()) errors.push('Teléfono Administrativo')
+      if (!emailAdministrativo.trim()) errors.push('Email Administrativo')
+      if (!calle.trim()) errors.push('Calle (Domicilio Fiscal)')
+      if (!puerta.trim()) errors.push('Número de puerta (Domicilio Fiscal)')
+      if (!codigoPostal.trim()) errors.push('Código Postal')
+      if (!localidad.trim()) errors.push('Localidad')
+    }
+
+    if (activeStep === 2) {
+      if (!isInstitucionNivel && !isInstitucionDiscapacidad) {
+        if (!numMatricula.trim()) errors.push('Número de Matrícula')
+        if (!tipoProfesion.trim() || tipoProfesion === 'Selecciona') errors.push('Tipo de Profesión')
+      }
+      if (isInstitucionDiscapacidad) {
+        if (!disposicionAndis.trim()) errors.push('Disposición ANDIS')
+      }
+      if (isInstitucionNivel) {
+        if (!nivelAtencion || nivelAtencion === 'Selecciona') errors.push('Clasificación / Nivel de Atención')
+      }
+    }
+
+    if (activeStep === 3) {
+      // Staff is optional, no validation required
+    }
+
+    if (activeStep === 4) {
+      if (locationsList.length === 0) errors.push('Debe agregar al menos un lugar de atención')
+    }
+
+    if (activeStep === 5) {
+      if (!aseguradoraRazonSocial.trim()) errors.push('Razón Social de la Aseguradora')
+      if (!aseguradoraCuit.trim()) errors.push('CUIT de la Aseguradora')
+      if (!aseguradoraVencimiento.trim()) errors.push('Fecha de Vencimiento del Seguro')
+      if (!aseguradoraNoPoliza.trim()) errors.push('Número de Póliza')
+    }
+
+    if (activeStep === 7) {
+      if (!cbuLoaded) errors.push('Debe cargar un CBU válido')
+    }
+
+    return errors
+  }
+
   const handleNextStep = () => {
+    const errors = validateCurrentStep()
+    if (errors.length > 0) {
+      setValidationErrors(errors)
+      // Scroll to top of main content
+      const mainEl = document.getElementById('alta-postulante-main')
+      if (mainEl) mainEl.scrollTo({ top: 0, behavior: 'smooth' })
+      return
+    }
+    setValidationErrors([])
+
     if (activeStep === 2) {
       const isHealthProfessional = cidiData?.category === 'Profesional de la salud'
       const isSpecialProfession = tipoProfesion === 'Kinesiólogo' || tipoProfesion === 'Bioquímico' || tipoProfesion === 'Bioquimico'
       if (isHealthProfessional && isSpecialProfession) {
-        setShowCollegeModal(true)
+        setShowReviewModal(true)
         return
       }
-    }
-
-    if (activeStep === 4 && locationsList.length === 0) {
-      return // Button is disabled visually, safety check
     }
 
     if (activeStep < 7) {
       setActiveStep(activeStep + 1)
     } else {
-      setShowSuccessModal(true)
+      setShowReviewModal(true)
     }
   }
 
@@ -699,8 +730,207 @@ export default function AltaPostulante({ cidiData, onGoBack }: AltaPostulantePro
         <Sidebar />
 
         {/* Main Content Area */}
-        <main style={{ flex: 1, overflowY: 'auto', padding: '24px 28px' }}>
+        <main id="alta-postulante-main" style={{ flex: 1, overflowY: 'auto', padding: '24px 28px' }}>
           
+          {showReviewModal ? (
+            <div style={{ width: '100%', maxWidth: '1200px', margin: '0 auto', paddingBottom: '40px' }}>
+              <h2 style={{ fontSize: '24px', fontWeight: 700, color: '#111827', marginBottom: '8px' }}>
+                Confirmación de Datos Declarados
+              </h2>
+              <p style={{ fontSize: '14px', color: '#6B7280', marginBottom: '32px' }}>
+                Por favor, verificá que toda la información ingresada sea correcta antes de enviar tu preinscripción.
+              </p>
+
+              {/* Represento a Banner */}
+              <div style={{ backgroundColor: '#E6F6F4', padding: '20px 24px', borderRadius: '12px', marginBottom: '24px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <p style={{ fontSize: '15px', color: '#065F46', margin: 0, fontWeight: 600 }}>
+                  <span style={{ fontWeight: 400, marginRight: '8px' }}>Represento a:</span>
+                  {cidiData?.represented || 'Camila Gonzales'} ({cuit})
+                </p>
+                <p style={{ fontSize: '15px', color: '#065F46', margin: 0, fontWeight: 600 }}>
+                  <span style={{ fontWeight: 400, marginRight: '8px' }}>Categoría:</span>
+                  {cidiData?.category || 'Profesional de la salud'}
+                </p>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginBottom: '32px' }}>
+                
+                {/* 1. Datos Fiscales (Full width) */}
+                <div style={{ backgroundColor: '#fff', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+                  <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#1F2937', borderBottom: '1px solid #F3F4F6', paddingBottom: '12px', marginBottom: '16px' }}>
+                    1. Datos Fiscales
+                  </h4>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', fontSize: '13.5px' }}>
+                    <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>CUIT</span><strong style={{ color: '#374151' }}>{cuit}</strong></div>
+                    <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Inicio Actividades</span><strong style={{ color: '#374151' }}>{inicioActividades}</strong></div>
+                    <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Responsabilidad Fiscal</span><strong style={{ color: '#374151' }}>{responsabilidadFiscal}</strong></div>
+                    <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Ingresos Brutos</span><strong style={{ color: '#374151' }}>{ingresosBrutos}</strong></div>
+                    <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Email Administrativo</span><strong style={{ color: '#374151' }}>{emailAdministrativo}</strong></div>
+                    <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Domicilio</span><strong style={{ color: '#374151' }}>{calle} {puerta}, {localidad}</strong></div>
+                  </div>
+                </div>
+
+                {/* Grid for remaining cards: 2 columns */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                  
+                  {/* 2. Datos del perfil */}
+                  <div style={{ backgroundColor: '#fff', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+                    <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#1F2937', borderBottom: '1px solid #F3F4F6', paddingBottom: '12px', marginBottom: '16px' }}>
+                      2. Datos del perfil
+                    </h4>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', fontSize: '13.5px' }}>
+                      <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Categoría</span><strong style={{ color: '#374151' }}>{cidiData?.category || 'Profesional de la salud'}</strong></div>
+                      {!isInstitucionNivel && !isInstitucionDiscapacidad ? (
+                        <>
+                          <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Tipo de Profesión</span><strong style={{ color: '#374151' }}>{tipoProfesion || 'Médico'}</strong></div>
+                          <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Matrícula</span><strong style={{ color: '#374151' }}>{numMatricula}</strong></div>
+                        </>
+                      ) : isInstitucionDiscapacidad ? (
+                        <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Disposición ANDIS</span><strong style={{ color: '#374151' }}>{disposicionAndis}</strong></div>
+                      ) : (
+                        <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Nivel de Atención</span><strong style={{ color: '#374151' }}>{nivelAtencion}</strong></div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Render steps 3 through 7 only if not in the Step 2 exception flow */}
+                  {activeStep > 2 && (
+                    <>
+                      {/* 3. Staff */}
+                      <div style={{ backgroundColor: '#fff', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+                        <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#1F2937', borderBottom: '1px solid #F3F4F6', paddingBottom: '12px', marginBottom: '16px' }}>
+                          3. Staff
+                        </h4>
+                        <div style={{ fontSize: '13.5px' }}>
+                          <span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Integrantes registrados</span>
+                          <strong style={{ color: '#374151' }}>{staffList.length} miembro(s)</strong>
+                        </div>
+                      </div>
+
+                      {/* 4. Lugar de atencion */}
+                      <div style={{ backgroundColor: '#fff', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+                        <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#1F2937', borderBottom: '1px solid #F3F4F6', paddingBottom: '12px', marginBottom: '16px' }}>
+                          4. Lugar de atencion
+                        </h4>
+                        <div style={{ fontSize: '13.5px' }}>
+                          <span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Lugares cargados</span>
+                          <strong style={{ color: '#374151' }}>{locationsList.length} lugar(es)</strong>
+                          {locationsList.length > 0 && (
+                            <div style={{ color: '#4B5563', marginTop: '8px', fontSize: '13px' }}>
+                              • Principal: {locationsList[0].nombre} ({locationsList[0].localidad})
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* 5. Seguro y Habilitaciones */}
+                      <div style={{ backgroundColor: '#fff', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+                        <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#1F2937', borderBottom: '1px solid #F3F4F6', paddingBottom: '12px', marginBottom: '16px' }}>
+                          5. Seguro y Habilitaciones
+                        </h4>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', fontSize: '13.5px' }}>
+                          <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Aseguradora</span><strong style={{ color: '#374151' }}>{aseguradoraRazonSocial || 'Declarado'}</strong></div>
+                          <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Póliza Nº</span><strong style={{ color: '#374151' }}>{aseguradoraNoPoliza}</strong></div>
+                          <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Vencimiento</span><strong style={{ color: '#374151' }}>{aseguradoraVencimiento}</strong></div>
+                        </div>
+                      </div>
+
+                      {/* 6. Documentacion legal */}
+                      <div style={{ backgroundColor: '#fff', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+                        <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#1F2937', borderBottom: '1px solid #F3F4F6', paddingBottom: '12px', marginBottom: '16px' }}>
+                          6. Documentacion legal
+                        </h4>
+                        <div style={{ fontSize: '13.5px' }}>
+                          <span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Antecedentes profesionales cargados</span>
+                          <strong style={{ color: '#374151' }}>{antecedentesList.length} registro(s)</strong>
+                        </div>
+                      </div>
+
+                      {/* 7. CBU */}
+                      <div style={{ backgroundColor: '#fff', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+                        <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#1F2937', borderBottom: '1px solid #F3F4F6', paddingBottom: '12px', marginBottom: '16px' }}>
+                          7. CBU
+                        </h4>
+                    <div style={{ fontSize: '13.5px' }}>
+                      <span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Cuenta Bancaria Seleccionada</span>
+                      <strong style={{ color: '#374151' }}>
+                        {selectedCbuIndex === 0 ? 'Bancor - 0200925811000001234567' : 'Banco Nacion - 011059530000023456789'}
+                      </strong>
+                    </div>
+                  </div>
+                  </>
+                )}
+                </div>
+              </div>
+
+              {/* Disclaimer */}
+              <label style={{
+                display: 'flex', alignItems: 'center', gap: '12px',
+                backgroundColor: declaracionJuradaAceptada ? '#ECFDF5' : '#F9FAFB', 
+                border: declaracionJuradaAceptada ? '1px solid #A7F3D0' : '1px solid #E5E7EB',
+                borderRadius: '8px', padding: '16px 20px', marginBottom: '24px',
+                cursor: 'pointer', transition: 'all 0.2s ease'
+              }}>
+                <input
+                  type="checkbox"
+                  checked={declaracionJuradaAceptada}
+                  onChange={(e) => setDeclaracionJuradaAceptada(e.target.checked)}
+                  style={{
+                    width: '18px', height: '18px',
+                    cursor: 'pointer', accentColor: '#00AC99'
+                  }}
+                />
+                <p style={{ fontSize: '14px', color: declaracionJuradaAceptada ? '#065F46' : '#4B5563', margin: 0, lineHeight: 1.5, userSelect: 'none' }}>
+                  Declaro bajo juramento que toda la información declarada y documentación adjunta es verídica y corresponde a la actividad que voy a realizar.
+                </p>
+              </label>
+
+              {/* Action Buttons for Review */}
+              <div style={{
+                display: 'flex', gap: '16px', justifyContent: 'flex-end',
+                borderTop: '1px solid #E5E7EB', paddingTop: '24px',
+              }}>
+                <button
+                  onClick={() => setShowReviewModal(false)}
+                  style={{
+                    padding: '12px 28px', borderRadius: '8px',
+                    border: '1px solid #D1D5DB', backgroundColor: '#fff',
+                    color: '#4B5563', fontSize: '14.5px', fontWeight: 600,
+                    cursor: 'pointer',
+                  }}
+                >
+                  Volver al formulario
+                </button>
+
+                <button
+                  disabled={!declaracionJuradaAceptada}
+                  onClick={() => {
+                    setShowReviewModal(false)
+                    const isHealthProfessional = cidiData?.category === 'Profesional de la salud'
+                    const isSpecialProfession = tipoProfesion === 'Kinesiólogo' || tipoProfesion === 'Bioquímico' || tipoProfesion === 'Bioquimico'
+                    if (activeStep === 2 && isHealthProfessional && isSpecialProfession) {
+                      setShowCollegeModal(true)
+                    } else {
+                      setShowSuccessModal(true)
+                    }
+                  }}
+                  style={{
+                    padding: '12px 28px', borderRadius: '8px',
+                    border: 'none', fontSize: '14.5px', fontWeight: 600,
+                    cursor: declaracionJuradaAceptada ? 'pointer' : 'not-allowed', 
+                    backgroundColor: declaracionJuradaAceptada ? '#00AC99' : '#D1D5DB', 
+                    color: '#fff',
+                    boxShadow: declaracionJuradaAceptada ? '0 4px 6px -1px rgba(0,172,153,0.3)' : 'none',
+                    transition: 'all 0.2s ease'
+                  }}
+                >
+                  Confirmar y Preinscribirme
+                </button>
+              </div>
+
+            </div>
+          ) : (
+            <>
           {/* Stepper Wizard Header */}
           <div style={{
             width: '100%', maxWidth: '1200px',
@@ -726,10 +956,9 @@ export default function AltaPostulante({ cidiData, onGoBack }: AltaPostulantePro
                       borderTop: isActive ? '3px solid #007BFF' : '1px solid transparent',
                       marginTop: '-1px',
                       color: isActive ? '#007BFF' : '#6B7280',
-                      cursor: 'pointer',
+                      cursor: 'default',
                       transition: 'all 0.15s ease',
                     }}
-                    onClick={() => setActiveStep(step.num)}
                   >
                     <div style={{ fontSize: '10.5px', fontWeight: 700, textTransform: 'uppercase', marginBottom: '2px', color: isActive ? '#007BFF' : '#9CA3AF' }}>
                       Paso {step.num}
@@ -742,6 +971,8 @@ export default function AltaPostulante({ cidiData, onGoBack }: AltaPostulantePro
               })}
             </div>
           </div>
+
+          {/* Validation Error Banner removed as per user request */}
 
           {/* Form Content Card */}
           <div style={{
@@ -767,21 +998,41 @@ export default function AltaPostulante({ cidiData, onGoBack }: AltaPostulantePro
                   marginBottom: '24px',
                 }}>
                   
-                  {/* ROW 1: CUIT & Inicio de Actividades */}
-                  <div>
-                    <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
-                      CUIT
-                    </label>
-                    <input
-                      type="text"
-                      value={cuit}
-                      onChange={(e) => setCuit(e.target.value)}
-                      style={{
-                        width: '100%', border: '1px solid #D1D5DB', borderRadius: '6px',
-                        padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
-                        backgroundColor: '#F3F4F6', outline: 'none', boxSizing: 'border-box',
-                      }}
-                    />
+                  {/* ROW 1: Col 1 (Nombre & CUIT) / Col 2 (Inicio de Actividades) */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                    <div>
+                      <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
+                        Nombre / Razón Social <span style={{ color: '#EF4444' }}>*</span>
+                      </label>
+                      <input
+                        type="text"
+                        value={cidiData?.represented || ''}
+                        readOnly
+                        style={{
+                          width: '100%', border: '1px solid #E5E7EB', borderRadius: '6px',
+                          padding: '7px 12px', fontSize: '13.5px', color: '#9CA3AF',
+                          backgroundColor: '#F9FAFB', outline: 'none', boxSizing: 'border-box',
+                          cursor: 'not-allowed',
+                        }}
+                      />
+                    </div>
+
+                    <div>
+                      <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
+                        CUIT <span style={{ color: '#EF4444' }}>*</span>
+                      </label>
+                      <input
+                        type="text"
+                        value={cuit}
+                        readOnly
+                        style={{
+                          width: '100%', border: '1px solid #E5E7EB', borderRadius: '6px',
+                          padding: '7px 12px', fontSize: '13.5px', color: '#9CA3AF',
+                          backgroundColor: '#F9FAFB', outline: 'none', boxSizing: 'border-box',
+                          cursor: 'not-allowed',
+                        }}
+                      />
+                    </div>
                   </div>
 
                   <div>
@@ -790,18 +1041,16 @@ export default function AltaPostulante({ cidiData, onGoBack }: AltaPostulantePro
                     </label>
                     <div style={{ position: 'relative' }}>
                       <input
-                        type="text"
+                        type="date"
                         value={inicioActividades}
                         onChange={(e) => setInicioActividades(e.target.value)}
                         style={{
-                          width: '100%', border: '1px solid #D1D5DB', borderRadius: '6px',
-                          padding: '7px 12px 7px 34px', fontSize: '13.5px', color: '#1F2937',
+                          width: '100%', border: validationErrors.includes('Inicio de Actividades') ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px',
+                          padding: '6px 12px', fontSize: '13.5px', color: '#1F2937',
                           outline: 'none', boxSizing: 'border-box',
+                          fontFamily: 'inherit',
                         }}
                       />
-                      <span style={{ position: 'absolute', left: '10px', top: '9px', color: '#888', display: 'flex', alignItems: 'center' }}>
-                        <CalendarIcon />
-                      </span>
                     </div>
                   </div>
 
@@ -815,7 +1064,7 @@ export default function AltaPostulante({ cidiData, onGoBack }: AltaPostulantePro
                       onClick={() => setRespFiscalDropdownOpen(!respFiscalDropdownOpen)}
                       style={{
                         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                        border: '1px solid #D1D5DB', borderRadius: '6px',
+                        border: validationErrors.includes('Responsabilidad Fiscal') ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px',
                         padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
                         backgroundColor: '#fff', cursor: 'pointer', userSelect: 'none', boxSizing: 'border-box',
                       }}
@@ -878,14 +1127,14 @@ export default function AltaPostulante({ cidiData, onGoBack }: AltaPostulantePro
                   {/* ROW 3: Nº Ingresos Brutos & Constancia de Ingresos Brutos (IIBB) */}
                   <div>
                     <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
-                      Nº Ingresos Brutos
+                      Nº Ingresos Brutos <span style={{ color: '#EF4444' }}>*</span>
                     </label>
                     <input
                       type="text"
                       value={ingresosBrutos}
                       onChange={(e) => setIngresosBrutos(e.target.value)}
                       style={{
-                        width: '100%', border: '1px solid #D1D5DB', borderRadius: '6px',
+                        width: '100%', border: validationErrors.includes('Ingresos Brutos') ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px',
                         padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
                         outline: 'none', boxSizing: 'border-box',
                       }}
@@ -993,7 +1242,7 @@ export default function AltaPostulante({ cidiData, onGoBack }: AltaPostulantePro
                       value={telAdministrativo}
                       onChange={(e) => setTelAdministrativo(e.target.value)}
                       style={{
-                        width: '100%', border: '1px solid #D1D5DB', borderRadius: '6px',
+                        width: '100%', border: validationErrors.includes('Teléfono Administrativo') ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px',
                         padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
                         outline: 'none', boxSizing: 'border-box',
                       }}
@@ -1009,7 +1258,7 @@ export default function AltaPostulante({ cidiData, onGoBack }: AltaPostulantePro
                       value={emailAdministrativo}
                       onChange={(e) => setEmailAdministrativo(e.target.value)}
                       style={{
-                        width: '100%', border: '1px solid #D1D5DB', borderRadius: '6px',
+                        width: '100%', border: validationErrors.includes('Email Administrativo') ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px',
                         padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
                         outline: 'none', boxSizing: 'border-box',
                       }}
@@ -1039,7 +1288,7 @@ export default function AltaPostulante({ cidiData, onGoBack }: AltaPostulantePro
                       value={calle}
                       onChange={(e) => setCalle(e.target.value)}
                       style={{
-                        width: '100%', border: '1px solid #D1D5DB', borderRadius: '6px',
+                        width: '100%', border: validationErrors.includes('Calle (Domicilio Fiscal)') ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px',
                         padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
                         outline: 'none', boxSizing: 'border-box',
                       }}
@@ -1056,7 +1305,7 @@ export default function AltaPostulante({ cidiData, onGoBack }: AltaPostulantePro
                       value={puerta}
                       onChange={(e) => setPuerta(e.target.value)}
                       style={{
-                        width: '100%', border: '1px solid #D1D5DB', borderRadius: '6px',
+                        width: '100%', border: validationErrors.includes('Número de puerta (Domicilio Fiscal)') ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px',
                         padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
                         outline: 'none', boxSizing: 'border-box',
                       }}
@@ -1090,7 +1339,7 @@ export default function AltaPostulante({ cidiData, onGoBack }: AltaPostulantePro
                       value={codigoPostal}
                       onChange={(e) => setCodigoPostal(e.target.value)}
                       style={{
-                        width: '100%', border: '1px solid #D1D5DB', borderRadius: '6px',
+                        width: '100%', border: validationErrors.includes('Código Postal') ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px',
                         padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
                         outline: 'none', boxSizing: 'border-box',
                       }}
@@ -1105,14 +1354,14 @@ export default function AltaPostulante({ cidiData, onGoBack }: AltaPostulantePro
                   {/* Barrio */}
                   <div>
                     <label style={{ fontSize: '12px', fontWeight: 500, color: '#666', display: 'block', marginBottom: '5px' }}>
-                      Barrio
+                      Barrio <span style={{ color: '#EF4444' }}>*</span>
                     </label>
                     <input
                       type="text"
                       value={barrio}
                       onChange={(e) => setBarrio(e.target.value)}
                       style={{
-                        width: '100%', border: '1px solid #D1D5DB', borderRadius: '6px',
+                        width: '100%', border: validationErrors.includes('Barrio') ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px',
                         padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
                         outline: 'none', boxSizing: 'border-box',
                       }}
@@ -1122,14 +1371,14 @@ export default function AltaPostulante({ cidiData, onGoBack }: AltaPostulantePro
                   {/* Localidad */}
                   <div>
                     <label style={{ fontSize: '12px', fontWeight: 500, color: '#666', display: 'block', marginBottom: '5px' }}>
-                      Localidad
+                      Localidad <span style={{ color: '#EF4444' }}>*</span>
                     </label>
                     <input
                       type="text"
                       value={localidad}
                       onChange={(e) => setLocalidad(e.target.value)}
                       style={{
-                        width: '100%', border: '1px solid #D1D5DB', borderRadius: '6px',
+                        width: '100%', border: validationErrors.includes('Localidad') ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px',
                         padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
                         outline: 'none', boxSizing: 'border-box',
                       }}
@@ -1294,7 +1543,7 @@ export default function AltaPostulante({ cidiData, onGoBack }: AltaPostulantePro
                       type="text"
                       value={disposicionAndis}
                       onChange={(e) => setDisposicionAndis(e.target.value)}
-                      style={{ width: '100%', border: '1px solid #D1D5DB', borderRadius: '6px', padding: '9px 12px', fontSize: '13.5px', color: '#1F2937', outline: 'none', boxSizing: 'border-box' }}
+                      style={{ width: '100%', border: validationErrors.includes('Disposición ANDIS') ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px', padding: '9px 12px', fontSize: '13.5px', color: '#1F2937', outline: 'none', boxSizing: 'border-box' }}
                     />
                   </div>
 
@@ -1352,7 +1601,7 @@ export default function AltaPostulante({ cidiData, onGoBack }: AltaPostulantePro
                     onClick={() => setNivelAtencionOpen(!nivelAtencionOpen)}
                     style={{
                       display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                      border: '1px solid #D1D5DB', borderRadius: '6px',
+                      border: validationErrors.includes('Clasificación / Nivel de Atención') ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px',
                       padding: '9px 12px', fontSize: '13.5px', color: '#1F2937',
                       backgroundColor: '#fff', cursor: 'pointer', userSelect: 'none', boxSizing: 'border-box',
                     }}
@@ -1556,7 +1805,7 @@ export default function AltaPostulante({ cidiData, onGoBack }: AltaPostulantePro
                       }}
                       style={{
                         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                        border: '1px solid #D1D5DB', borderRadius: '6px',
+                        border: validationErrors.includes('Tipo de Profesión') ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px',
                         padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
                         backgroundColor: '#fff', cursor: 'pointer', userSelect: 'none', boxSizing: 'border-box',
                       }}
@@ -1779,7 +2028,7 @@ export default function AltaPostulante({ cidiData, onGoBack }: AltaPostulantePro
                           value={numMatricula}
                           onChange={(e) => setNumMatricula(e.target.value)}
                           style={{
-                            width: '100%', border: '1px solid #D1D5DB', borderRadius: '6px',
+                            width: '100%', border: validationErrors.includes('Número de Matrícula') ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px',
                             padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
                             outline: 'none', boxSizing: 'border-box',
                           }}
@@ -1798,7 +2047,7 @@ export default function AltaPostulante({ cidiData, onGoBack }: AltaPostulantePro
                           value={numMatricula}
                           onChange={(e) => setNumMatricula(e.target.value)}
                           style={{
-                            width: '100%', border: '1px solid #D1D5DB', borderRadius: '6px',
+                            width: '100%', border: validationErrors.includes('Número de Matrícula') ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px',
                             padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
                             outline: 'none', boxSizing: 'border-box',
                           }}
@@ -1884,7 +2133,7 @@ export default function AltaPostulante({ cidiData, onGoBack }: AltaPostulantePro
                   Staff
                 </h3>
                 <p style={{ fontSize: '13px', color: '#6B7280', marginBottom: '24px' }}>
-                  Por favor, completá la siguiente información obligatoria (*)
+                  Añadir integrantes del staff es opcional. Podés avanzar sin cargar miembros.
                 </p>
 
                 <SectionTitle>Staff de profesionales</SectionTitle>
@@ -2892,23 +3141,25 @@ export default function AltaPostulante({ cidiData, onGoBack }: AltaPostulantePro
 
               <button
                 onClick={handleNextStep}
-                disabled={activeStep === 4 && locationsList.length === 0}
                 style={{
                   flex: 1, padding: '11px 24px', borderRadius: '6px',
                   border: 'none', fontSize: '14px', fontWeight: 600,
-                  cursor: (activeStep === 4 && locationsList.length === 0) ? 'not-allowed' : 'pointer',
-                  backgroundColor: (activeStep === 4 && locationsList.length === 0) ? '#BDC3C7' : '#00AC99',
-                  color: '#fff',
+                  cursor: validateCurrentStep().length > 0 ? 'not-allowed' : 'pointer',
+                  backgroundColor: validateCurrentStep().length > 0 ? '#D1D5DB' : '#00AC99',
+                  color: validateCurrentStep().length > 0 ? '#6B7280' : '#fff',
                   transition: 'all 0.25s ease',
                 }}
+                title={validateCurrentStep().length > 0 ? 'Completa los campos obligatorios para continuar' : ''}
               >
-                {(activeStep === 3 || activeStep === 4 || activeStep === 6) ? 'Continuar' : 'Confirmar'}
+                Continuar
               </button>
             </div>
 
 
 
           </div>
+          </>
+          )}
         </main>
       </div>
 
@@ -2959,7 +3210,11 @@ export default function AltaPostulante({ cidiData, onGoBack }: AltaPostulantePro
             <button
               onClick={() => {
                 setShowCollegeModal(false)
-                onGoBack()
+                if (onComplete) {
+                  onComplete(tipoProfesion || 'Médico')
+                } else {
+                  onGoBack()
+                }
               }}
               style={{
                 width: '100%',
@@ -3918,7 +4173,11 @@ export default function AltaPostulante({ cidiData, onGoBack }: AltaPostulantePro
             <button
               onClick={() => {
                 setShowSuccessModal(false)
-                onGoBack()
+                if (onComplete) {
+                  onComplete(isInstitucionNivel || isInstitucionDiscapacidad ? 'Institución' : (tipoProfesion || 'Médico'))
+                } else {
+                  onGoBack()
+                }
               }}
               style={{
                 width: '380px',
