@@ -100,13 +100,17 @@ export default function ConfirmacionDatos({ onConfirm }: { onConfirm: (represent
             </h1>
 
             {/* Info banner */}
-            <div style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-              gap: '24px', marginBottom: '28px',
-            }}>
+            <div
+              className="responsive-flex-col"
+              style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                gap: '24px', marginBottom: '28px',
+              }}
+            >
               <div style={{
                 backgroundColor: '#fff', border: '1px solid #C7E6F8',
                 borderRadius: '4px', padding: '14px 18px', flex: 1,
+                width: '100%', boxSizing: 'border-box',
               }}>
                 <p style={{ fontSize: '13.5px', color: '#374151', lineHeight: '1.6', margin: 0 }}>
                   Los datos personales fueron obtenidos desde CiDi. Verificá que la información sea correcta antes de continuar.
@@ -124,7 +128,7 @@ export default function ConfirmacionDatos({ onConfirm }: { onConfirm: (represent
                   border: 'none', borderRadius: '6px',
                   padding: '9px 16px', fontSize: '13.5px', fontWeight: 600,
                   cursor: 'pointer', textDecoration: 'none', flexShrink: 0,
-                  whiteSpace: 'nowrap',
+                  whiteSpace: 'nowrap', justifyContent: 'center',
                 }}
               >
                 Modificar
