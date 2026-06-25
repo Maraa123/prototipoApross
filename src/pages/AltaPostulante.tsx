@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import Header from '../components/Header'
-import Sidebar2 from '../components/Sidebar2'
+import Sidebar2 from '../components/Sidebar'
 import {
   CalendarIcon, UploadIcon, FileIcon, ChevronDownIcon, CheckIcon,
   TrashIcon, PencilEditIcon, PersonIcon
@@ -167,7 +167,7 @@ const especialidadesMedicas = [
   { isHeader: false, label: 'Pediatría' },
   { isHeader: false, label: 'Medicina General y/o Medicina de Familia' },
   { isHeader: false, label: 'Geriatría' },
-  
+
   { isHeader: true, label: '— Clínicas Específicas —' },
   { isHeader: false, label: 'Alergia e Inmunología' },
   { isHeader: false, label: 'Cardiología' },
@@ -230,7 +230,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
 
   const [activeStep, setActiveStep] = useState(1)
   const [hasExtension, setHasExtension] = useState(true) // Poseo extension IIBB
-  
+
   // Paso 1: Fiscal fields state
   const [cuit] = useState(cidiData?.cuit || '')
   const [inicioActividades, setInicioActividades] = useState('')
@@ -271,19 +271,19 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
   const [nivelAtencionOpen, setNivelAtencionOpen] = useState(false)
   const [tipoInstitucionNivel, setTipoInstitucionNivel] = useState('Selecciona')
   const [tipoInstitucionNivelOpen, setTipoInstitucionNivelOpen] = useState(false)
-  const [opcionesChecks, setOpcionesChecks] = useState<Record<string,boolean>>({
+  const [opcionesChecks, setOpcionesChecks] = useState<Record<string, boolean>>({
     'Atención ambulatoria': false,
     'Medicina general': false,
     'Odontología general': false,
     'Enfermería permanente': false,
     'Consultoría especializada (psicología, nutrición).': false,
   })
-  const [tecnologiaChecks, setTecnologiaChecks] = useState<Record<string,boolean>>({
+  const [tecnologiaChecks, setTecnologiaChecks] = useState<Record<string, boolean>>({
     'Laboratorio': false,
     'Diagnóstico por imágenes': false,
     'Otros (Especifique)': false,
   })
-  const [diagnosticoSubChecks, setDiagnosticoSubChecks] = useState<Record<string,boolean>>({
+  const [diagnosticoSubChecks, setDiagnosticoSubChecks] = useState<Record<string, boolean>>({
     'RX (Radiología simple)': false,
   })
   const [otrosTecnologiaText, setOtrosTecnologiaText] = useState('')
@@ -301,7 +301,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
   const [locationsList, setLocationsList] = useState<any[]>([])
   const [showLocationModal, setShowLocationModal] = useState(false)
   const [editingLocationIndex, setEditingLocationIndex] = useState<number | null>(null)
-  
+
   const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState(false)
   const [locationToDeleteIndex, setLocationToDeleteIndex] = useState<number | null>(null)
 
@@ -335,7 +335,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
   const [aseguradoraCuit, setAseguradoraCuit] = useState('')
   const [aseguradoraVencimiento, setAseguradoraVencimiento] = useState('')
   const [aseguradoraNoPoliza, setAseguradoraNoPoliza] = useState('')
-  const [step5AttachedFiles, setStep5AttachedFiles] = useState<{[key: string]: string}>({})
+  const [step5AttachedFiles, setStep5AttachedFiles] = useState<{ [key: string]: string }>({})
 
   // Paso 6: Documentacion legal State
   const [antecedentesList, setAntecedentesList] = useState<any[]>([])
@@ -345,7 +345,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
   const [antecedentePeriodoFin, setAntecedentePeriodoFin] = useState('')
   const [antecedenteEstablecimiento, setAntecedenteEstablecimiento] = useState('')
   const [antecedenteEstablecimientoCuit, setAntecedenteEstablecimientoCuit] = useState('')
-  const [step6AttachedFiles, setStep6AttachedFiles] = useState<{[key: string]: string}>({})
+  const [step6AttachedFiles, setStep6AttachedFiles] = useState<{ [key: string]: string }>({})
 
   // Paso 7: CBU State
   const [cbuLoaded, setCbuLoaded] = useState(false)
@@ -783,7 +783,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
       .replace(/[\u0300-\u036f]/g, "")
       .replace(/[^a-z0-9 ]/g, "")
       .replace(/\s+/g, "_")
-    
+
     const simulatedName = `${cleanName}_firmado.pdf`
 
     setStep5AttachedFiles(prev => ({
@@ -816,7 +816,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
 
         {/* Main Content Area */}
         <main id="alta-postulante-main" style={{ flex: 1, overflowY: 'auto', padding: '24px 28px' }}>
-          
+
           {showReviewModal ? (
             <div style={{ width: '100%', maxWidth: '1200px', margin: '0 auto', paddingBottom: '40px' }}>
               <h2 style={{ fontSize: '24px', fontWeight: 700, color: '#111827', marginBottom: '8px' }}>
@@ -839,7 +839,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
               </div>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginBottom: '32px' }}>
-                
+
                 {/* 1. Datos Fiscales (Full width) */}
                 <div style={{ backgroundColor: '#fff', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
                   <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#1F2937', borderBottom: '1px solid #F3F4F6', paddingBottom: '12px', marginBottom: '16px' }}>
@@ -857,7 +857,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
 
                 {/* Grid for remaining cards: 2 columns */}
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-                  
+
                   {/* 2. Datos del perfil */}
                   <div style={{ backgroundColor: '#fff', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
                     <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#1F2937', borderBottom: '1px solid #F3F4F6', paddingBottom: '12px', marginBottom: '16px' }}>
@@ -939,22 +939,22 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                         <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#1F2937', borderBottom: '1px solid #F3F4F6', paddingBottom: '12px', marginBottom: '16px' }}>
                           7. CBU
                         </h4>
-                    <div style={{ fontSize: '13.5px' }}>
-                      <span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Cuenta Bancaria Seleccionada</span>
-                      <strong style={{ color: '#374151' }}>
-                        {selectedCbuIndex === 0 ? 'Bancor - 0200925811000001234567' : 'Banco Nacion - 011059530000023456789'}
-                      </strong>
-                    </div>
-                  </div>
-                  </>
-                )}
+                        <div style={{ fontSize: '13.5px' }}>
+                          <span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Cuenta Bancaria Seleccionada</span>
+                          <strong style={{ color: '#374151' }}>
+                            {selectedCbuIndex === 0 ? 'Bancor - 0200925811000001234567' : 'Banco Nacion - 011059530000023456789'}
+                          </strong>
+                        </div>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
 
               {/* Disclaimer */}
               <label style={{
                 display: 'flex', alignItems: 'center', gap: '12px',
-                backgroundColor: declaracionJuradaAceptada ? '#ECFDF5' : '#F9FAFB', 
+                backgroundColor: declaracionJuradaAceptada ? '#ECFDF5' : '#F9FAFB',
                 border: declaracionJuradaAceptada ? '1px solid #A7F3D0' : '1px solid #E5E7EB',
                 borderRadius: '8px', padding: '16px 20px', marginBottom: '24px',
                 cursor: 'pointer', transition: 'all 0.2s ease'
@@ -996,7 +996,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                     // Do NOT setShowReviewModal(false) here, so the Review screen stays in the background
                     const isHealthProfessional = cidiData?.category === 'Profesional de la salud'
                     const isSpecialProfession = tipoProfesion === 'Kinesiólogo' || tipoProfesion === 'Bioquímico' || tipoProfesion === 'Bioquimico'
-                    
+
                     // Clear the draft from localStorage because we are finishing the process
                     const currentDraftKey = `apross_draft_${cidiData?.cuit || 'default'}_${cidiData?.category || 'default'}`
                     localStorage.removeItem(currentDraftKey)
@@ -1010,8 +1010,8 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                   style={{
                     padding: '12px 28px', borderRadius: '8px',
                     border: 'none', fontSize: '14.5px', fontWeight: 600,
-                    cursor: declaracionJuradaAceptada ? 'pointer' : 'not-allowed', 
-                    backgroundColor: declaracionJuradaAceptada ? '#00AC99' : '#D1D5DB', 
+                    cursor: declaracionJuradaAceptada ? 'pointer' : 'not-allowed',
+                    backgroundColor: declaracionJuradaAceptada ? '#00AC99' : '#D1D5DB',
                     color: '#fff',
                     boxShadow: declaracionJuradaAceptada ? '0 4px 6px -1px rgba(0,172,153,0.3)' : 'none',
                     transition: 'all 0.2s ease'
@@ -1024,1132 +1024,169 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
             </div>
           ) : (
             <>
-          {/* Stepper Wizard Header */}
-          <div style={{
-            width: '100%', maxWidth: '1200px',
-            margin: '0 auto 20px auto',
-            padding: '10px 0 0 0',
-          }}>
-            <h2 style={{ fontSize: '20px', fontWeight: 600, color: '#1F2937', textAlign: 'center', marginBottom: '20px' }}>
-              Alta de Postulante
-            </h2>
+              {/* Stepper Wizard Header */}
+              <div style={{
+                width: '100%', maxWidth: '1200px',
+                margin: '0 auto 20px auto',
+                padding: '10px 0 0 0',
+              }}>
+                <h2 style={{ fontSize: '20px', fontWeight: 600, color: '#1F2937', textAlign: 'center', marginBottom: '20px' }}>
+                  Alta de Postulante
+                </h2>
 
-            {/* Stepper bar */}
-            <div style={{ display: 'flex', borderBottom: '1px solid #E5E7EB', overflowX: 'auto', WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none' }}>
-              {steps.map((step) => {
-                const isActive = step.num === activeStep
-                return (
-                  <div
-                    key={step.num}
-                    style={{
-                      flex: 1,
-                      minWidth: '130px',
-                      textAlign: 'center',
-                      padding: '12px 6px',
-                      borderTop: isActive ? '3px solid #00AC99' : '1px solid transparent',
-                      marginTop: '-1px',
-                      color: isActive ? '#00AC99' : '#6B7280',
-                      cursor: 'default',
-                      transition: 'all 0.15s ease',
-                    }}
-                  >
-                    <div style={{ fontSize: '10.5px', fontWeight: 700, textTransform: 'uppercase', marginBottom: '2px', color: isActive ? '#00AC99' : '#9CA3AF' }}>
-                      Paso {step.num}
-                    </div>
-                    <div style={{ fontSize: '11.5px', fontWeight: isActive ? 600 : 500 }}>
-                      {step.name}
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-          </div>
-
-          {/* Validation Error Banner removed as per user request */}
-
-          {/* Form Content Card */}
-          <div style={{
-            backgroundColor: '#fff', borderRadius: '8px',
-            border: '1px solid #e8e8e8', padding: '28px 32px',
-            width: '100%', maxWidth: '1200px',
-            margin: '0 auto',
-          }}>
-            
-            {activeStep === 1 ? (
-              // ── STEP 1: DATOS FISCALES ──
-              <div>
-                <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#111827', marginBottom: '24px' }}>
-                  Datos fiscales
-                </h3>
-
-                {/* Symmetrical Grid Layout */}
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: '1fr 1fr',
-                  rowGap: '16px',
-                  columnGap: '28px',
-                  marginBottom: '24px',
-                }}>
-                  
-                  {/* ROW 1: Col 1 (Nombre & CUIT) / Col 2 (Inicio de Actividades) */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                    <div>
-                      <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
-                        Nombre / Razón Social <span style={{ color: '#EF4444' }}>*</span>
-                      </label>
-                      <input
-                        type="text"
-                        value={cidiData?.represented || ''}
-                        readOnly
-                        style={{
-                          width: '100%', border: '1px solid #E5E7EB', borderRadius: '6px',
-                          padding: '7px 12px', fontSize: '13.5px', color: '#9CA3AF',
-                          backgroundColor: '#F9FAFB', outline: 'none', boxSizing: 'border-box',
-                          cursor: 'not-allowed',
-                        }}
-                      />
-                    </div>
-
-                    <div>
-                      <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
-                        CUIT <span style={{ color: '#EF4444' }}>*</span>
-                      </label>
-                      <input
-                        type="text"
-                        value={cuit}
-                        readOnly
-                        style={{
-                          width: '100%', border: '1px solid #E5E7EB', borderRadius: '6px',
-                          padding: '7px 12px', fontSize: '13.5px', color: '#9CA3AF',
-                          backgroundColor: '#F9FAFB', outline: 'none', boxSizing: 'border-box',
-                          cursor: 'not-allowed',
-                        }}
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
-                      Inicio de Actividades <span style={{ color: '#EF4444' }}>*</span>
-                    </label>
-                    <div style={{ position: 'relative' }}>
-                      <input
-                        type="date"
-                        value={inicioActividades}
-                        onChange={(e) => setInicioActividades(e.target.value)}
-                        style={{
-                          width: '100%', border: validationErrors.includes('Inicio de Actividades') ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px',
-                          padding: '6px 12px', fontSize: '13.5px', color: '#1F2937',
-                          outline: 'none', boxSizing: 'border-box',
-                          fontFamily: 'inherit',
-                        }}
-                      />
-                    </div>
-                    {validationErrors.includes('Inicio de Actividades') && (
-                      <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>El inicio de actividades es requerido</p>
-                    )}
-                  </div>
-
-                  {/* ROW 2: Responsabilidad Fiscal & Constancia Inscripción - ARCA */}
-                  <div style={{ position: 'relative' }}>
-                    <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
-                      Responsabilidad Fiscal <span style={{ color: '#EF4444' }}>*</span>
-                    </label>
-                    
-                    <div
-                      onClick={() => setRespFiscalDropdownOpen(!respFiscalDropdownOpen)}
-                      style={{
-                        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                        border: validationErrors.includes('Responsabilidad Fiscal') ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px',
-                        padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
-                        backgroundColor: '#fff', cursor: 'pointer', userSelect: 'none', boxSizing: 'border-box',
-                      }}
-                    >
-                      <span>{responsabilidadFiscal}</span>
-                      <ChevronDownIcon />
-                    </div>
-
-                    {respFiscalDropdownOpen && (
-                      <div style={{
-                        position: 'absolute', top: '100%', left: 0, right: 0,
-                        marginTop: '4px', backgroundColor: '#fff', border: '1px solid #D1D5DB',
-                        borderRadius: '6px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
-                        zIndex: 1010, maxHeight: '200px', overflowY: 'auto',
-                      }}>
-                        {respFiscalOptions.map((opt) => (
-                          <div
-                            key={opt}
-                            onClick={() => {
-                              setResponsabilidadFiscal(opt)
-                              setRespFiscalDropdownOpen(false)
-                            }}
-                            style={{
-                              padding: '8px 12px', fontSize: '13px', cursor: 'pointer',
-                              backgroundColor: responsabilidadFiscal === opt ? '#00AC99' : '#fff',
-                              color: responsabilidadFiscal === opt ? '#fff' : '#1F2937',
-                            }}
-                          >
-                            {opt}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                    {validationErrors.includes('Responsabilidad Fiscal') && (
-                      <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>La responsabilidad fiscal es requerida</p>
-                    )}
-                  </div>
-
-                  <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
-                    <div style={{
-                      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                      border: '1px solid #E5E7EB', borderRadius: '6px', padding: '6px 12px',
-                      backgroundColor: '#fff', minHeight: '38px', boxSizing: 'border-box',
-                    }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span style={{ color: '#6B7280', display: 'flex', alignItems: 'center' }}><FileIcon /></span>
-                        <span style={{ fontSize: '13px', fontWeight: 500, color: '#374151' }}>
-                          Constancia Inscripción - ARCA
-                        </span>
-                      </div>
-                      <button style={{
-                        display: 'flex', alignItems: 'center', gap: '4px',
-                        border: '1px solid #D1D5DB', borderRadius: '6px',
-                        padding: '4px 10px', fontSize: '12px', fontWeight: 500,
-                        color: '#374151', backgroundColor: '#fff', cursor: 'pointer',
-                      }}>
-                        <UploadIcon />
-                        Adjuntar
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* ROW 3: Nº Ingresos Brutos & Constancia de Ingresos Brutos (IIBB) */}
-                  <div>
-                    <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
-                      Nº Ingresos Brutos <span style={{ color: '#EF4444' }}>*</span>
-                    </label>
-                    <input
-                      type="text"
-                      value={ingresosBrutos}
-                      onChange={(e) => setIngresosBrutos(e.target.value)}
-                      style={{
-                        width: '100%', border: validationErrors.includes('Ingresos Brutos') ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px',
-                        padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
-                        outline: 'none', boxSizing: 'border-box',
-                      }}
-                    />
-                    {validationErrors.includes('Ingresos Brutos') && (
-                      <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>El Nº de ingresos brutos es requerido</p>
-                    )}
-                  </div>
-
-                  <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
-                    <div style={{
-                      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                      border: '1px solid #E5E7EB', borderRadius: '6px', padding: '6px 12px',
-                      backgroundColor: '#fff', minHeight: '38px', boxSizing: 'border-box',
-                    }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span style={{ color: '#6B7280', display: 'flex', alignItems: 'center' }}><FileIcon /></span>
-                        <span style={{ fontSize: '13px', fontWeight: 500, color: '#374151' }}>
-                          Constancia de Ingresos Brutos (IIBB)
-                        </span>
-                      </div>
-                      <button style={{
-                        display: 'flex', alignItems: 'center', gap: '4px',
-                        border: '1px solid #D1D5DB', borderRadius: '6px',
-                        padding: '4px 10px', fontSize: '12px', fontWeight: 500,
-                        color: '#374151', backgroundColor: '#fff', cursor: 'pointer',
-                      }}>
-                        <UploadIcon />
-                        Adjuntar
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* ROW 4: Poseo extension IIBB & Certificado Extension */}
-                  <div>
-                    <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '8px' }}>
-                      Poseo extension IIBB
-                    </label>
-                    
-                    <div style={{ display: 'flex', gap: '20px', alignItems: 'center', height: '36px' }}>
+                {/* Stepper bar */}
+                <div style={{ display: 'flex', borderBottom: '1px solid #E5E7EB', overflowX: 'auto', WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none' }}>
+                  {steps.map((step) => {
+                    const isActive = step.num === activeStep
+                    return (
                       <div
-                        onClick={() => setHasExtension(true)}
-                        style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', userSelect: 'none' }}
+                        key={step.num}
+                        style={{
+                          flex: 1,
+                          minWidth: '130px',
+                          textAlign: 'center',
+                          padding: '12px 6px',
+                          borderTop: isActive ? '3px solid #00AC99' : '1px solid transparent',
+                          marginTop: '-1px',
+                          color: isActive ? '#00AC99' : '#6B7280',
+                          cursor: 'default',
+                          transition: 'all 0.15s ease',
+                        }}
                       >
-                        <div style={{
-                          width: '16px', height: '16px', borderRadius: '3px',
-                          border: hasExtension ? '2px solid #00AC99' : '2px solid #bbb',
-                          backgroundColor: hasExtension ? '#00AC99' : '#fff',
-                          display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        }}>
-                          {hasExtension && <CheckIcon />}
+                        <div style={{ fontSize: '10.5px', fontWeight: 700, textTransform: 'uppercase', marginBottom: '2px', color: isActive ? '#00AC99' : '#9CA3AF' }}>
+                          Paso {step.num}
                         </div>
-                        <span style={{ fontSize: '13px', color: '#374151', fontWeight: 500 }}>Sí</span>
-                      </div>
-
-                      <div
-                        onClick={() => setHasExtension(false)}
-                        style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', userSelect: 'none' }}
-                      >
-                        <div style={{
-                          width: '16px', height: '16px', borderRadius: '3px',
-                          border: !hasExtension ? '2px solid #00AC99' : '2px solid #bbb',
-                          backgroundColor: !hasExtension ? '#00AC99' : '#fff',
-                          display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        }}>
-                          {!hasExtension && <CheckIcon />}
+                        <div style={{ fontSize: '11.5px', fontWeight: isActive ? 600 : 500 }}>
+                          {step.name}
                         </div>
-                        <span style={{ fontSize: '13px', color: '#374151', fontWeight: 500 }}>No</span>
                       </div>
-                    </div>
-                  </div>
-
-                  <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
-                    {hasExtension ? (
-                      <div style={{
-                        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                        border: '1px solid #E5E7EB', borderRadius: '6px', padding: '6px 12px',
-                        backgroundColor: '#fff', minHeight: '38px', boxSizing: 'border-box',
-                      }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                          <span style={{ color: '#6B7280', display: 'flex', alignItems: 'center' }}><FileIcon /></span>
-                          <span style={{ fontSize: '13px', fontWeight: 500, color: '#374151' }}>
-                            Certificado Extension
-                          </span>
-                        </div>
-                        <button style={{
-                          display: 'flex', alignItems: 'center', gap: '4px',
-                          border: '1px solid #D1D5DB', borderRadius: '6px',
-                          padding: '4px 10px', fontSize: '12px', fontWeight: 500,
-                          color: '#374151', backgroundColor: '#fff', cursor: 'pointer',
-                        }}>
-                          <UploadIcon />
-                          Adjuntar
-                        </button>
-                      </div>
-                    ) : (
-                      <div style={{ minHeight: '38px' }} />
-                    )}
-                  </div>
-
-                  {/* ROW 5: Teléfono Administrativo & E-Mail Administrativo */}
-                  <div>
-                    <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
-                      Teléfono Administrativo <span style={{ color: '#EF4444' }}>*</span>
-                    </label>
-                    <input
-                      type="text"
-                      value={telAdministrativo}
-                      onChange={(e) => setTelAdministrativo(e.target.value)}
-                      style={{
-                        width: '100%', border: validationErrors.includes('Teléfono Administrativo') ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px',
-                        padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
-                        outline: 'none', boxSizing: 'border-box',
-                      }}
-                    />
-                    {validationErrors.includes('Teléfono Administrativo') && (
-                      <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>El teléfono administrativo es requerido</p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
-                      E-Mail Administrativo <span style={{ color: '#EF4444' }}>*</span>
-                    </label>
-                    <input
-                      type="text"
-                      value={emailAdministrativo}
-                      onChange={(e) => setEmailAdministrativo(e.target.value)}
-                      style={{
-                        width: '100%', border: validationErrors.includes('Email Administrativo') ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px',
-                        padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
-                        outline: 'none', boxSizing: 'border-box',
-                      }}
-                    />
-                    {validationErrors.includes('Email Administrativo') && (
-                      <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>El e-mail administrativo es requerido</p>
-                    )}
-                  </div>
-
-                </div>
-
-                {/* Divider */}
-                <hr style={{ border: 'none', borderTop: '1px solid #ebebeb', marginBottom: '24px' }} />
-
-                {/* ── DOMICILIO FISCAL ── */}
-                <SectionTitle>Domicilio Fiscal</SectionTitle>
-
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: '2fr 1fr 1fr 1fr',
-                  gap: '16px', marginBottom: '16px',
-                }}>
-                  {/* Calle */}
-                  <div>
-                    <label style={{ fontSize: '12px', fontWeight: 500, color: '#666', display: 'block', marginBottom: '5px' }}>
-                      Calle <span style={{ color: '#EF4444' }}>*</span>
-                    </label>
-                    <input
-                      type="text"
-                      value={calle}
-                      onChange={(e) => setCalle(e.target.value)}
-                      style={{
-                        width: '100%', border: validationErrors.includes('Calle (Domicilio Fiscal)') ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px',
-                        padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
-                        outline: 'none', boxSizing: 'border-box',
-                      }}
-                    />
-                    {validationErrors.includes('Calle (Domicilio Fiscal)') && (
-                      <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>La calle es requerida</p>
-                    )}
-                  </div>
-                  
-                  {/* Numero */}
-                  <div>
-                    <label style={{ fontSize: '12px', fontWeight: 500, color: '#666', display: 'block', marginBottom: '5px' }}>
-                      Nº (puerta) <span style={{ color: '#EF4444' }}>*</span>
-                    </label>
-                    <input
-                      type="text"
-                      value={puerta}
-                      onChange={(e) => setPuerta(e.target.value)}
-                      style={{
-                        width: '100%', border: validationErrors.includes('Número de puerta (Domicilio Fiscal)') ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px',
-                        padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
-                        outline: 'none', boxSizing: 'border-box',
-                      }}
-                    />
-                    {validationErrors.includes('Número de puerta (Domicilio Fiscal)') && (
-                      <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>El número es requerido</p>
-                    )}
-                  </div>
-
-                  {/* Apartamento */}
-                  <div>
-                    <label style={{ fontSize: '12px', fontWeight: 500, color: '#666', display: 'block', marginBottom: '5px' }}>
-                      Apartamento
-                    </label>
-                    <input
-                      type="text"
-                      value={apartamento}
-                      onChange={(e) => setApartamento(e.target.value)}
-                      style={{
-                        width: '100%', border: '1px solid #D1D5DB', borderRadius: '6px',
-                        padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
-                        outline: 'none', boxSizing: 'border-box',
-                      }}
-                    />
-                  </div>
-
-                  {/* CP */}
-                  <div>
-                    <label style={{ fontSize: '12px', fontWeight: 500, color: '#666', display: 'block', marginBottom: '5px' }}>
-                      Código Postal <span style={{ color: '#EF4444' }}>*</span>
-                    </label>
-                    <input
-                      type="text"
-                      value={codigoPostal}
-                      onChange={(e) => setCodigoPostal(e.target.value)}
-                      style={{
-                        width: '100%', border: validationErrors.includes('Código Postal') ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px',
-                        padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
-                        outline: 'none', boxSizing: 'border-box',
-                      }}
-                    />
-                    {validationErrors.includes('Código Postal') && (
-                      <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>El CP es requerido</p>
-                    )}
-                  </div>
-                </div>
-
-                <div style={{
-                  display: 'grid', gridTemplateColumns: '1fr 1fr',
-                  gap: '16px', marginBottom: '16px',
-                }}>
-                  {/* Barrio */}
-                  <div>
-                    <label style={{ fontSize: '12px', fontWeight: 500, color: '#666', display: 'block', marginBottom: '5px' }}>
-                      Barrio <span style={{ color: '#EF4444' }}>*</span>
-                    </label>
-                    <input
-                      type="text"
-                      value={barrio}
-                      onChange={(e) => setBarrio(e.target.value)}
-                      style={{
-                        width: '100%', border: validationErrors.includes('Barrio') ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px',
-                        padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
-                        outline: 'none', boxSizing: 'border-box',
-                      }}
-                    />
-                    {validationErrors.includes('Barrio') && (
-                      <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>El barrio es requerido</p>
-                    )}
-                  </div>
-
-                  {/* Localidad */}
-                  <div>
-                    <label style={{ fontSize: '12px', fontWeight: 500, color: '#666', display: 'block', marginBottom: '5px' }}>
-                      Localidad <span style={{ color: '#EF4444' }}>*</span>
-                    </label>
-                    <input
-                      type="text"
-                      value={localidad}
-                      onChange={(e) => setLocalidad(e.target.value)}
-                      style={{
-                        width: '100%', border: validationErrors.includes('Localidad') ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px',
-                        padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
-                        outline: 'none', boxSizing: 'border-box',
-                      }}
-                    />
-                    {validationErrors.includes('Localidad') && (
-                      <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>La localidad es requerida</p>
-                    )}
-                  </div>
-                </div>
-
-                <div style={{ marginBottom: '28px' }}>
-                  <label style={{ fontSize: '12px', fontWeight: 500, color: '#666', display: 'block', marginBottom: '5px' }}>
-                    Otros Datos
-                  </label>
-                  <input
-                    type="text"
-                    value={otrosDatos}
-                    onChange={(e) => setOtrosDatos(e.target.value)}
-                    style={{
-                      width: '100%', border: '1px solid #D1D5DB', borderRadius: '6px',
-                      padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
-                      outline: 'none', boxSizing: 'border-box',
-                    }}
-                  />
+                    )
+                  })}
                 </div>
               </div>
-            ) : activeStep === 2 ? (
-              // ── STEP 2: DATOS DEL PERFIL ──
-              isInstitucionDiscapacidad ? (
-                // ── STEP 2: INSTITUCION DISCAPACIDAD ──
-                <div>
-                  <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#111827', marginBottom: '24px' }}>
-                    Datos del perfil
-                  </h3>
 
-                  <SectionTitle>TIPO DE INSTITUCION</SectionTitle>
+              {/* Validation Error Banner removed as per user request */}
 
-                  {/* Tipo de Institución dropdown */}
-                  <div style={{ position: 'relative', marginBottom: '20px' }}>
-                    <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
-                      Tipo de Institucion <span style={{ color: '#EF4444' }}>*</span>
-                    </label>
-                    <div
-                      onClick={() => setTipoInstitucionDropdownOpen(!tipoInstitucionDropdownOpen)}
-                      style={{
-                        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                        border: '1px solid #D1D5DB', borderRadius: '6px',
-                        padding: '9px 12px', fontSize: '13.5px', color: '#1F2937',
-                        backgroundColor: '#fff', cursor: 'pointer', userSelect: 'none', boxSizing: 'border-box',
-                      }}
-                    >
-                      <span>{tipoInstitucion}</span>
-                      <ChevronDownIcon />
-                    </div>
-                    {tipoInstitucionDropdownOpen && (
-                      <div style={{
-                        position: 'absolute', top: '100%', left: 0, right: 0,
-                        marginTop: '4px', backgroundColor: '#fff', border: '1px solid #D1D5DB',
-                        borderRadius: '6px', boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
-                        zIndex: 1010, maxHeight: '220px', overflowY: 'auto',
-                      }}>
-                        {tipoInstitucionOptions.map((opt) => (
-                          <div
-                            key={opt}
-                            onClick={() => { setTipoInstitucion(opt); setTipoInstitucionDropdownOpen(false) }}
-                            style={{
-                              padding: '9px 12px', fontSize: '13px', cursor: 'pointer',
-                              backgroundColor: tipoInstitucion === opt ? '#00AC99' : '#fff',
-                              color: tipoInstitucion === opt ? '#fff' : '#1F2937',
-                            }}
-                          >{opt}</div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
+              {/* Form Content Card */}
+              <div style={{
+                backgroundColor: '#fff', borderRadius: '8px',
+                border: '1px solid #e8e8e8', padding: '28px 32px',
+                width: '100%', maxWidth: '1200px',
+                margin: '0 auto',
+              }}>
 
-                  {/* Transporte-specific section */}
-                  {tipoInstitucion === 'Transporte' && (
-                    <div style={{ marginBottom: '20px' }}>
-                      {/* Documentación del transporte */}
-                      <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '8px' }}>
-                        Documentación del transporte <span style={{ color: '#EF4444' }}>*</span>
-                      </label>
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '20px' }}>
-                        {['Cédula Verde / Título del vehículo', 'Licencia de conducir'].map((docName) => (
-                          <div key={docName} style={{
-                            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                            border: '1px solid #00AC99', borderRadius: '6px', padding: '8px 14px',
-                            backgroundColor: '#F0FDF4', boxSizing: 'border-box',
-                          }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                              <span style={{ color: '#00AC99', display: 'flex' }}><FileIcon /></span>
-                              <span style={{ fontSize: '13px', fontWeight: 500, color: '#1F2937' }}>{docName}</span>
-                            </div>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                              <span style={{ fontSize: '12px', color: '#0056b3', fontWeight: 600, textDecoration: 'underline', cursor: 'pointer' }}>Matricula5.pdf</span>
-                              <button style={{ display: 'flex', alignItems: 'center', gap: '4px', border: '1px solid #D1D5DB', borderRadius: '6px', padding: '4px 10px', fontSize: '12px', fontWeight: 500, color: '#374151', backgroundColor: '#fff', cursor: 'pointer' }}>
-                                <UploadIcon /> Adjuntar
-                              </button>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
+                {activeStep === 1 ? (
+                  // ── STEP 1: DATOS FISCALES ──
+                  <div>
+                    <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#111827', marginBottom: '24px' }}>
+                      Datos fiscales
+                    </h3>
 
-                      {/* Listado de conductores */}
-                      <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '8px' }}>
-                        Listado de conductores autorizados
-                      </label>
-                      <div style={{ border: '1px solid #E5E7EB', borderRadius: '8px', overflow: 'hidden', marginBottom: '4px' }}>
-                        {conductoresList.map((c, idx) => (
-                          <div key={idx} style={{
-                            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                            padding: '12px 16px', borderBottom: idx < conductoresList.length - 1 ? '1px solid #F3F4F6' : 'none',
-                            backgroundColor: '#fff',
-                          }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                              <div style={{ width: '34px', height: '34px', borderRadius: '50%', backgroundColor: '#E6F6F4', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                <PersonIcon />
-                              </div>
-                              <div>
-                                <p style={{ fontSize: '13px', fontWeight: 700, color: '#111827', margin: 0 }}>{c.nombre}</p>
-                                <p style={{ fontSize: '12px', color: '#6B7280', margin: '2px 0 0 0' }}>
-                                  CUIT/CUIL: {c.cuit} &nbsp; Licencia de conducir: {c.licenciaConducir ? 'Si' : 'No'} &nbsp; Autorizacion de manejo: {c.autorizacionManejo ? 'Si' : 'No'}
-                                </p>
-                              </div>
-                            </div>
-                            <div style={{ display: 'flex', gap: '8px' }}>
-                              <button style={{ padding: '6px 8px', border: '1px solid #D1D5DB', borderRadius: '6px', backgroundColor: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
-                                <PencilEditIcon />
-                              </button>
-                              <button
-                                onClick={() => setConductoresList(conductoresList.filter((_, i) => i !== idx))}
-                                style={{ padding: '6px 8px', border: '1px solid #FCA5A5', borderRadius: '6px', backgroundColor: '#FFF5F5', cursor: 'pointer', display: 'flex', alignItems: 'center', color: '#EF4444' }}
-                              >
-                                <TrashIcon />
-                              </button>
-                            </div>
-                          </div>
-                        ))}
-                        {/* Agregar conductor */}
-                        <div
-                          onClick={() => { setConductorNombre(''); setConductorApellido(''); setConductorCuit(''); setConductorCargo(''); setShowConductorModal(true) }}
-                          style={{
-                            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                            padding: '12px 16px', cursor: 'pointer', color: '#00AC99',
-                            borderTop: conductoresList.length > 0 ? '1px solid #F3F4F6' : 'none',
-                          }}
-                        >
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <span style={{ fontSize: '18px', fontWeight: 300 }}>+</span>
-                            <span style={{ fontSize: '13px', fontWeight: 600 }}>Agregar conductor autorizado</span>
-                          </div>
-                          <ChevronDownIcon />
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Disposición ANDIS */}
-                  <div style={{ marginBottom: '20px' }}>
-                    <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
-                      Disposición de Categorización (ANDIS) <span style={{ color: '#EF4444' }}>*</span>
-                    </label>
-                    <input
-                      type="text"
-                      value={disposicionAndis}
-                      onChange={(e) => setDisposicionAndis(e.target.value)}
-                      style={{ width: '100%', border: validationErrors.includes('Disposición ANDIS') ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px', padding: '9px 12px', fontSize: '13.5px', color: '#1F2937', outline: 'none', boxSizing: 'border-box' }}
-                    />
-                    {validationErrors.includes('Disposición ANDIS') && (
-                      <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>La disposición ANDIS es requerida</p>
-                    )}
-                  </div>
-
-                  {/* RNP Section */}
-                  <hr style={{ border: 'none', borderTop: '1px solid #ebebeb', margin: '4px 0 20px 0' }} />
-                  <SectionTitle>REGISTRO NACIONAL DE PRESTADORES DE DISCAPACIDAD</SectionTitle>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                    <div>
-                      <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
-                        Certificado de RNP <span style={{ color: '#EF4444' }}>*</span>
-                      </label>
-                      <input
-                        type="text"
-                        value={certificadoRnp}
-                        onChange={(e) => setCertificadoRnp(e.target.value)}
-                        style={{ width: '100%', border: '1px solid #D1D5DB', borderRadius: '6px', padding: '9px 12px', fontSize: '13.5px', color: '#1F2937', outline: 'none', boxSizing: 'border-box' }}
-                      />
-                    </div>
-                    <div>
-                      <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
-                        Constancia de inscripción vigente <span style={{ color: '#EF4444' }}>*</span>
-                      </label>
-                      <div style={{
-                        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                        border: '1px solid #00AC99', borderRadius: '6px', padding: '8px 16px',
-                        backgroundColor: '#F0FDF4', boxSizing: 'border-box',
-                      }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                          <span style={{ color: '#00AC99', display: 'flex' }}><FileIcon /></span>
-                          <span style={{ fontSize: '13px', fontWeight: 500, color: '#1F2937' }}>Constancia de inscripción vigente</span>
-                        </div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-                          <span style={{ fontSize: '12.5px', color: '#0056b3', fontWeight: 600, textDecoration: 'underline', cursor: 'pointer' }}>Constancia.pdf</span>
-                          <button style={{ display: 'flex', alignItems: 'center', gap: '4px', border: '1px solid #D1D5DB', borderRadius: '6px', padding: '4px 10px', fontSize: '12px', fontWeight: 500, color: '#374151', backgroundColor: '#fff', cursor: 'pointer' }}>
-                            <UploadIcon /> Adjuntar
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ) : isInstitucionNivel ? (
-              // ── STEP 2: INSTITUCION NIVEL ──
-              <div>
-                <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#111827', marginBottom: '24px' }}>
-                  Datos del perfil
-                </h3>
-
-                {/* Nivel de atención dropdown */}
-                <div style={{ position: 'relative', marginBottom: '20px' }}>
-                  <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
-                    Clasifique su nivel de atencion en salud <span style={{ color: '#EF4444' }}>*</span>
-                  </label>
-                  <div
-                    onClick={() => setNivelAtencionOpen(!nivelAtencionOpen)}
-                    style={{
-                      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                      border: validationErrors.includes('Clasificación / Nivel de Atención') ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px',
-                      padding: '9px 12px', fontSize: '13.5px', color: '#1F2937',
-                      backgroundColor: '#fff', cursor: 'pointer', userSelect: 'none', boxSizing: 'border-box',
-                    }}
-                  >
-                    <span>{nivelAtencion}</span>
-                    <ChevronDownIcon />
-                  </div>
-                  {nivelAtencionOpen && (
+                    {/* Symmetrical Grid Layout */}
                     <div style={{
-                      position: 'absolute', top: '100%', left: 0, right: 0, marginTop: '4px',
-                      backgroundColor: '#fff', border: '1px solid #D1D5DB', borderRadius: '6px',
-                      boxShadow: '0 4px 12px rgba(0,0,0,0.08)', zIndex: 1010,
+                      display: 'grid',
+                      gridTemplateColumns: '1fr 1fr',
+                      rowGap: '16px',
+                      columnGap: '28px',
+                      marginBottom: '24px',
                     }}>
-                      {nivelAtencionOptions.map((opt) => (
-                        <div
-                          key={opt}
-                          onClick={() => {
-                            setNivelAtencion(opt)
-                            setNivelAtencionOpen(false)
-                            setTipoInstitucionNivel('')
-                          }}
-                          style={{
-                            padding: '10px 12px', fontSize: '13.5px', cursor: 'pointer',
-                            backgroundColor: nivelAtencion === opt ? '#00AC99' : '#fff',
-                            color: nivelAtencion === opt ? '#fff' : '#1F2937',
-                          }}
-                        >{opt}</div>
-                      ))}
-                    </div>
-                  )}
-                  {validationErrors.includes('Clasificación / Nivel de Atención') && (
-                    <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>El nivel de atención es requerido</p>
-                  )}
-                </div>
 
-                {/* Tipo Institución + checkboxes — shown when a nivel is selected */}
-                {nivelAtencion !== 'Selecciona' && (
-                  <>
-                    <SectionTitle>TIPO DE INSTITUCION</SectionTitle>
-
-                    {/* Tipo de Institución dropdown */}
-                    <div style={{ position: 'relative', marginBottom: '24px' }}>
-                      <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
-                        Seleccioná la Institución <span style={{ color: '#EF4444' }}>*</span>
-                      </label>
-                      <div
-                        onClick={() => setTipoInstitucionNivelOpen(!tipoInstitucionNivelOpen)}
-                        style={{
-                          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                          border: '1px solid #D1D5DB', borderRadius: '6px',
-                          padding: '9px 12px', fontSize: '13.5px', color: tipoInstitucionNivel ? '#1F2937' : '#9CA3AF',
-                          backgroundColor: '#fff', cursor: 'pointer', userSelect: 'none', boxSizing: 'border-box',
-                        }}
-                      >
-                        <span>{tipoInstitucionNivel || 'Centro de Hemodiálisis'}</span>
-                        <ChevronDownIcon />
-                      </div>
-                      {tipoInstitucionNivelOpen && (
-                        <div style={{
-                          position: 'absolute', top: '100%', left: 0, right: 0, marginTop: '4px',
-                          backgroundColor: '#fff', border: '1px solid #D1D5DB', borderRadius: '6px',
-                          boxShadow: '0 4px 12px rgba(0,0,0,0.08)', zIndex: 1010, maxHeight: '220px', overflowY: 'auto',
-                        }}>
-                          {(tipoInstitucionPorNivel[nivelAtencion] || []).map((opt) => (
-                            <div
-                              key={opt}
-                              onClick={() => { setTipoInstitucionNivel(opt); setTipoInstitucionNivelOpen(false) }}
-                              style={{
-                                padding: '9px 12px', fontSize: '13px', cursor: 'pointer',
-                                backgroundColor: tipoInstitucionNivel === opt ? '#00AC99' : '#fff',
-                                color: tipoInstitucionNivel === opt ? '#fff' : '#1F2937',
-                              }}
-                            >{opt}</div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Two-column checkboxes */}
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', marginBottom: '16px' }}>
-                      {/* Left: MARQUE LAS OPCIONES */}
-                      <div>
-                        <label style={{ fontSize: '11px', fontWeight: 700, color: '#374151', display: 'block', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: '12px' }}>
-                          MARQUE LAS OPCIONES <span style={{ color: '#EF4444' }}>*</span>
-                        </label>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                          {opcionesIzquierda.map((opt) => (
-                            <div
-                              key={opt}
-                              onClick={() => setOpcionesChecks(prev => ({ ...prev, [opt]: !prev[opt] }))}
-                              style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', userSelect: 'none' }}
-                            >
-                              <div style={{
-                                width: '16px', height: '16px', borderRadius: '4px', flexShrink: 0,
-                                border: opcionesChecks[opt] ? '2px solid #00AC99' : '1.5px solid #D1D5DB',
-                                backgroundColor: opcionesChecks[opt] ? '#00AC99' : '#fff',
-                                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                              }}>
-                                {opcionesChecks[opt] && <CheckIcon />}
-                              </div>
-                              <span style={{ fontSize: '13px', color: '#374151' }}>{opt}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Right: INDIQUE LA TECNOLOGÍA QUE POSEE */}
-                      <div>
-                        <label style={{ fontSize: '11px', fontWeight: 700, color: '#374151', display: 'block', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: '12px' }}>
-                          INDIQUE LA TECNOLOGÍA QUE POSEE <span style={{ color: '#EF4444' }}>*</span>
-                        </label>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                          {tecnologiasDerecha.map((opt) => (
-                            <div key={opt}>
-                              <div
-                                onClick={() => setTecnologiaChecks(prev => ({ ...prev, [opt]: !prev[opt] }))}
-                                style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', userSelect: 'none' }}
-                              >
-                                <div style={{
-                                  width: '16px', height: '16px', borderRadius: '4px', flexShrink: 0,
-                                  border: tecnologiaChecks[opt] ? '2px solid #00AC99' : '1.5px solid #D1D5DB',
-                                  backgroundColor: tecnologiaChecks[opt] ? '#00AC99' : '#fff',
-                                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                }}>
-                                  {tecnologiaChecks[opt] && <CheckIcon />}
-                                </div>
-                                <span style={{ fontSize: '13px', color: '#374151' }}>{opt}</span>
-                              </div>
-
-                              {/* Sub-checkbox for Diagnóstico por imágenes */}
-                              {opt === 'Diagnóstico por imágenes' && tecnologiaChecks[opt] && (
-                                <div style={{ paddingLeft: '26px', marginTop: '8px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                  {diagnosticoSubOptions.map((sub) => (
-                                    <div
-                                      key={sub}
-                                      onClick={() => setDiagnosticoSubChecks(prev => ({ ...prev, [sub]: !prev[sub] }))}
-                                      style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', userSelect: 'none' }}
-                                    >
-                                      <div style={{
-                                        width: '16px', height: '16px', borderRadius: '4px', flexShrink: 0,
-                                        border: diagnosticoSubChecks[sub] ? '2px solid #00AC99' : '1.5px solid #D1D5DB',
-                                        backgroundColor: diagnosticoSubChecks[sub] ? '#00AC99' : '#fff',
-                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                      }}>
-                                        {diagnosticoSubChecks[sub] && <CheckIcon />}
-                                      </div>
-                                      <span style={{ fontSize: '12.5px', color: '#374151' }}>{sub}</span>
-                                    </div>
-                                  ))}
-                                </div>
-                              )}
-
-                              {/* Text input for Otros */}
-                              {opt === 'Otros (Especifique)' && tecnologiaChecks[opt] && (
-                                <div style={{ paddingLeft: '26px', marginTop: '8px' }}>
-                                  <input
-                                    type="text"
-                                    value={otrosTecnologiaText}
-                                    onChange={(e) => setOtrosTecnologiaText(e.target.value)}
-                                    placeholder="Especifique otras tecnologías..."
-                                    style={{
-                                      width: '100%', border: '1px solid #D1D5DB', borderRadius: '6px',
-                                      padding: '7px 10px', fontSize: '13px', color: '#1F2937',
-                                      outline: 'none', boxSizing: 'border-box',
-                                    }}
-                                  />
-                                </div>
-                              )}
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </>
-                )}
-              </div>
-              ) : (
-              <div>
-                <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#111827', marginBottom: '24px' }}>
-                  Datos del perfil
-                </h3>
-
-                <SectionTitle>Matricula</SectionTitle>
-
-                {/* Symmetrical Grid Layout */}
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: '1fr 1fr',
-                  rowGap: '16px',
-                  columnGap: '28px',
-                  marginBottom: '28px',
-                }}>
-                  
-                  {/* Field 1: Tipo profesión */}
-                  <div style={{ position: 'relative' }}>
-                    <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
-                      Tipo profesion <span style={{ color: '#EF4444' }}>*</span>
-                    </label>
-                    <div
-                      onClick={() => {
-                        setTipoProfesionDropdownOpen(!tipoProfesionDropdownOpen)
-                        setAmbitoMatriculaDropdownOpen(false)
-                        setEspecialidadDropdownOpen(false)
-                      }}
-                      style={{
-                        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                        border: validationErrors.includes('Tipo de Profesión') ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px',
-                        padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
-                        backgroundColor: '#fff', cursor: 'pointer', userSelect: 'none', boxSizing: 'border-box',
-                      }}
-                    >
-                      <span>{tipoProfesion}</span>
-                      <ChevronDownIcon />
-                    </div>
-
-                    {tipoProfesionDropdownOpen && (
-                      <div style={{
-                        position: 'absolute', top: '100%', left: 0, right: 0,
-                        marginTop: '4px', backgroundColor: '#fff', border: '1px solid #D1D5DB',
-                        borderRadius: '6px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
-                        zIndex: 1010, maxHeight: '200px', overflowY: 'auto',
-                      }}>
-                        {tipoProfesionOptions.map((opt) => (
-                          <div
-                            key={opt}
-                            onClick={() => {
-                              setTipoProfesion(opt)
-                              setTipoProfesionDropdownOpen(false)
-                            }}
+                      {/* ROW 1: Col 1 (Nombre & CUIT) / Col 2 (Inicio de Actividades) */}
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                        <div>
+                          <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
+                            Nombre / Razón Social <span style={{ color: '#EF4444' }}>*</span>
+                          </label>
+                          <input
+                            type="text"
+                            value={cidiData?.represented || ''}
+                            readOnly
                             style={{
-                              padding: '8px 12px', fontSize: '13px', cursor: 'pointer',
-                              backgroundColor: tipoProfesion === opt ? '#00AC99' : '#fff',
-                              color: tipoProfesion === opt ? '#fff' : '#1F2937',
+                              width: '100%', border: '1px solid #E5E7EB', borderRadius: '6px',
+                              padding: '7px 12px', fontSize: '13.5px', color: '#9CA3AF',
+                              backgroundColor: '#F9FAFB', outline: 'none', boxSizing: 'border-box',
+                              cursor: 'not-allowed',
                             }}
-                          >
-                            {opt}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                    {validationErrors.includes('Tipo de Profesión') && (
-                      <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>El tipo de profesión es requerido</p>
-                    )}
-                  </div>
-
-                  {/* Field 2: Condicional Especialidad Médica if 'Medico' OR Ámbito de la Matrícula */}
-                  {tipoProfesion === 'Medico' ? (
-                    <div style={{ position: 'relative' }}>
-                      <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
-                        Selecciona tu especialidad medica <span style={{ color: '#EF4444' }}>*</span>
-                      </label>
-                      <div
-                        onClick={() => {
-                          setEspecialidadDropdownOpen(!especialidadDropdownOpen)
-                          setTipoProfesionDropdownOpen(false)
-                          setAmbitoMatriculaDropdownOpen(false)
-                        }}
-                        style={{
-                          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                          border: '1px solid #D1D5DB', borderRadius: '6px',
-                          padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
-                          backgroundColor: '#fff', cursor: 'pointer', userSelect: 'none', boxSizing: 'border-box',
-                        }}
-                      >
-                        <span>{especialidadMedica.length > 0 ? especialidadMedica.join(', ') : 'Selecciona'}</span>
-                        <ChevronDownIcon />
-                      </div>
-
-                      {especialidadDropdownOpen && (
-                        <div style={{
-                          position: 'absolute', top: '100%', left: 0, right: 0,
-                          marginTop: '4px', backgroundColor: '#fff', border: '1px solid #D1D5DB',
-                          borderRadius: '6px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
-                          zIndex: 1010, maxHeight: '200px', overflowY: 'auto',
-                        }}>
-                          {especialidadesMedicas.map((opt, index) => {
-                            if (opt.isHeader) {
-                              return (
-                                <div
-                                  key={index}
-                                  style={{
-                                    padding: '6px 12px', fontSize: '11px', fontWeight: 'bold',
-                                    color: '#9CA3AF', backgroundColor: '#F3F4F6', cursor: 'default',
-                                    borderTop: index > 0 ? '1px solid #E5E7EB' : 'none',
-                                    borderBottom: '1px solid #E5E7EB',
-                                    userSelect: 'none',
-                                  }}
-                                >
-                                  {opt.label}
-                                </div>
-                              )
-                            }
-                            return (
-                              <div
-                                key={index}
-                                onClick={(e) => {
-                                  e.stopPropagation()
-                                  if (especialidadMedica.includes(opt.label)) {
-                                    setEspecialidadMedica(especialidadMedica.filter(d => d !== opt.label))
-                                  } else {
-                                    setEspecialidadMedica([...especialidadMedica, opt.label])
-                                  }
-                                }}
-                                style={{
-                                  padding: '8px 12px 8px 20px', fontSize: '13px', cursor: 'pointer',
-                                  backgroundColor: especialidadMedica.includes(opt.label) ? '#E6F6F4' : '#fff',
-                                  color: especialidadMedica.includes(opt.label) ? '#00AC99' : '#1F2937',
-                                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                                  fontWeight: especialidadMedica.includes(opt.label) ? 600 : 400
-                                }}
-                              >
-                                {opt.label}
-                                {especialidadMedica.includes(opt.label) && (
-                                  <CheckIcon />
-                                )}
-                              </div>
-                            )
-                          })}
+                          />
                         </div>
-                      )}
-                    </div>
-                  ) : (
-                    /* If not Medico, Ámbito de la Matrícula goes here */
-                    <div style={{ position: 'relative' }}>
-                      <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
-                        Ámbito de la Matrícula <span style={{ color: '#EF4444' }}>*</span>
-                      </label>
-                      <div
-                        onClick={() => {
-                          setAmbitoMatriculaDropdownOpen(!ambitoMatriculaDropdownOpen)
-                          setTipoProfesionDropdownOpen(false)
-                          setEspecialidadDropdownOpen(false)
-                        }}
-                        style={{
-                          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                          border: '1px solid #D1D5DB', borderRadius: '6px',
-                          padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
-                          backgroundColor: '#fff', cursor: 'pointer', userSelect: 'none', boxSizing: 'border-box',
-                        }}
-                      >
-                        <span>{ambitoMatricula}</span>
-                        <ChevronDownIcon />
+
+                        <div>
+                          <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
+                            CUIT <span style={{ color: '#EF4444' }}>*</span>
+                          </label>
+                          <input
+                            type="text"
+                            value={cuit}
+                            readOnly
+                            style={{
+                              width: '100%', border: '1px solid #E5E7EB', borderRadius: '6px',
+                              padding: '7px 12px', fontSize: '13.5px', color: '#9CA3AF',
+                              backgroundColor: '#F9FAFB', outline: 'none', boxSizing: 'border-box',
+                              cursor: 'not-allowed',
+                            }}
+                          />
+                        </div>
                       </div>
 
-                      {ambitoMatriculaDropdownOpen && (
-                        <div style={{
-                          position: 'absolute', top: '100%', left: 0, right: 0,
-                          marginTop: '4px', backgroundColor: '#fff', border: '1px solid #D1D5DB',
-                          borderRadius: '6px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
-                          zIndex: 1010, maxHeight: '200px', overflowY: 'auto',
-                        }}>
-                          {ambitoMatriculaOptions.map((opt) => (
-                            <div
-                              key={opt}
-                              onClick={() => {
-                                setAmbitoMatricula(opt)
-                                setAmbitoMatriculaDropdownOpen(false)
-                              }}
-                              style={{
-                                padding: '8px 12px', fontSize: '13px', cursor: 'pointer',
-                                backgroundColor: ambitoMatricula === opt ? '#00AC99' : '#fff',
-                                color: ambitoMatricula === opt ? '#fff' : '#1F2937',
-                              }}
-                            >
-                              {opt}
-                            </div>
-                          ))}
+                      <div>
+                        <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
+                          Inicio de Actividades <span style={{ color: '#EF4444' }}>*</span>
+                        </label>
+                        <div style={{ position: 'relative' }}>
+                          <input
+                            type="date"
+                            value={inicioActividades}
+                            onChange={(e) => setInicioActividades(e.target.value)}
+                            style={{
+                              width: '100%', border: validationErrors.includes('Inicio de Actividades') ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px',
+                              padding: '6px 12px', fontSize: '13.5px', color: '#1F2937',
+                              outline: 'none', boxSizing: 'border-box',
+                              fontFamily: 'inherit',
+                            }}
+                          />
                         </div>
-                      )}
-                    </div>
-                  )}
+                        {validationErrors.includes('Inicio de Actividades') && (
+                          <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>El inicio de actividades es requerido</p>
+                        )}
+                      </div>
 
-                  {/* ROW 2:
-                      If 'Medico':
-                        Col 1: Ámbito de la Matrícula
-                        Col 2: Número de Matrícula...
-                      If not 'Medico':
-                        Col 1: Número de Matrícula...
-                        Col 2: Empty slot
-                  */}
-                  {tipoProfesion === 'Medico' ? (
-                    <>
-                      {/* Col 1: Ámbito de la Matrícula */}
+                      {/* ROW 2: Responsabilidad Fiscal & Constancia Inscripción - ARCA */}
                       <div style={{ position: 'relative' }}>
                         <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
-                          Ámbito de la Matrícula <span style={{ color: '#EF4444' }}>*</span>
+                          Responsabilidad Fiscal <span style={{ color: '#EF4444' }}>*</span>
                         </label>
+
                         <div
-                          onClick={() => {
-                            setAmbitoMatriculaDropdownOpen(!ambitoMatriculaDropdownOpen)
-                            setTipoProfesionDropdownOpen(false)
-                            setEspecialidadDropdownOpen(false)
-                          }}
+                          onClick={() => setRespFiscalDropdownOpen(!respFiscalDropdownOpen)}
                           style={{
                             display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                            border: '1px solid #D1D5DB', borderRadius: '6px',
+                            border: validationErrors.includes('Responsabilidad Fiscal') ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px',
                             padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
                             backgroundColor: '#fff', cursor: 'pointer', userSelect: 'none', boxSizing: 'border-box',
                           }}
                         >
-                          <span>{ambitoMatricula}</span>
+                          <span>{responsabilidadFiscal}</span>
                           <ChevronDownIcon />
                         </div>
 
-                        {ambitoMatriculaDropdownOpen && (
+                        {respFiscalDropdownOpen && (
                           <div style={{
                             position: 'absolute', top: '100%', left: 0, right: 0,
                             marginTop: '4px', backgroundColor: '#fff', border: '1px solid #D1D5DB',
                             borderRadius: '6px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
                             zIndex: 1010, maxHeight: '200px', overflowY: 'auto',
                           }}>
-                            {ambitoMatriculaOptions.map((opt) => (
+                            {respFiscalOptions.map((opt) => (
                               <div
                                 key={opt}
                                 onClick={() => {
-                                  setAmbitoMatricula(opt)
-                                  setAmbitoMatriculaDropdownOpen(false)
+                                  setResponsabilidadFiscal(opt)
+                                  setRespFiscalDropdownOpen(false)
                                 }}
                                 style={{
                                   padding: '8px 12px', fontSize: '13px', cursor: 'pointer',
-                                  backgroundColor: ambitoMatricula === opt ? '#00AC99' : '#fff',
-                                  color: ambitoMatricula === opt ? '#fff' : '#1F2937',
+                                  backgroundColor: responsabilidadFiscal === opt ? '#00AC99' : '#fff',
+                                  color: responsabilidadFiscal === opt ? '#fff' : '#1F2937',
                                 }}
                               >
                                 {opt}
@@ -2157,105 +1194,131 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                             ))}
                           </div>
                         )}
-                      </div>
-
-                      {/* Col 2: Número de Matrícula */}
-                      <div>
-                        <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
-                          Número de Matrícula Profesional o Registro Provincial <span style={{ color: '#EF4444' }}>*</span>
-                        </label>
-                        <input
-                          type="text"
-                          value={numMatricula}
-                          onChange={(e) => setNumMatricula(e.target.value)}
-                          style={{
-                            width: '100%', border: validationErrors.includes('Número de Matrícula') ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px',
-                            padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
-                            outline: 'none', boxSizing: 'border-box',
-                          }}
-                        />
-                        {validationErrors.includes('Número de Matrícula') && (
-                          <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>El número de matrícula es requerido</p>
-                        )}
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      {/* Col 1: Número de Matrícula */}
-                      <div>
-                        <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
-                          Número de Matrícula Profesional o Registro Provincial <span style={{ color: '#EF4444' }}>*</span>
-                        </label>
-                        <input
-                          type="text"
-                          value={numMatricula}
-                          onChange={(e) => setNumMatricula(e.target.value)}
-                          style={{
-                            width: '100%', border: validationErrors.includes('Número de Matrícula') ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px',
-                            padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
-                            outline: 'none', boxSizing: 'border-box',
-                          }}
-                        />
-                        {validationErrors.includes('Número de Matrícula') && (
-                          <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>El número de matrícula es requerido</p>
+                        {validationErrors.includes('Responsabilidad Fiscal') && (
+                          <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>La responsabilidad fiscal es requerida</p>
                         )}
                       </div>
 
-                      {/* Col 2: Empty placeholder */}
-                      <div style={{ minHeight: '38px' }} />
-                    </>
-                  )}
-
-                </div>
-
-                {/* ── ADDITIONAL DISABILITY SECTION ── */}
-                {isDisabilityCategory && (
-                  <div>
-                    {/* Divider */}
-                    <hr style={{ border: 'none', borderTop: '1px solid #ebebeb', margin: '24px 0' }} />
-                    
-                    <SectionTitle>Registro Nacional de Prestadores de Discapacidad</SectionTitle>
-                    
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '16px' }}>
-                      {/* Certificado de RNP */}
-                      <div>
-                        <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
-                          Certificado de RNP <span style={{ color: '#EF4444' }}>*</span>
-                        </label>
-                        <input
-                          type="text"
-                          value={certificadoRnp}
-                          onChange={(e) => setCertificadoRnp(e.target.value)}
-                          style={{
-                            width: '100%', border: '1px solid #D1D5DB', borderRadius: '6px',
-                            padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
-                            outline: 'none', boxSizing: 'border-box',
-                          }}
-                        />
-                      </div>
-
-                      {/* Constancia de inscripción vigente */}
-                      <div>
-                        <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
-                          Constancia de inscripción vigente <span style={{ color: '#EF4444' }}>*</span>
-                        </label>
+                      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
                         <div style={{
                           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                          border: '1px solid #00AC99', borderRadius: '6px', padding: '8px 16px',
-                          backgroundColor: '#F0FDF4', minHeight: '38px', boxSizing: 'border-box',
+                          border: '1px solid #E5E7EB', borderRadius: '6px', padding: '6px 12px',
+                          backgroundColor: '#fff', minHeight: '38px', boxSizing: 'border-box',
                         }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <span style={{ color: '#00AC99', display: 'flex', alignItems: 'center' }}><FileIcon /></span>
-                            <span style={{ fontSize: '13px', fontWeight: 500, color: '#1F2937' }}>
-                              Constancia de inscripción vigente
+                            <span style={{ color: '#6B7280', display: 'flex', alignItems: 'center' }}><FileIcon /></span>
+                            <span style={{ fontSize: '13px', fontWeight: 500, color: '#374151' }}>
+                              Constancia Inscripción - ARCA
                             </span>
                           </div>
-                          
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-                            <span style={{ fontSize: '12.5px', color: '#0056b3', fontWeight: 600, textDecoration: 'underline', cursor: 'pointer' }}>
-                              Constancia.pdf
+                          <button style={{
+                            display: 'flex', alignItems: 'center', gap: '4px',
+                            border: '1px solid #D1D5DB', borderRadius: '6px',
+                            padding: '4px 10px', fontSize: '12px', fontWeight: 500,
+                            color: '#374151', backgroundColor: '#fff', cursor: 'pointer',
+                          }}>
+                            <UploadIcon />
+                            Adjuntar
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* ROW 3: Nº Ingresos Brutos & Constancia de Ingresos Brutos (IIBB) */}
+                      <div>
+                        <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
+                          Nº Ingresos Brutos <span style={{ color: '#EF4444' }}>*</span>
+                        </label>
+                        <input
+                          type="text"
+                          value={ingresosBrutos}
+                          onChange={(e) => setIngresosBrutos(e.target.value)}
+                          style={{
+                            width: '100%', border: validationErrors.includes('Ingresos Brutos') ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px',
+                            padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
+                            outline: 'none', boxSizing: 'border-box',
+                          }}
+                        />
+                        {validationErrors.includes('Ingresos Brutos') && (
+                          <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>El Nº de ingresos brutos es requerido</p>
+                        )}
+                      </div>
+
+                      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
+                        <div style={{
+                          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                          border: '1px solid #E5E7EB', borderRadius: '6px', padding: '6px 12px',
+                          backgroundColor: '#fff', minHeight: '38px', boxSizing: 'border-box',
+                        }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <span style={{ color: '#6B7280', display: 'flex', alignItems: 'center' }}><FileIcon /></span>
+                            <span style={{ fontSize: '13px', fontWeight: 500, color: '#374151' }}>
+                              Constancia de Ingresos Brutos (IIBB)
                             </span>
-                            
+                          </div>
+                          <button style={{
+                            display: 'flex', alignItems: 'center', gap: '4px',
+                            border: '1px solid #D1D5DB', borderRadius: '6px',
+                            padding: '4px 10px', fontSize: '12px', fontWeight: 500,
+                            color: '#374151', backgroundColor: '#fff', cursor: 'pointer',
+                          }}>
+                            <UploadIcon />
+                            Adjuntar
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* ROW 4: Poseo extension IIBB & Certificado Extension */}
+                      <div>
+                        <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '8px' }}>
+                          Poseo extension IIBB
+                        </label>
+
+                        <div style={{ display: 'flex', gap: '20px', alignItems: 'center', height: '36px' }}>
+                          <div
+                            onClick={() => setHasExtension(true)}
+                            style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', userSelect: 'none' }}
+                          >
+                            <div style={{
+                              width: '16px', height: '16px', borderRadius: '3px',
+                              border: hasExtension ? '2px solid #00AC99' : '2px solid #bbb',
+                              backgroundColor: hasExtension ? '#00AC99' : '#fff',
+                              display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            }}>
+                              {hasExtension && <CheckIcon />}
+                            </div>
+                            <span style={{ fontSize: '13px', color: '#374151', fontWeight: 500 }}>Sí</span>
+                          </div>
+
+                          <div
+                            onClick={() => setHasExtension(false)}
+                            style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', userSelect: 'none' }}
+                          >
+                            <div style={{
+                              width: '16px', height: '16px', borderRadius: '3px',
+                              border: !hasExtension ? '2px solid #00AC99' : '2px solid #bbb',
+                              backgroundColor: !hasExtension ? '#00AC99' : '#fff',
+                              display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            }}>
+                              {!hasExtension && <CheckIcon />}
+                            </div>
+                            <span style={{ fontSize: '13px', color: '#374151', fontWeight: 500 }}>No</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
+                        {hasExtension ? (
+                          <div style={{
+                            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                            border: '1px solid #E5E7EB', borderRadius: '6px', padding: '6px 12px',
+                            backgroundColor: '#fff', minHeight: '38px', boxSizing: 'border-box',
+                          }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                              <span style={{ color: '#6B7280', display: 'flex', alignItems: 'center' }}><FileIcon /></span>
+                              <span style={{ fontSize: '13px', fontWeight: 500, color: '#374151' }}>
+                                Certificado Extension
+                              </span>
+                            </div>
                             <button style={{
                               display: 'flex', alignItems: 'center', gap: '4px',
                               border: '1px solid #D1D5DB', borderRadius: '6px',
@@ -2266,592 +1329,1008 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                               Adjuntar
                             </button>
                           </div>
-                        </div>
+                        ) : (
+                          <div style={{ minHeight: '38px' }} />
+                        )}
                       </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-              )
-            ) : activeStep === 3 ? (
-              // ── STEP 3: STAFF ──
-              <div>
-                <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#111827', marginBottom: '4px' }}>
-                  Staff
-                </h3>
-                <p style={{ fontSize: '13px', color: '#6B7280', marginBottom: '24px' }}>
-                  Añadir integrantes del staff es opcional. Podés avanzar sin cargar miembros.
-                </p>
 
-                <SectionTitle>Staff de profesionales</SectionTitle>
-
-                {/* Excel upload dashed box */}
-                <div style={{
-                  backgroundColor: '#F9FAFB',
-                  border: '1.5px dashed #D1D5DB',
-                  borderRadius: '8px',
-                  padding: '24px',
-                  textAlign: 'center',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '8px',
-                  marginBottom: '28px',
-                }}>
-                  <BigUploadIcon />
-                  <p style={{ fontSize: '14px', fontWeight: 700, color: '#111827', margin: 0 }}>
-                    Adjuntar Excel/CSV de Staff
-                  </p>
-                  <p style={{ fontSize: '12px', color: '#6B7280', margin: '0 0 8px 0' }}>
-                    Arrastrá y soltá tu archivo acá, o <span style={{ color: '#00AC99', textDecoration: 'underline', fontWeight: 600, cursor: 'pointer' }}>examinar archivos</span>
-                  </p>
-                  <button
-                    onClick={() => alert('Descargando plantilla de Excel para Staff...')}
-                    style={{
-                      display: 'flex', alignItems: 'center',
-                      border: '1px solid #D1D5DB', borderRadius: '6px',
-                      padding: '6px 14px', fontSize: '12px', fontWeight: 600,
-                      color: '#374151', backgroundColor: '#fff', cursor: 'pointer',
-                    }}
-                  >
-                    <DownloadIcon />
-                    Descargar Plantilla
-                  </button>
-                </div>
-
-                <SectionTitle>Cargar Manualmente</SectionTitle>
-
-                {/* Agregar Profesional Button Accordion-style */}
-                <div
-                  onClick={() => {
-                    setStaffCuit('20403532880')
-                    setStaffNombre('Carolina, Rodriguez')
-                    setStaffEspecialidad('Medico')
-                    setStaffPrescriptor(true)
-                    setStaffMatricula('A001MPX29223')
-                    setShowStaffModal(true)
-                  }}
-                  style={{
-                    border: '1px solid #E5E7EB',
-                    borderRadius: '8px',
-                    padding: '12px 16px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    cursor: 'pointer',
-                    backgroundColor: '#fff',
-                    marginBottom: '20px',
-                    transition: 'border-color 0.15s ease',
-                  }}
-                  onMouseEnter={(e) => e.currentTarget.style.borderColor = '#bbb'}
-                  onMouseLeave={(e) => e.currentTarget.style.borderColor = '#E5E7EB'}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <div style={{
-                      width: '32px', height: '32px', borderRadius: '6px',
-                      backgroundColor: '#E6F6F4', color: '#00AC99',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontSize: '18px', fontWeight: 'bold',
-                    }}>
-                      +
-                    </div>
-                    <span style={{ fontSize: '14px', fontWeight: 700, color: '#00AC99' }}>
-                      Agregar Profesional
-                    </span>
-                  </div>
-                  <span style={{ color: '#9CA3AF', display: 'flex', alignItems: 'center' }}>
-                    <ChevronDownIcon />
-                  </span>
-                </div>
-
-                {/* Live List of Added Professionals */}
-                {staffList.length > 0 && (
-                  <div style={{ marginBottom: '24px' }}>
-                    <SectionTitle>Profesionales Cargados ({staffList.length})</SectionTitle>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                      {staffList.map((prof, idx) => (
-                        <div
-                          key={idx}
+                      {/* ROW 5: Teléfono Administrativo & E-Mail Administrativo */}
+                      <div>
+                        <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
+                          Teléfono Administrativo <span style={{ color: '#EF4444' }}>*</span>
+                        </label>
+                        <input
+                          type="text"
+                          value={telAdministrativo}
+                          onChange={(e) => setTelAdministrativo(e.target.value)}
                           style={{
-                            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                            border: '1px solid #E5E7EB', borderRadius: '8px', padding: '12px 16px',
-                            backgroundColor: '#F9FAFB',
+                            width: '100%', border: validationErrors.includes('Teléfono Administrativo') ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px',
+                            padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
+                            outline: 'none', boxSizing: 'border-box',
                           }}
-                        >
-                          <div>
-                            <p style={{ fontSize: '13.5px', fontWeight: 600, color: '#111827', margin: 0 }}>
-                              {prof.nombre}
-                            </p>
-                            <p style={{ fontSize: '12px', color: '#6B7280', margin: '4px 0 0 0' }}>
-                              CUIT/CUIL: <strong style={{ color: '#4B5563' }}>{prof.cuit}</strong> | 
-                              Especialidad: <strong style={{ color: '#4B5563' }}>{prof.especialidad}</strong> | 
-                              Matrícula: <strong style={{ color: '#4B5563' }}>{prof.matricula}</strong> | 
-                              Prescriptor: <strong style={{ color: '#4B5563' }}>{prof.prescriptor ? 'Sí' : 'No'}</strong>
-                            </p>
-                          </div>
-                          
-                          <button
-                            onClick={() => setStaffList(staffList.filter((_, i) => i !== idx))}
-                            style={{
-                              border: 'none', backgroundColor: 'transparent',
-                              color: '#EF4444', fontSize: '12px', fontWeight: 600,
-                              cursor: 'pointer',
-                            }}
-                          >
-                            Eliminar
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            ) : activeStep === 4 ? (
-              // ── STEP 4: LUGAR DE ATENCIÓN ──
-              <div>
-                <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#111827', marginBottom: '4px' }}>
-                  Lugar de atencion
-                </h3>
-                <p style={{ fontSize: '13px', color: '#6B7280', marginBottom: '24px' }}>
-                  Por favor, completá la siguiente información obligatoria (*)
-                </p>
-
-                <SectionTitle>Datos del lugar de atención</SectionTitle>
-
-                {/* Render added locations */}
-                {locationsList.map((loc, idx) => (
-                  <div
-                    key={idx}
-                    style={{
-                      border: '1px solid #E5E7EB',
-                      borderRadius: '12px',
-                      padding: '16px 20px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      backgroundColor: '#fff',
-                      marginBottom: '16px',
-                    }}
-                  >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                      <div style={{
-                        width: '40px',
-                        height: '40px',
-                        borderRadius: '8px',
-                        backgroundColor: '#F3F4F6',
-                        color: '#4B5563',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}>
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                          <circle cx="12" cy="10" r="3" />
-                        </svg>
+                        />
+                        {validationErrors.includes('Teléfono Administrativo') && (
+                          <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>El teléfono administrativo es requerido</p>
+                        )}
                       </div>
 
                       <div>
-                        <h4 style={{ fontSize: '14.5px', fontWeight: 700, color: '#111827', margin: 0 }}>
-                          {loc.nombre}
-                        </h4>
-                        <p style={{ fontSize: '12.5px', color: '#6B7280', margin: '4px 0 0 0' }}>
-                          {loc.calle} {loc.puerta}, {loc.localidad}
-                        </p>
-                        <p style={{ fontSize: '11.5px', color: '#9CA3AF', margin: '2px 0 0 0' }}>
-                          Tel: {loc.telTurnos} | Guardia: {loc.guardia ? 'Sí' : 'No'}
-                        </p>
+                        <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
+                          E-Mail Administrativo <span style={{ color: '#EF4444' }}>*</span>
+                        </label>
+                        <input
+                          type="text"
+                          value={emailAdministrativo}
+                          onChange={(e) => setEmailAdministrativo(e.target.value)}
+                          style={{
+                            width: '100%', border: validationErrors.includes('Email Administrativo') ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px',
+                            padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
+                            outline: 'none', boxSizing: 'border-box',
+                          }}
+                        />
+                        {validationErrors.includes('Email Administrativo') && (
+                          <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>El e-mail administrativo es requerido</p>
+                        )}
+                      </div>
+
+                    </div>
+
+                    {/* Divider */}
+                    <hr style={{ border: 'none', borderTop: '1px solid #ebebeb', marginBottom: '24px' }} />
+
+                    {/* ── DOMICILIO FISCAL ── */}
+                    <SectionTitle>Domicilio Fiscal</SectionTitle>
+
+                    <div style={{
+                      display: 'grid',
+                      gridTemplateColumns: '2fr 1fr 1fr 1fr',
+                      gap: '16px', marginBottom: '16px',
+                    }}>
+                      {/* Calle */}
+                      <div>
+                        <label style={{ fontSize: '12px', fontWeight: 500, color: '#666', display: 'block', marginBottom: '5px' }}>
+                          Calle <span style={{ color: '#EF4444' }}>*</span>
+                        </label>
+                        <input
+                          type="text"
+                          value={calle}
+                          onChange={(e) => setCalle(e.target.value)}
+                          style={{
+                            width: '100%', border: validationErrors.includes('Calle (Domicilio Fiscal)') ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px',
+                            padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
+                            outline: 'none', boxSizing: 'border-box',
+                          }}
+                        />
+                        {validationErrors.includes('Calle (Domicilio Fiscal)') && (
+                          <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>La calle es requerida</p>
+                        )}
+                      </div>
+
+                      {/* Numero */}
+                      <div>
+                        <label style={{ fontSize: '12px', fontWeight: 500, color: '#666', display: 'block', marginBottom: '5px' }}>
+                          Nº (puerta) <span style={{ color: '#EF4444' }}>*</span>
+                        </label>
+                        <input
+                          type="text"
+                          value={puerta}
+                          onChange={(e) => setPuerta(e.target.value)}
+                          style={{
+                            width: '100%', border: validationErrors.includes('Número de puerta (Domicilio Fiscal)') ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px',
+                            padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
+                            outline: 'none', boxSizing: 'border-box',
+                          }}
+                        />
+                        {validationErrors.includes('Número de puerta (Domicilio Fiscal)') && (
+                          <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>El número es requerido</p>
+                        )}
+                      </div>
+
+                      {/* Apartamento */}
+                      <div>
+                        <label style={{ fontSize: '12px', fontWeight: 500, color: '#666', display: 'block', marginBottom: '5px' }}>
+                          Apartamento
+                        </label>
+                        <input
+                          type="text"
+                          value={apartamento}
+                          onChange={(e) => setApartamento(e.target.value)}
+                          style={{
+                            width: '100%', border: '1px solid #D1D5DB', borderRadius: '6px',
+                            padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
+                            outline: 'none', boxSizing: 'border-box',
+                          }}
+                        />
+                      </div>
+
+                      {/* CP */}
+                      <div>
+                        <label style={{ fontSize: '12px', fontWeight: 500, color: '#666', display: 'block', marginBottom: '5px' }}>
+                          Código Postal <span style={{ color: '#EF4444' }}>*</span>
+                        </label>
+                        <input
+                          type="text"
+                          value={codigoPostal}
+                          onChange={(e) => setCodigoPostal(e.target.value)}
+                          style={{
+                            width: '100%', border: validationErrors.includes('Código Postal') ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px',
+                            padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
+                            outline: 'none', boxSizing: 'border-box',
+                          }}
+                        />
+                        {validationErrors.includes('Código Postal') && (
+                          <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>El CP es requerido</p>
+                        )}
                       </div>
                     </div>
 
-                    <div style={{ display: 'flex', gap: '8px' }}>
-                      {/* Edit Button */}
-                      <button
-                        onClick={() => {
-                          setLocNombre(loc.nombre)
-                          setLocGuardia(loc.guardia)
-                          setLocCalle(loc.calle)
-                          setLocPuerta(loc.puerta)
-                          setLocDepto(loc.depto)
-                          setLocCP(loc.cp)
-                          setLocBarrio(loc.barrio)
-                          setLocLocalidad(loc.localidad)
-                          setLocOtros(loc.otros)
-                          setLocTelTurnos(loc.telTurnos)
-                          setLocTelEmergencia(loc.telEmergencia)
-                          setLocEmail(loc.email)
-                          setLocDia(loc.dia ? loc.dia.split(', ') : [])
-                          setLocHoraInicio(loc.horaInicio)
-                          setLocHoraFin(loc.horaFin)
-                          setEditingLocationIndex(idx)
-                          setShowLocationModal(true)
-                        }}
-                        style={{
-                          border: '1px solid #D1D5DB', borderRadius: '6px',
-                          padding: '8px', cursor: 'pointer', backgroundColor: '#fff',
-                          color: '#374151', display: 'flex', alignItems: 'center', justifyContent: 'center'
-                        }}
-                      >
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
-                        </svg>
-                      </button>
-
-                      {/* Delete Button */}
-                      <button
-                        onClick={() => {
-                          setLocationToDeleteIndex(idx)
-                          setShowDeleteConfirmModal(true)
-                        }}
-                        style={{
-                          border: '1px solid #FCA5A5', borderRadius: '6px',
-                          padding: '8px', cursor: 'pointer', backgroundColor: '#FEF2F2',
-                          color: '#EF4444', display: 'flex', alignItems: 'center', justifyContent: 'center'
-                        }}
-                      >
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                          <polyline points="3 6 5 6 21 6" />
-                          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                        </svg>
-                      </button>
-                    </div>
-                  </div>
-                ))}
-
-                {/* Agregar lugar de atención Accordion */}
-                <div
-                  onClick={() => {
-                    setLocNombre('Sanatorio Allende - Cerro de las rosas')
-                    setLocGuardia(false)
-                    setLocCalle('Los tordos')
-                    setLocPuerta('231')
-                    setLocDepto('N/A')
-                    setLocCP('5111')
-                    setLocBarrio('Flores')
-                    setLocLocalidad('Cordoba Capital')
-                    setLocOtros('N/A')
-                    setLocTelTurnos('351-13222432')
-                    setLocTelEmergencia('3541-123432')
-                    setLocEmail('consultas@hospital.com')
-                    setLocDia(['Lunes'])
-                    setLocHoraInicio('08:00hs')
-                    setLocHoraFin('18:00hs')
-                    setEditingLocationIndex(null)
-                    setShowLocationModal(true)
-                  }}
-                  style={{
-                    border: validationErrors.includes('Debe agregar al menos un lugar de atención') ? '1px solid #EF4444' : '1px solid #E5E7EB',
-                    borderRadius: '12px',
-                    padding: '24px 32px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    cursor: 'pointer',
-                    backgroundColor: '#fff',
-                    marginBottom: '20px',
-                    transition: 'border-color 0.15s ease',
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!validationErrors.includes('Debe agregar al menos un lugar de atención')) {
-                      e.currentTarget.style.borderColor = '#bbb'
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!validationErrors.includes('Debe agregar al menos un lugar de atención')) {
-                      e.currentTarget.style.borderColor = '#E5E7EB'
-                    }
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
                     <div style={{
-                      width: '40px', height: '40px', borderRadius: '8px',
-                      backgroundColor: '#E6F6F4', color: '#00AC99',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontSize: '24px', fontWeight: 'bold', marginRight: '16px',
+                      display: 'grid', gridTemplateColumns: '1fr 1fr',
+                      gap: '16px', marginBottom: '16px',
                     }}>
-                      +
+                      {/* Barrio */}
+                      <div>
+                        <label style={{ fontSize: '12px', fontWeight: 500, color: '#666', display: 'block', marginBottom: '5px' }}>
+                          Barrio <span style={{ color: '#EF4444' }}>*</span>
+                        </label>
+                        <input
+                          type="text"
+                          value={barrio}
+                          onChange={(e) => setBarrio(e.target.value)}
+                          style={{
+                            width: '100%', border: validationErrors.includes('Barrio') ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px',
+                            padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
+                            outline: 'none', boxSizing: 'border-box',
+                          }}
+                        />
+                        {validationErrors.includes('Barrio') && (
+                          <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>El barrio es requerido</p>
+                        )}
+                      </div>
+
+                      {/* Localidad */}
+                      <div>
+                        <label style={{ fontSize: '12px', fontWeight: 500, color: '#666', display: 'block', marginBottom: '5px' }}>
+                          Localidad <span style={{ color: '#EF4444' }}>*</span>
+                        </label>
+                        <input
+                          type="text"
+                          value={localidad}
+                          onChange={(e) => setLocalidad(e.target.value)}
+                          style={{
+                            width: '100%', border: validationErrors.includes('Localidad') ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px',
+                            padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
+                            outline: 'none', boxSizing: 'border-box',
+                          }}
+                        />
+                        {validationErrors.includes('Localidad') && (
+                          <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>La localidad es requerida</p>
+                        )}
+                      </div>
                     </div>
-                    <span style={{ fontSize: '15px', fontWeight: 700, color: '#00AC99' }}>
-                      Agregar lugar de atención <span style={{ color: '#EF4444' }}>*</span>
-                    </span>
-                  </div>
-                  <span style={{ color: '#00AC99', display: 'flex', alignItems: 'center' }}>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <polyline points="9 18 15 12 9 6" />
-                    </svg>
-                  </span>
-                </div>
-                {validationErrors.includes('Debe agregar al menos un lugar de atención') && (
-                  <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 20px 0' }}>Debe agregar al menos un lugar de atención</p>
-                )}
-              </div>
-            ) : activeStep === 5 ? (
-              // ── STEP 5: SEGURO Y HABILITACIONES ──
-              <div>
-                <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#111827', marginBottom: '24px' }}>
-                  Seguro y Habilitaciones
-                </h3>
 
-                {/* Symmetrical Grid for Insurance Company Details */}
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: '1fr 1fr',
-                  rowGap: '16px',
-                  columnGap: '28px',
-                  marginBottom: '24px',
-                }}>
-                  
-                  {/* Razón Social */}
-                  <div>
-                    <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
-                      Razón Social de la Aseguradora <span style={{ color: '#EF4444' }}>*</span>
-                    </label>
-                    <input
-                      type="text"
-                      value={aseguradoraRazonSocial}
-                      onChange={(e) => {
-                        setAseguradoraRazonSocial(e.target.value)
-                        setValidationErrors(prev => prev.filter(err => err !== 'Razón Social de la Aseguradora'))
-                      }}
-                      style={{
-                        width: '100%', borderRadius: '6px',
-                        border: validationErrors.includes('Razón Social de la Aseguradora') ? '1px solid #EF4444' : '1px solid #D1D5DB',
-                        padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
-                        outline: 'none', boxSizing: 'border-box',
-                      }}
-                    />
-                    {validationErrors.includes('Razón Social de la Aseguradora') && (
-                      <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>La razón social es requerida</p>
-                    )}
-                  </div>
-
-                  {/* CUIT */}
-                  <div>
-                    <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
-                      CUIT de la Aseguradora <span style={{ color: '#EF4444' }}>*</span>
-                    </label>
-                    <input
-                      type="text"
-                      value={aseguradoraCuit}
-                      onChange={(e) => {
-                        setAseguradoraCuit(e.target.value)
-                        setValidationErrors(prev => prev.filter(err => err !== 'CUIT de la Aseguradora'))
-                      }}
-                      style={{
-                        width: '100%', borderRadius: '6px',
-                        border: validationErrors.includes('CUIT de la Aseguradora') ? '1px solid #EF4444' : '1px solid #D1D5DB',
-                        padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
-                        outline: 'none', boxSizing: 'border-box',
-                      }}
-                    />
-                    {validationErrors.includes('CUIT de la Aseguradora') && (
-                      <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>El CUIT de la aseguradora es requerido</p>
-                    )}
-                  </div>
-
-                  {/* Vencimiento */}
-                  <div>
-                    <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
-                      Vencimiento de la Póliza <span style={{ color: '#EF4444' }}>*</span>
-                    </label>
-                    <div style={{ position: 'relative' }}>
+                    <div style={{ marginBottom: '28px' }}>
+                      <label style={{ fontSize: '12px', fontWeight: 500, color: '#666', display: 'block', marginBottom: '5px' }}>
+                        Otros Datos
+                      </label>
                       <input
-                        type="date"
-                        value={aseguradoraVencimiento}
-                        onChange={(e) => {
-                          setAseguradoraVencimiento(e.target.value)
-                          setValidationErrors(prev => prev.filter(err => err !== 'Fecha de Vencimiento del Seguro'))
-                        }}
+                        type="text"
+                        value={otrosDatos}
+                        onChange={(e) => setOtrosDatos(e.target.value)}
                         style={{
-                          width: '100%', borderRadius: '6px',
-                          border: validationErrors.includes('Fecha de Vencimiento del Seguro') ? '1px solid #EF4444' : '1px solid #D1D5DB',
+                          width: '100%', border: '1px solid #D1D5DB', borderRadius: '6px',
                           padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
                           outline: 'none', boxSizing: 'border-box',
                         }}
                       />
                     </div>
-                    {validationErrors.includes('Fecha de Vencimiento del Seguro') && (
-                      <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>La fecha de vencimiento es requerida</p>
-                    )}
                   </div>
+                ) : activeStep === 2 ? (
+                  // ── STEP 2: DATOS DEL PERFIL ──
+                  isInstitucionDiscapacidad ? (
+                    // ── STEP 2: INSTITUCION DISCAPACIDAD ──
+                    <div>
+                      <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#111827', marginBottom: '24px' }}>
+                        Datos del perfil
+                      </h3>
 
-                  {/* Nº Póliza */}
-                  <div>
-                    <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
-                      Nº Póliza <span style={{ color: '#EF4444' }}>*</span>
-                    </label>
-                    <input
-                      type="text"
-                      value={aseguradoraNoPoliza}
-                      onChange={(e) => {
-                        setAseguradoraNoPoliza(e.target.value)
-                        setValidationErrors(prev => prev.filter(err => err !== 'Número de Póliza'))
-                      }}
-                      style={{
-                        width: '100%', borderRadius: '6px',
-                        border: validationErrors.includes('Número de Póliza') ? '1px solid #EF4444' : '1px solid #D1D5DB',
-                        padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
-                        outline: 'none', boxSizing: 'border-box',
-                      }}
-                    />
-                    {validationErrors.includes('Número de Póliza') && (
-                      <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>El número de póliza es requerido</p>
-                    )}
-                  </div>
+                      <SectionTitle>TIPO DE INSTITUCION</SectionTitle>
 
-                </div>
-
-                {/* Info Blue Banner */}
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  gap: '12px',
-                  backgroundColor: '#EFF6FF',
-                  border: '1px solid #BFDBFE',
-                  borderRadius: '8px',
-                  padding: '14px 18px',
-                  marginBottom: '24px',
-                }}>
-                  <span style={{ color: '#2563EB', display: 'flex', alignItems: 'center', marginTop: '2px' }}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <circle cx="12" cy="12" r="10" />
-                      <line x1="12" y1="16" x2="12" y2="12" />
-                      <line x1="12" y1="8" x2="12.01" y2="8" />
-                    </svg>
-                  </span>
-                  <p style={{ fontSize: '13px', color: '#1E40AF', margin: 0, lineHeight: '1.5' }}>
-                    A continuación se lista la documentación requerida según tu tipo de prestador. Adjuntá cada archivo en formato JPG, PNG o PDF (máx. 10 MB por archivo).
-                  </p>
-                </div>
-
-                {/* Dynamic Checklist based on Juridical vs Physical represented status */}
-                <div style={{ marginBottom: '28px' }}>
-                  {(cidiData?.represented.includes('Sanatorio')
-                    ? [
-                        'Certificado MP director tecnico',
-                        'Nomina personal',
-                        'Constancia ME',
-                        'Nomina de servicios y aparatologia'
-                      ]
-                    : [
-                        'Póliza de Seguro de Responsabilidad Civil Profesional',
-                        'Constancia MP',
-                        'Constancia ME',
-                        'Constancia Matricula provincial / inscripción provincial'
-                      ]
-                  ).map((docName) => (
-                    <div
-                      key={docName}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        border: '1px solid #E5E7EB',
-                        borderRadius: '8px',
-                        padding: '12px 16px',
-                        marginBottom: '10px',
-                        backgroundColor: '#fff',
-                      }}
-                    >
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <span style={{ color: '#9CA3AF', display: 'flex', alignItems: 'center' }}>
-                          <FileIcon />
-                        </span>
-                        <span style={{ fontSize: '13.5px', fontWeight: 500, color: '#374151' }}>
-                          {docName}
-                        </span>
-                      </div>
-
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        {step5AttachedFiles[docName] ? (
-                          <>
-                            <span style={{
-                              fontSize: '12.5px',
-                              color: '#0056b3',
-                              fontWeight: 600,
-                              textDecoration: 'underline',
-                              cursor: 'pointer'
-                            }}>
-                              {step5AttachedFiles[docName]}
-                            </span>
-                            <span style={{
-                              color: '#10B981',
-                              display: 'flex',
-                              alignItems: 'center',
-                              fontWeight: 'bold',
-                              fontSize: '14px'
-                            }}>
-                              ✓
-                            </span>
-                            <button
-                              onClick={() => handleAttachFile(docName)}
-                              style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '4px',
-                                border: '1px solid #D1D5DB',
-                                borderRadius: '6px',
-                                padding: '5px 12px',
-                                fontSize: '12.5px',
-                                fontWeight: 500,
-                                color: '#374151',
-                                backgroundColor: '#fff',
-                                cursor: 'pointer',
-                              }}
-                            >
-                              <UploadIcon />
-                              Modificar
-                            </button>
-                          </>
-                        ) : (
-                          <button
-                            onClick={() => handleAttachFile(docName)}
-                            style={{
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: '4px',
-                              border: '1px solid #D1D5DB',
-                              borderRadius: '6px',
-                              padding: '5px 12px',
-                              fontSize: '12.5px',
-                              fontWeight: 500,
-                              color: '#374151',
-                              backgroundColor: '#fff',
-                              cursor: 'pointer',
-                            }}
-                          >
-                            <UploadIcon />
-                            Adjuntar
-                          </button>
+                      {/* Tipo de Institución dropdown */}
+                      <div style={{ position: 'relative', marginBottom: '20px' }}>
+                        <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
+                          Tipo de Institucion <span style={{ color: '#EF4444' }}>*</span>
+                        </label>
+                        <div
+                          onClick={() => setTipoInstitucionDropdownOpen(!tipoInstitucionDropdownOpen)}
+                          style={{
+                            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                            border: '1px solid #D1D5DB', borderRadius: '6px',
+                            padding: '9px 12px', fontSize: '13.5px', color: '#1F2937',
+                            backgroundColor: '#fff', cursor: 'pointer', userSelect: 'none', boxSizing: 'border-box',
+                          }}
+                        >
+                          <span>{tipoInstitucion}</span>
+                          <ChevronDownIcon />
+                        </div>
+                        {tipoInstitucionDropdownOpen && (
+                          <div style={{
+                            position: 'absolute', top: '100%', left: 0, right: 0,
+                            marginTop: '4px', backgroundColor: '#fff', border: '1px solid #D1D5DB',
+                            borderRadius: '6px', boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                            zIndex: 1010, maxHeight: '220px', overflowY: 'auto',
+                          }}>
+                            {tipoInstitucionOptions.map((opt) => (
+                              <div
+                                key={opt}
+                                onClick={() => { setTipoInstitucion(opt); setTipoInstitucionDropdownOpen(false) }}
+                                style={{
+                                  padding: '9px 12px', fontSize: '13px', cursor: 'pointer',
+                                  backgroundColor: tipoInstitucion === opt ? '#00AC99' : '#fff',
+                                  color: tipoInstitucion === opt ? '#fff' : '#1F2937',
+                                }}
+                              >{opt}</div>
+                            ))}
+                          </div>
                         )}
                       </div>
+
+                      {/* Transporte-specific section */}
+                      {tipoInstitucion === 'Transporte' && (
+                        <div style={{ marginBottom: '20px' }}>
+                          {/* Documentación del transporte */}
+                          <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '8px' }}>
+                            Documentación del transporte <span style={{ color: '#EF4444' }}>*</span>
+                          </label>
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '20px' }}>
+                            {['Cédula Verde / Título del vehículo', 'Licencia de conducir'].map((docName) => (
+                              <div key={docName} style={{
+                                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                                border: '1px solid #00AC99', borderRadius: '6px', padding: '8px 14px',
+                                backgroundColor: '#F0FDF4', boxSizing: 'border-box',
+                              }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                  <span style={{ color: '#00AC99', display: 'flex' }}><FileIcon /></span>
+                                  <span style={{ fontSize: '13px', fontWeight: 500, color: '#1F2937' }}>{docName}</span>
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                  <span style={{ fontSize: '12px', color: '#0056b3', fontWeight: 600, textDecoration: 'underline', cursor: 'pointer' }}>Matricula5.pdf</span>
+                                  <button style={{ display: 'flex', alignItems: 'center', gap: '4px', border: '1px solid #D1D5DB', borderRadius: '6px', padding: '4px 10px', fontSize: '12px', fontWeight: 500, color: '#374151', backgroundColor: '#fff', cursor: 'pointer' }}>
+                                    <UploadIcon /> Adjuntar
+                                  </button>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+
+                          {/* Listado de conductores */}
+                          <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '8px' }}>
+                            Listado de conductores autorizados
+                          </label>
+                          <div style={{ border: '1px solid #E5E7EB', borderRadius: '8px', overflow: 'hidden', marginBottom: '4px' }}>
+                            {conductoresList.map((c, idx) => (
+                              <div key={idx} style={{
+                                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                                padding: '12px 16px', borderBottom: idx < conductoresList.length - 1 ? '1px solid #F3F4F6' : 'none',
+                                backgroundColor: '#fff',
+                              }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                  <div style={{ width: '34px', height: '34px', borderRadius: '50%', backgroundColor: '#E6F6F4', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <PersonIcon />
+                                  </div>
+                                  <div>
+                                    <p style={{ fontSize: '13px', fontWeight: 700, color: '#111827', margin: 0 }}>{c.nombre}</p>
+                                    <p style={{ fontSize: '12px', color: '#6B7280', margin: '2px 0 0 0' }}>
+                                      CUIT/CUIL: {c.cuit} &nbsp; Licencia de conducir: {c.licenciaConducir ? 'Si' : 'No'} &nbsp; Autorizacion de manejo: {c.autorizacionManejo ? 'Si' : 'No'}
+                                    </p>
+                                  </div>
+                                </div>
+                                <div style={{ display: 'flex', gap: '8px' }}>
+                                  <button style={{ padding: '6px 8px', border: '1px solid #D1D5DB', borderRadius: '6px', backgroundColor: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+                                    <PencilEditIcon />
+                                  </button>
+                                  <button
+                                    onClick={() => setConductoresList(conductoresList.filter((_, i) => i !== idx))}
+                                    style={{ padding: '6px 8px', border: '1px solid #FCA5A5', borderRadius: '6px', backgroundColor: '#FFF5F5', cursor: 'pointer', display: 'flex', alignItems: 'center', color: '#EF4444' }}
+                                  >
+                                    <TrashIcon />
+                                  </button>
+                                </div>
+                              </div>
+                            ))}
+                            {/* Agregar conductor */}
+                            <div
+                              onClick={() => { setConductorNombre(''); setConductorApellido(''); setConductorCuit(''); setConductorCargo(''); setShowConductorModal(true) }}
+                              style={{
+                                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                                padding: '12px 16px', cursor: 'pointer', color: '#00AC99',
+                                borderTop: conductoresList.length > 0 ? '1px solid #F3F4F6' : 'none',
+                              }}
+                            >
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <span style={{ fontSize: '18px', fontWeight: 300 }}>+</span>
+                                <span style={{ fontSize: '13px', fontWeight: 600 }}>Agregar conductor autorizado</span>
+                              </div>
+                              <ChevronDownIcon />
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Disposición ANDIS */}
+                      <div style={{ marginBottom: '20px' }}>
+                        <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
+                          Disposición de Categorización (ANDIS) <span style={{ color: '#EF4444' }}>*</span>
+                        </label>
+                        <input
+                          type="text"
+                          value={disposicionAndis}
+                          onChange={(e) => setDisposicionAndis(e.target.value)}
+                          style={{ width: '100%', border: validationErrors.includes('Disposición ANDIS') ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px', padding: '9px 12px', fontSize: '13.5px', color: '#1F2937', outline: 'none', boxSizing: 'border-box' }}
+                        />
+                        {validationErrors.includes('Disposición ANDIS') && (
+                          <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>La disposición ANDIS es requerida</p>
+                        )}
+                      </div>
+
+                      {/* RNP Section */}
+                      <hr style={{ border: 'none', borderTop: '1px solid #ebebeb', margin: '4px 0 20px 0' }} />
+                      <SectionTitle>REGISTRO NACIONAL DE PRESTADORES DE DISCAPACIDAD</SectionTitle>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                        <div>
+                          <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
+                            Certificado de RNP <span style={{ color: '#EF4444' }}>*</span>
+                          </label>
+                          <input
+                            type="text"
+                            value={certificadoRnp}
+                            onChange={(e) => setCertificadoRnp(e.target.value)}
+                            style={{ width: '100%', border: '1px solid #D1D5DB', borderRadius: '6px', padding: '9px 12px', fontSize: '13.5px', color: '#1F2937', outline: 'none', boxSizing: 'border-box' }}
+                          />
+                        </div>
+                        <div>
+                          <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
+                            Constancia de inscripción vigente <span style={{ color: '#EF4444' }}>*</span>
+                          </label>
+                          <div style={{
+                            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                            border: '1px solid #00AC99', borderRadius: '6px', padding: '8px 16px',
+                            backgroundColor: '#F0FDF4', boxSizing: 'border-box',
+                          }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                              <span style={{ color: '#00AC99', display: 'flex' }}><FileIcon /></span>
+                              <span style={{ fontSize: '13px', fontWeight: 500, color: '#1F2937' }}>Constancia de inscripción vigente</span>
+                            </div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                              <span style={{ fontSize: '12.5px', color: '#0056b3', fontWeight: 600, textDecoration: 'underline', cursor: 'pointer' }}>Constancia.pdf</span>
+                              <button style={{ display: 'flex', alignItems: 'center', gap: '4px', border: '1px solid #D1D5DB', borderRadius: '6px', padding: '4px 10px', fontSize: '12px', fontWeight: 500, color: '#374151', backgroundColor: '#fff', cursor: 'pointer' }}>
+                                <UploadIcon /> Adjuntar
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                  ))}
-                </div>
-              </div>
-            ) : activeStep === 6 ? (
-              // ── STEP 6: DOCUMENTACIÓN LEGAL ──
-              <div>
-                <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#111827', marginBottom: '4px' }}>
-                  Documentacion legal
-                </h3>
-                <p style={{ fontSize: '13px', color: '#6B7280', marginBottom: '24px' }}>
-                  Por favor, completá la siguiente información obligatoria (*)
-                </p>
+                  ) : isInstitucionNivel ? (
+                    // ── STEP 2: INSTITUCION NIVEL ──
+                    <div>
+                      <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#111827', marginBottom: '24px' }}>
+                        Datos del perfil
+                      </h3>
 
-                {!(cidiData?.represented.includes('Sanatorio')) ? (
-                  <>
-                    <SectionTitle>ANTECEDENTES (OPCIONAL)</SectionTitle>
+                      {/* Nivel de atención dropdown */}
+                      <div style={{ position: 'relative', marginBottom: '20px' }}>
+                        <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
+                          Clasifique su nivel de atencion en salud <span style={{ color: '#EF4444' }}>*</span>
+                        </label>
+                        <div
+                          onClick={() => setNivelAtencionOpen(!nivelAtencionOpen)}
+                          style={{
+                            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                            border: validationErrors.includes('Clasificación / Nivel de Atención') ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px',
+                            padding: '9px 12px', fontSize: '13.5px', color: '#1F2937',
+                            backgroundColor: '#fff', cursor: 'pointer', userSelect: 'none', boxSizing: 'border-box',
+                          }}
+                        >
+                          <span>{nivelAtencion}</span>
+                          <ChevronDownIcon />
+                        </div>
+                        {nivelAtencionOpen && (
+                          <div style={{
+                            position: 'absolute', top: '100%', left: 0, right: 0, marginTop: '4px',
+                            backgroundColor: '#fff', border: '1px solid #D1D5DB', borderRadius: '6px',
+                            boxShadow: '0 4px 12px rgba(0,0,0,0.08)', zIndex: 1010,
+                          }}>
+                            {nivelAtencionOptions.map((opt) => (
+                              <div
+                                key={opt}
+                                onClick={() => {
+                                  setNivelAtencion(opt)
+                                  setNivelAtencionOpen(false)
+                                  setTipoInstitucionNivel('')
+                                }}
+                                style={{
+                                  padding: '10px 12px', fontSize: '13.5px', cursor: 'pointer',
+                                  backgroundColor: nivelAtencion === opt ? '#00AC99' : '#fff',
+                                  color: nivelAtencion === opt ? '#fff' : '#1F2937',
+                                }}
+                              >{opt}</div>
+                            ))}
+                          </div>
+                        )}
+                        {validationErrors.includes('Clasificación / Nivel de Atención') && (
+                          <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>El nivel de atención es requerido</p>
+                        )}
+                      </div>
 
-                    {/* "+ Agregar tu experiencia profesional" Accordion row */}
+                      {/* Tipo Institución + checkboxes — shown when a nivel is selected */}
+                      {nivelAtencion !== 'Selecciona' && (
+                        <>
+                          <SectionTitle>TIPO DE INSTITUCION</SectionTitle>
+
+                          {/* Tipo de Institución dropdown */}
+                          <div style={{ position: 'relative', marginBottom: '24px' }}>
+                            <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
+                              Seleccioná la Institución <span style={{ color: '#EF4444' }}>*</span>
+                            </label>
+                            <div
+                              onClick={() => setTipoInstitucionNivelOpen(!tipoInstitucionNivelOpen)}
+                              style={{
+                                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                                border: '1px solid #D1D5DB', borderRadius: '6px',
+                                padding: '9px 12px', fontSize: '13.5px', color: tipoInstitucionNivel ? '#1F2937' : '#9CA3AF',
+                                backgroundColor: '#fff', cursor: 'pointer', userSelect: 'none', boxSizing: 'border-box',
+                              }}
+                            >
+                              <span>{tipoInstitucionNivel || 'Centro de Hemodiálisis'}</span>
+                              <ChevronDownIcon />
+                            </div>
+                            {tipoInstitucionNivelOpen && (
+                              <div style={{
+                                position: 'absolute', top: '100%', left: 0, right: 0, marginTop: '4px',
+                                backgroundColor: '#fff', border: '1px solid #D1D5DB', borderRadius: '6px',
+                                boxShadow: '0 4px 12px rgba(0,0,0,0.08)', zIndex: 1010, maxHeight: '220px', overflowY: 'auto',
+                              }}>
+                                {(tipoInstitucionPorNivel[nivelAtencion] || []).map((opt) => (
+                                  <div
+                                    key={opt}
+                                    onClick={() => { setTipoInstitucionNivel(opt); setTipoInstitucionNivelOpen(false) }}
+                                    style={{
+                                      padding: '9px 12px', fontSize: '13px', cursor: 'pointer',
+                                      backgroundColor: tipoInstitucionNivel === opt ? '#00AC99' : '#fff',
+                                      color: tipoInstitucionNivel === opt ? '#fff' : '#1F2937',
+                                    }}
+                                  >{opt}</div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Two-column checkboxes */}
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', marginBottom: '16px' }}>
+                            {/* Left: MARQUE LAS OPCIONES */}
+                            <div>
+                              <label style={{ fontSize: '11px', fontWeight: 700, color: '#374151', display: 'block', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: '12px' }}>
+                                MARQUE LAS OPCIONES <span style={{ color: '#EF4444' }}>*</span>
+                              </label>
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                {opcionesIzquierda.map((opt) => (
+                                  <div
+                                    key={opt}
+                                    onClick={() => setOpcionesChecks(prev => ({ ...prev, [opt]: !prev[opt] }))}
+                                    style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', userSelect: 'none' }}
+                                  >
+                                    <div style={{
+                                      width: '16px', height: '16px', borderRadius: '4px', flexShrink: 0,
+                                      border: opcionesChecks[opt] ? '2px solid #00AC99' : '1.5px solid #D1D5DB',
+                                      backgroundColor: opcionesChecks[opt] ? '#00AC99' : '#fff',
+                                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                    }}>
+                                      {opcionesChecks[opt] && <CheckIcon />}
+                                    </div>
+                                    <span style={{ fontSize: '13px', color: '#374151' }}>{opt}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+
+                            {/* Right: INDIQUE LA TECNOLOGÍA QUE POSEE */}
+                            <div>
+                              <label style={{ fontSize: '11px', fontWeight: 700, color: '#374151', display: 'block', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: '12px' }}>
+                                INDIQUE LA TECNOLOGÍA QUE POSEE <span style={{ color: '#EF4444' }}>*</span>
+                              </label>
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                {tecnologiasDerecha.map((opt) => (
+                                  <div key={opt}>
+                                    <div
+                                      onClick={() => setTecnologiaChecks(prev => ({ ...prev, [opt]: !prev[opt] }))}
+                                      style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', userSelect: 'none' }}
+                                    >
+                                      <div style={{
+                                        width: '16px', height: '16px', borderRadius: '4px', flexShrink: 0,
+                                        border: tecnologiaChecks[opt] ? '2px solid #00AC99' : '1.5px solid #D1D5DB',
+                                        backgroundColor: tecnologiaChecks[opt] ? '#00AC99' : '#fff',
+                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                      }}>
+                                        {tecnologiaChecks[opt] && <CheckIcon />}
+                                      </div>
+                                      <span style={{ fontSize: '13px', color: '#374151' }}>{opt}</span>
+                                    </div>
+
+                                    {/* Sub-checkbox for Diagnóstico por imágenes */}
+                                    {opt === 'Diagnóstico por imágenes' && tecnologiaChecks[opt] && (
+                                      <div style={{ paddingLeft: '26px', marginTop: '8px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                        {diagnosticoSubOptions.map((sub) => (
+                                          <div
+                                            key={sub}
+                                            onClick={() => setDiagnosticoSubChecks(prev => ({ ...prev, [sub]: !prev[sub] }))}
+                                            style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', userSelect: 'none' }}
+                                          >
+                                            <div style={{
+                                              width: '16px', height: '16px', borderRadius: '4px', flexShrink: 0,
+                                              border: diagnosticoSubChecks[sub] ? '2px solid #00AC99' : '1.5px solid #D1D5DB',
+                                              backgroundColor: diagnosticoSubChecks[sub] ? '#00AC99' : '#fff',
+                                              display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                            }}>
+                                              {diagnosticoSubChecks[sub] && <CheckIcon />}
+                                            </div>
+                                            <span style={{ fontSize: '12.5px', color: '#374151' }}>{sub}</span>
+                                          </div>
+                                        ))}
+                                      </div>
+                                    )}
+
+                                    {/* Text input for Otros */}
+                                    {opt === 'Otros (Especifique)' && tecnologiaChecks[opt] && (
+                                      <div style={{ paddingLeft: '26px', marginTop: '8px' }}>
+                                        <input
+                                          type="text"
+                                          value={otrosTecnologiaText}
+                                          onChange={(e) => setOtrosTecnologiaText(e.target.value)}
+                                          placeholder="Especifique otras tecnologías..."
+                                          style={{
+                                            width: '100%', border: '1px solid #D1D5DB', borderRadius: '6px',
+                                            padding: '7px 10px', fontSize: '13px', color: '#1F2937',
+                                            outline: 'none', boxSizing: 'border-box',
+                                          }}
+                                        />
+                                      </div>
+                                    )}
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  ) : (
+                    <div>
+                      <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#111827', marginBottom: '24px' }}>
+                        Datos del perfil
+                      </h3>
+
+                      <SectionTitle>Matricula</SectionTitle>
+
+                      {/* Symmetrical Grid Layout */}
+                      <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: '1fr 1fr',
+                        rowGap: '16px',
+                        columnGap: '28px',
+                        marginBottom: '28px',
+                      }}>
+
+                        {/* Field 1: Tipo profesión */}
+                        <div style={{ position: 'relative' }}>
+                          <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
+                            Tipo profesion <span style={{ color: '#EF4444' }}>*</span>
+                          </label>
+                          <div
+                            onClick={() => {
+                              setTipoProfesionDropdownOpen(!tipoProfesionDropdownOpen)
+                              setAmbitoMatriculaDropdownOpen(false)
+                              setEspecialidadDropdownOpen(false)
+                            }}
+                            style={{
+                              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                              border: validationErrors.includes('Tipo de Profesión') ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px',
+                              padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
+                              backgroundColor: '#fff', cursor: 'pointer', userSelect: 'none', boxSizing: 'border-box',
+                            }}
+                          >
+                            <span>{tipoProfesion}</span>
+                            <ChevronDownIcon />
+                          </div>
+
+                          {tipoProfesionDropdownOpen && (
+                            <div style={{
+                              position: 'absolute', top: '100%', left: 0, right: 0,
+                              marginTop: '4px', backgroundColor: '#fff', border: '1px solid #D1D5DB',
+                              borderRadius: '6px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
+                              zIndex: 1010, maxHeight: '200px', overflowY: 'auto',
+                            }}>
+                              {tipoProfesionOptions.map((opt) => (
+                                <div
+                                  key={opt}
+                                  onClick={() => {
+                                    setTipoProfesion(opt)
+                                    setTipoProfesionDropdownOpen(false)
+                                  }}
+                                  style={{
+                                    padding: '8px 12px', fontSize: '13px', cursor: 'pointer',
+                                    backgroundColor: tipoProfesion === opt ? '#00AC99' : '#fff',
+                                    color: tipoProfesion === opt ? '#fff' : '#1F2937',
+                                  }}
+                                >
+                                  {opt}
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                          {validationErrors.includes('Tipo de Profesión') && (
+                            <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>El tipo de profesión es requerido</p>
+                          )}
+                        </div>
+
+                        {/* Field 2: Condicional Especialidad Médica if 'Medico' OR Ámbito de la Matrícula */}
+                        {tipoProfesion === 'Medico' ? (
+                          <div style={{ position: 'relative' }}>
+                            <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
+                              Selecciona tu especialidad medica <span style={{ color: '#EF4444' }}>*</span>
+                            </label>
+                            <div
+                              onClick={() => {
+                                setEspecialidadDropdownOpen(!especialidadDropdownOpen)
+                                setTipoProfesionDropdownOpen(false)
+                                setAmbitoMatriculaDropdownOpen(false)
+                              }}
+                              style={{
+                                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                                border: '1px solid #D1D5DB', borderRadius: '6px',
+                                padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
+                                backgroundColor: '#fff', cursor: 'pointer', userSelect: 'none', boxSizing: 'border-box',
+                              }}
+                            >
+                              <span>{especialidadMedica.length > 0 ? especialidadMedica.join(', ') : 'Selecciona'}</span>
+                              <ChevronDownIcon />
+                            </div>
+
+                            {especialidadDropdownOpen && (
+                              <div style={{
+                                position: 'absolute', top: '100%', left: 0, right: 0,
+                                marginTop: '4px', backgroundColor: '#fff', border: '1px solid #D1D5DB',
+                                borderRadius: '6px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
+                                zIndex: 1010, maxHeight: '200px', overflowY: 'auto',
+                              }}>
+                                {especialidadesMedicas.map((opt, index) => {
+                                  if (opt.isHeader) {
+                                    return (
+                                      <div
+                                        key={index}
+                                        style={{
+                                          padding: '6px 12px', fontSize: '11px', fontWeight: 'bold',
+                                          color: '#9CA3AF', backgroundColor: '#F3F4F6', cursor: 'default',
+                                          borderTop: index > 0 ? '1px solid #E5E7EB' : 'none',
+                                          borderBottom: '1px solid #E5E7EB',
+                                          userSelect: 'none',
+                                        }}
+                                      >
+                                        {opt.label}
+                                      </div>
+                                    )
+                                  }
+                                  return (
+                                    <div
+                                      key={index}
+                                      onClick={(e) => {
+                                        e.stopPropagation()
+                                        if (especialidadMedica.includes(opt.label)) {
+                                          setEspecialidadMedica(especialidadMedica.filter(d => d !== opt.label))
+                                        } else {
+                                          setEspecialidadMedica([...especialidadMedica, opt.label])
+                                        }
+                                      }}
+                                      style={{
+                                        padding: '8px 12px 8px 20px', fontSize: '13px', cursor: 'pointer',
+                                        backgroundColor: especialidadMedica.includes(opt.label) ? '#E6F6F4' : '#fff',
+                                        color: especialidadMedica.includes(opt.label) ? '#00AC99' : '#1F2937',
+                                        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                                        fontWeight: especialidadMedica.includes(opt.label) ? 600 : 400
+                                      }}
+                                    >
+                                      {opt.label}
+                                      {especialidadMedica.includes(opt.label) && (
+                                        <CheckIcon />
+                                      )}
+                                    </div>
+                                  )
+                                })}
+                              </div>
+                            )}
+                          </div>
+                        ) : (
+                          /* If not Medico, Ámbito de la Matrícula goes here */
+                          <div style={{ position: 'relative' }}>
+                            <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
+                              Ámbito de la Matrícula <span style={{ color: '#EF4444' }}>*</span>
+                            </label>
+                            <div
+                              onClick={() => {
+                                setAmbitoMatriculaDropdownOpen(!ambitoMatriculaDropdownOpen)
+                                setTipoProfesionDropdownOpen(false)
+                                setEspecialidadDropdownOpen(false)
+                              }}
+                              style={{
+                                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                                border: '1px solid #D1D5DB', borderRadius: '6px',
+                                padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
+                                backgroundColor: '#fff', cursor: 'pointer', userSelect: 'none', boxSizing: 'border-box',
+                              }}
+                            >
+                              <span>{ambitoMatricula}</span>
+                              <ChevronDownIcon />
+                            </div>
+
+                            {ambitoMatriculaDropdownOpen && (
+                              <div style={{
+                                position: 'absolute', top: '100%', left: 0, right: 0,
+                                marginTop: '4px', backgroundColor: '#fff', border: '1px solid #D1D5DB',
+                                borderRadius: '6px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
+                                zIndex: 1010, maxHeight: '200px', overflowY: 'auto',
+                              }}>
+                                {ambitoMatriculaOptions.map((opt) => (
+                                  <div
+                                    key={opt}
+                                    onClick={() => {
+                                      setAmbitoMatricula(opt)
+                                      setAmbitoMatriculaDropdownOpen(false)
+                                    }}
+                                    style={{
+                                      padding: '8px 12px', fontSize: '13px', cursor: 'pointer',
+                                      backgroundColor: ambitoMatricula === opt ? '#00AC99' : '#fff',
+                                      color: ambitoMatricula === opt ? '#fff' : '#1F2937',
+                                    }}
+                                  >
+                                    {opt}
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        )}
+
+                        {/* ROW 2:
+                      If 'Medico':
+                        Col 1: Ámbito de la Matrícula
+                        Col 2: Número de Matrícula...
+                      If not 'Medico':
+                        Col 1: Número de Matrícula...
+                        Col 2: Empty slot
+                  */}
+                        {tipoProfesion === 'Medico' ? (
+                          <>
+                            {/* Col 1: Ámbito de la Matrícula */}
+                            <div style={{ position: 'relative' }}>
+                              <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
+                                Ámbito de la Matrícula <span style={{ color: '#EF4444' }}>*</span>
+                              </label>
+                              <div
+                                onClick={() => {
+                                  setAmbitoMatriculaDropdownOpen(!ambitoMatriculaDropdownOpen)
+                                  setTipoProfesionDropdownOpen(false)
+                                  setEspecialidadDropdownOpen(false)
+                                }}
+                                style={{
+                                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                                  border: '1px solid #D1D5DB', borderRadius: '6px',
+                                  padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
+                                  backgroundColor: '#fff', cursor: 'pointer', userSelect: 'none', boxSizing: 'border-box',
+                                }}
+                              >
+                                <span>{ambitoMatricula}</span>
+                                <ChevronDownIcon />
+                              </div>
+
+                              {ambitoMatriculaDropdownOpen && (
+                                <div style={{
+                                  position: 'absolute', top: '100%', left: 0, right: 0,
+                                  marginTop: '4px', backgroundColor: '#fff', border: '1px solid #D1D5DB',
+                                  borderRadius: '6px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
+                                  zIndex: 1010, maxHeight: '200px', overflowY: 'auto',
+                                }}>
+                                  {ambitoMatriculaOptions.map((opt) => (
+                                    <div
+                                      key={opt}
+                                      onClick={() => {
+                                        setAmbitoMatricula(opt)
+                                        setAmbitoMatriculaDropdownOpen(false)
+                                      }}
+                                      style={{
+                                        padding: '8px 12px', fontSize: '13px', cursor: 'pointer',
+                                        backgroundColor: ambitoMatricula === opt ? '#00AC99' : '#fff',
+                                        color: ambitoMatricula === opt ? '#fff' : '#1F2937',
+                                      }}
+                                    >
+                                      {opt}
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Col 2: Número de Matrícula */}
+                            <div>
+                              <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
+                                Número de Matrícula Profesional o Registro Provincial <span style={{ color: '#EF4444' }}>*</span>
+                              </label>
+                              <input
+                                type="text"
+                                value={numMatricula}
+                                onChange={(e) => setNumMatricula(e.target.value)}
+                                style={{
+                                  width: '100%', border: validationErrors.includes('Número de Matrícula') ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px',
+                                  padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
+                                  outline: 'none', boxSizing: 'border-box',
+                                }}
+                              />
+                              {validationErrors.includes('Número de Matrícula') && (
+                                <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>El número de matrícula es requerido</p>
+                              )}
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            {/* Col 1: Número de Matrícula */}
+                            <div>
+                              <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
+                                Número de Matrícula Profesional o Registro Provincial <span style={{ color: '#EF4444' }}>*</span>
+                              </label>
+                              <input
+                                type="text"
+                                value={numMatricula}
+                                onChange={(e) => setNumMatricula(e.target.value)}
+                                style={{
+                                  width: '100%', border: validationErrors.includes('Número de Matrícula') ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px',
+                                  padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
+                                  outline: 'none', boxSizing: 'border-box',
+                                }}
+                              />
+                              {validationErrors.includes('Número de Matrícula') && (
+                                <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>El número de matrícula es requerido</p>
+                              )}
+                            </div>
+
+                            {/* Col 2: Empty placeholder */}
+                            <div style={{ minHeight: '38px' }} />
+                          </>
+                        )}
+
+                      </div>
+
+                      {/* ── ADDITIONAL DISABILITY SECTION ── */}
+                      {isDisabilityCategory && (
+                        <div>
+                          {/* Divider */}
+                          <hr style={{ border: 'none', borderTop: '1px solid #ebebeb', margin: '24px 0' }} />
+
+                          <SectionTitle>Registro Nacional de Prestadores de Discapacidad</SectionTitle>
+
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '16px' }}>
+                            {/* Certificado de RNP */}
+                            <div>
+                              <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
+                                Certificado de RNP <span style={{ color: '#EF4444' }}>*</span>
+                              </label>
+                              <input
+                                type="text"
+                                value={certificadoRnp}
+                                onChange={(e) => setCertificadoRnp(e.target.value)}
+                                style={{
+                                  width: '100%', border: '1px solid #D1D5DB', borderRadius: '6px',
+                                  padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
+                                  outline: 'none', boxSizing: 'border-box',
+                                }}
+                              />
+                            </div>
+
+                            {/* Constancia de inscripción vigente */}
+                            <div>
+                              <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
+                                Constancia de inscripción vigente <span style={{ color: '#EF4444' }}>*</span>
+                              </label>
+                              <div style={{
+                                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                                border: '1px solid #00AC99', borderRadius: '6px', padding: '8px 16px',
+                                backgroundColor: '#F0FDF4', minHeight: '38px', boxSizing: 'border-box',
+                              }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                  <span style={{ color: '#00AC99', display: 'flex', alignItems: 'center' }}><FileIcon /></span>
+                                  <span style={{ fontSize: '13px', fontWeight: 500, color: '#1F2937' }}>
+                                    Constancia de inscripción vigente
+                                  </span>
+                                </div>
+
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                                  <span style={{ fontSize: '12.5px', color: '#0056b3', fontWeight: 600, textDecoration: 'underline', cursor: 'pointer' }}>
+                                    Constancia.pdf
+                                  </span>
+
+                                  <button style={{
+                                    display: 'flex', alignItems: 'center', gap: '4px',
+                                    border: '1px solid #D1D5DB', borderRadius: '6px',
+                                    padding: '4px 10px', fontSize: '12px', fontWeight: 500,
+                                    color: '#374151', backgroundColor: '#fff', cursor: 'pointer',
+                                  }}>
+                                    <UploadIcon />
+                                    Adjuntar
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )
+                ) : activeStep === 3 ? (
+                  // ── STEP 3: STAFF ──
+                  <div>
+                    <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#111827', marginBottom: '4px' }}>
+                      Staff
+                    </h3>
+                    <p style={{ fontSize: '13px', color: '#6B7280', marginBottom: '24px' }}>
+                      Añadir integrantes del staff es opcional. Podés avanzar sin cargar miembros.
+                    </p>
+
+                    <SectionTitle>Staff de profesionales</SectionTitle>
+
+                    {/* Excel upload dashed box */}
+                    <div style={{
+                      backgroundColor: '#F9FAFB',
+                      border: '1.5px dashed #D1D5DB',
+                      borderRadius: '8px',
+                      padding: '24px',
+                      textAlign: 'center',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '8px',
+                      marginBottom: '28px',
+                    }}>
+                      <BigUploadIcon />
+                      <p style={{ fontSize: '14px', fontWeight: 700, color: '#111827', margin: 0 }}>
+                        Adjuntar Excel/CSV de Staff
+                      </p>
+                      <p style={{ fontSize: '12px', color: '#6B7280', margin: '0 0 8px 0' }}>
+                        Arrastrá y soltá tu archivo acá, o <span style={{ color: '#00AC99', textDecoration: 'underline', fontWeight: 600, cursor: 'pointer' }}>examinar archivos</span>
+                      </p>
+                      <button
+                        onClick={() => alert('Descargando plantilla de Excel para Staff...')}
+                        style={{
+                          display: 'flex', alignItems: 'center',
+                          border: '1px solid #D1D5DB', borderRadius: '6px',
+                          padding: '6px 14px', fontSize: '12px', fontWeight: 600,
+                          color: '#374151', backgroundColor: '#fff', cursor: 'pointer',
+                        }}
+                      >
+                        <DownloadIcon />
+                        Descargar Plantilla
+                      </button>
+                    </div>
+
+                    <SectionTitle>Cargar Manualmente</SectionTitle>
+
+                    {/* Agregar Profesional Button Accordion-style */}
                     <div
                       onClick={() => {
-                        setAntecedenteDescripcion('')
-                        setAntecedentePeriodoInicio('26/11/2010')
-                        setAntecedentePeriodoFin('26/11/2025')
-                        setAntecedenteEstablecimiento('Colegio San Antonio')
-                        setAntecedenteEstablecimientoCuit('30-12343212')
-                        setShowAntecedentesModal(true)
+                        setStaffCuit('20403532880')
+                        setStaffNombre('Carolina, Rodriguez')
+                        setStaffEspecialidad('Medico')
+                        setStaffPrescriptor(true)
+                        setStaffMatricula('A001MPX29223')
+                        setShowStaffModal(true)
                       }}
                       style={{
                         border: '1px solid #E5E7EB',
@@ -2868,17 +2347,17 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                       onMouseEnter={(e) => e.currentTarget.style.borderColor = '#bbb'}
                       onMouseLeave={(e) => e.currentTarget.style.borderColor = '#E5E7EB'}
                     >
-                      <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                         <div style={{
                           width: '32px', height: '32px', borderRadius: '6px',
                           backgroundColor: '#E6F6F4', color: '#00AC99',
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
-                          fontSize: '18px', fontWeight: 'bold', marginRight: '12px',
+                          fontSize: '18px', fontWeight: 'bold',
                         }}>
                           +
                         </div>
-                        <span style={{ fontSize: '13.5px', fontWeight: 600, color: '#00AC99' }}>
-                          Agregar tu experiencia profesional
+                        <span style={{ fontSize: '14px', fontWeight: 700, color: '#00AC99' }}>
+                          Agregar Profesional
                         </span>
                       </div>
                       <span style={{ color: '#9CA3AF', display: 'flex', alignItems: 'center' }}>
@@ -2886,12 +2365,12 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                       </span>
                     </div>
 
-                    {/* Antecedentes list */}
-                    {antecedentesList.length > 0 && (
+                    {/* Live List of Added Professionals */}
+                    {staffList.length > 0 && (
                       <div style={{ marginBottom: '24px' }}>
-                        <SectionTitle>Experiencia Profesional Cargada ({antecedentesList.length})</SectionTitle>
+                        <SectionTitle>Profesionales Cargados ({staffList.length})</SectionTitle>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                          {antecedentesList.map((ant, idx) => (
+                          {staffList.map((prof, idx) => (
                             <div
                               key={idx}
                               style={{
@@ -2902,17 +2381,18 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                             >
                               <div>
                                 <p style={{ fontSize: '13.5px', fontWeight: 600, color: '#111827', margin: 0 }}>
-                                  {ant.descripcion}
+                                  {prof.nombre}
                                 </p>
                                 <p style={{ fontSize: '12px', color: '#6B7280', margin: '4px 0 0 0' }}>
-                                  Establecimiento: <strong style={{ color: '#4B5563' }}>{ant.establecimiento}</strong> | 
-                                  CUIT: <strong style={{ color: '#4B5563' }}>{ant.establecimientoCuit || 'N/A'}</strong> | 
-                                  Período: <strong style={{ color: '#4B5563' }}>{ant.periodoInicio} - {ant.periodoFin}</strong>
+                                  CUIT/CUIL: <strong style={{ color: '#4B5563' }}>{prof.cuit}</strong> |
+                                  Especialidad: <strong style={{ color: '#4B5563' }}>{prof.especialidad}</strong> |
+                                  Matrícula: <strong style={{ color: '#4B5563' }}>{prof.matricula}</strong> |
+                                  Prescriptor: <strong style={{ color: '#4B5563' }}>{prof.prescriptor ? 'Sí' : 'No'}</strong>
                                 </p>
                               </div>
-                              
+
                               <button
-                                onClick={() => setAntecedentesList(antecedentesList.filter((_, i) => i !== idx))}
+                                onClick={() => setStaffList(staffList.filter((_, i) => i !== idx))}
                                 style={{
                                   border: 'none', backgroundColor: 'transparent',
                                   color: '#EF4444', fontSize: '12px', fontWeight: 600,
@@ -2926,427 +2406,947 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                         </div>
                       </div>
                     )}
-                  </>
-                ) : (
-                  <>
-                    {/* Info banner */}
-                    <div style={{
-                      display: 'flex', alignItems: 'flex-start', gap: '10px',
-                      backgroundColor: '#EFF6FF', border: '1px solid #BFDBFE',
-                      borderRadius: '8px', padding: '12px 16px', marginBottom: '24px',
-                    }}>
-                      <span style={{ color: '#3B82F6', display: 'flex', flexShrink: 0, marginTop: '1px' }}>
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                  </div>
+                ) : activeStep === 4 ? (
+                  // ── STEP 4: LUGAR DE ATENCIÓN ──
+                  <div>
+                    <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#111827', marginBottom: '4px' }}>
+                      Lugar de atencion
+                    </h3>
+                    <p style={{ fontSize: '13px', color: '#6B7280', marginBottom: '24px' }}>
+                      Por favor, completá la siguiente información obligatoria (*)
+                    </p>
+
+                    <SectionTitle>Datos del lugar de atención</SectionTitle>
+
+                    {/* Render added locations */}
+                    {locationsList.map((loc, idx) => (
+                      <div
+                        key={idx}
+                        style={{
+                          border: '1px solid #E5E7EB',
+                          borderRadius: '12px',
+                          padding: '16px 20px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          backgroundColor: '#fff',
+                          marginBottom: '16px',
+                        }}
+                      >
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                          <div style={{
+                            width: '40px',
+                            height: '40px',
+                            borderRadius: '8px',
+                            backgroundColor: '#F3F4F6',
+                            color: '#4B5563',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                              <circle cx="12" cy="10" r="3" />
+                            </svg>
+                          </div>
+
+                          <div>
+                            <h4 style={{ fontSize: '14.5px', fontWeight: 700, color: '#111827', margin: 0 }}>
+                              {loc.nombre}
+                            </h4>
+                            <p style={{ fontSize: '12.5px', color: '#6B7280', margin: '4px 0 0 0' }}>
+                              {loc.calle} {loc.puerta}, {loc.localidad}
+                            </p>
+                            <p style={{ fontSize: '11.5px', color: '#9CA3AF', margin: '2px 0 0 0' }}>
+                              Tel: {loc.telTurnos} | Guardia: {loc.guardia ? 'Sí' : 'No'}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                          {/* Edit Button */}
+                          <button
+                            onClick={() => {
+                              setLocNombre(loc.nombre)
+                              setLocGuardia(loc.guardia)
+                              setLocCalle(loc.calle)
+                              setLocPuerta(loc.puerta)
+                              setLocDepto(loc.depto)
+                              setLocCP(loc.cp)
+                              setLocBarrio(loc.barrio)
+                              setLocLocalidad(loc.localidad)
+                              setLocOtros(loc.otros)
+                              setLocTelTurnos(loc.telTurnos)
+                              setLocTelEmergencia(loc.telEmergencia)
+                              setLocEmail(loc.email)
+                              setLocDia(loc.dia ? loc.dia.split(', ') : [])
+                              setLocHoraInicio(loc.horaInicio)
+                              setLocHoraFin(loc.horaFin)
+                              setEditingLocationIndex(idx)
+                              setShowLocationModal(true)
+                            }}
+                            style={{
+                              border: '1px solid #D1D5DB', borderRadius: '6px',
+                              padding: '8px', cursor: 'pointer', backgroundColor: '#fff',
+                              color: '#374151', display: 'flex', alignItems: 'center', justifyContent: 'center'
+                            }}
+                          >
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
+                            </svg>
+                          </button>
+
+                          {/* Delete Button */}
+                          <button
+                            onClick={() => {
+                              setLocationToDeleteIndex(idx)
+                              setShowDeleteConfirmModal(true)
+                            }}
+                            style={{
+                              border: '1px solid #FCA5A5', borderRadius: '6px',
+                              padding: '8px', cursor: 'pointer', backgroundColor: '#FEF2F2',
+                              color: '#EF4444', display: 'flex', alignItems: 'center', justifyContent: 'center'
+                            }}
+                          >
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="3 6 5 6 21 6" />
+                              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+
+                    {/* Agregar lugar de atención Accordion */}
+                    <div
+                      onClick={() => {
+                        setLocNombre('Sanatorio Allende - Cerro de las rosas')
+                        setLocGuardia(false)
+                        setLocCalle('Los tordos')
+                        setLocPuerta('231')
+                        setLocDepto('N/A')
+                        setLocCP('5111')
+                        setLocBarrio('Flores')
+                        setLocLocalidad('Cordoba Capital')
+                        setLocOtros('N/A')
+                        setLocTelTurnos('351-13222432')
+                        setLocTelEmergencia('3541-123432')
+                        setLocEmail('consultas@hospital.com')
+                        setLocDia(['Lunes'])
+                        setLocHoraInicio('08:00hs')
+                        setLocHoraFin('18:00hs')
+                        setEditingLocationIndex(null)
+                        setShowLocationModal(true)
+                      }}
+                      style={{
+                        border: validationErrors.includes('Debe agregar al menos un lugar de atención') ? '1px solid #EF4444' : '1px solid #E5E7EB',
+                        borderRadius: '12px',
+                        padding: '24px 32px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        cursor: 'pointer',
+                        backgroundColor: '#fff',
+                        marginBottom: '20px',
+                        transition: 'border-color 0.15s ease',
+                      }}
+                      onMouseEnter={(e) => {
+                        if (!validationErrors.includes('Debe agregar al menos un lugar de atención')) {
+                          e.currentTarget.style.borderColor = '#bbb'
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (!validationErrors.includes('Debe agregar al menos un lugar de atención')) {
+                          e.currentTarget.style.borderColor = '#E5E7EB'
+                        }
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <div style={{
+                          width: '40px', height: '40px', borderRadius: '8px',
+                          backgroundColor: '#E6F6F4', color: '#00AC99',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          fontSize: '24px', fontWeight: 'bold', marginRight: '16px',
+                        }}>
+                          +
+                        </div>
+                        <span style={{ fontSize: '15px', fontWeight: 700, color: '#00AC99' }}>
+                          Agregar lugar de atención <span style={{ color: '#EF4444' }}>*</span>
+                        </span>
+                      </div>
+                      <span style={{ color: '#00AC99', display: 'flex', alignItems: 'center' }}>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="9 18 15 12 9 6" />
                         </svg>
                       </span>
-                      <p style={{ fontSize: '13px', color: '#1E40AF', margin: 0, lineHeight: 1.5 }}>
+                    </div>
+                    {validationErrors.includes('Debe agregar al menos un lugar de atención') && (
+                      <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 20px 0' }}>Debe agregar al menos un lugar de atención</p>
+                    )}
+                  </div>
+                ) : activeStep === 5 ? (
+                  // ── STEP 5: SEGURO Y HABILITACIONES ──
+                  <div>
+                    <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#111827', marginBottom: '24px' }}>
+                      Seguro y Habilitaciones
+                    </h3>
+
+                    {/* Symmetrical Grid for Insurance Company Details */}
+                    <div style={{
+                      display: 'grid',
+                      gridTemplateColumns: '1fr 1fr',
+                      rowGap: '16px',
+                      columnGap: '28px',
+                      marginBottom: '24px',
+                    }}>
+
+                      {/* Razón Social */}
+                      <div>
+                        <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
+                          Razón Social de la Aseguradora <span style={{ color: '#EF4444' }}>*</span>
+                        </label>
+                        <input
+                          type="text"
+                          value={aseguradoraRazonSocial}
+                          onChange={(e) => {
+                            setAseguradoraRazonSocial(e.target.value)
+                            setValidationErrors(prev => prev.filter(err => err !== 'Razón Social de la Aseguradora'))
+                          }}
+                          style={{
+                            width: '100%', borderRadius: '6px',
+                            border: validationErrors.includes('Razón Social de la Aseguradora') ? '1px solid #EF4444' : '1px solid #D1D5DB',
+                            padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
+                            outline: 'none', boxSizing: 'border-box',
+                          }}
+                        />
+                        {validationErrors.includes('Razón Social de la Aseguradora') && (
+                          <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>La razón social es requerida</p>
+                        )}
+                      </div>
+
+                      {/* CUIT */}
+                      <div>
+                        <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
+                          CUIT de la Aseguradora <span style={{ color: '#EF4444' }}>*</span>
+                        </label>
+                        <input
+                          type="text"
+                          value={aseguradoraCuit}
+                          onChange={(e) => {
+                            setAseguradoraCuit(e.target.value)
+                            setValidationErrors(prev => prev.filter(err => err !== 'CUIT de la Aseguradora'))
+                          }}
+                          style={{
+                            width: '100%', borderRadius: '6px',
+                            border: validationErrors.includes('CUIT de la Aseguradora') ? '1px solid #EF4444' : '1px solid #D1D5DB',
+                            padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
+                            outline: 'none', boxSizing: 'border-box',
+                          }}
+                        />
+                        {validationErrors.includes('CUIT de la Aseguradora') && (
+                          <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>El CUIT de la aseguradora es requerido</p>
+                        )}
+                      </div>
+
+                      {/* Vencimiento */}
+                      <div>
+                        <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
+                          Vencimiento de la Póliza <span style={{ color: '#EF4444' }}>*</span>
+                        </label>
+                        <div style={{ position: 'relative' }}>
+                          <input
+                            type="date"
+                            value={aseguradoraVencimiento}
+                            onChange={(e) => {
+                              setAseguradoraVencimiento(e.target.value)
+                              setValidationErrors(prev => prev.filter(err => err !== 'Fecha de Vencimiento del Seguro'))
+                            }}
+                            style={{
+                              width: '100%', borderRadius: '6px',
+                              border: validationErrors.includes('Fecha de Vencimiento del Seguro') ? '1px solid #EF4444' : '1px solid #D1D5DB',
+                              padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
+                              outline: 'none', boxSizing: 'border-box',
+                            }}
+                          />
+                        </div>
+                        {validationErrors.includes('Fecha de Vencimiento del Seguro') && (
+                          <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>La fecha de vencimiento es requerida</p>
+                        )}
+                      </div>
+
+                      {/* Nº Póliza */}
+                      <div>
+                        <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
+                          Nº Póliza <span style={{ color: '#EF4444' }}>*</span>
+                        </label>
+                        <input
+                          type="text"
+                          value={aseguradoraNoPoliza}
+                          onChange={(e) => {
+                            setAseguradoraNoPoliza(e.target.value)
+                            setValidationErrors(prev => prev.filter(err => err !== 'Número de Póliza'))
+                          }}
+                          style={{
+                            width: '100%', borderRadius: '6px',
+                            border: validationErrors.includes('Número de Póliza') ? '1px solid #EF4444' : '1px solid #D1D5DB',
+                            padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
+                            outline: 'none', boxSizing: 'border-box',
+                          }}
+                        />
+                        {validationErrors.includes('Número de Póliza') && (
+                          <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>El número de póliza es requerido</p>
+                        )}
+                      </div>
+
+                    </div>
+
+                    {/* Info Blue Banner */}
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'flex-start',
+                      gap: '12px',
+                      backgroundColor: '#EFF6FF',
+                      border: '1px solid #BFDBFE',
+                      borderRadius: '8px',
+                      padding: '14px 18px',
+                      marginBottom: '24px',
+                    }}>
+                      <span style={{ color: '#2563EB', display: 'flex', alignItems: 'center', marginTop: '2px' }}>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <circle cx="12" cy="12" r="10" />
+                          <line x1="12" y1="16" x2="12" y2="12" />
+                          <line x1="12" y1="8" x2="12.01" y2="8" />
+                        </svg>
+                      </span>
+                      <p style={{ fontSize: '13px', color: '#1E40AF', margin: 0, lineHeight: '1.5' }}>
                         A continuación se lista la documentación requerida según tu tipo de prestador. Adjuntá cada archivo en formato JPG, PNG o PDF (máx. 10 MB por archivo).
                       </p>
                     </div>
 
-                    <SectionTitle>DOCUMENTACION DE PERSONERIA JURIDICA</SectionTitle>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '28px' }}>
-                      {[
-                        'Estatuto o contrato social vigente',
-                        'Acta designación autoridades',
-                        'Acreditacion de personeria IPJ',
-                        'Poder representación Legal',
-                      ].map((docName) => (
+                    {/* Dynamic Checklist based on Juridical vs Physical represented status */}
+                    <div style={{ marginBottom: '28px' }}>
+                      {(cidiData?.represented.includes('Sanatorio')
+                        ? [
+                          'Certificado MP director tecnico',
+                          'Nomina personal',
+                          'Constancia ME',
+                          'Nomina de servicios y aparatologia'
+                        ]
+                        : [
+                          'Póliza de Seguro de Responsabilidad Civil Profesional',
+                          'Constancia MP',
+                          'Constancia ME',
+                          'Constancia Matricula provincial / inscripción provincial'
+                        ]
+                      ).map((docName) => (
                         <div
                           key={docName}
                           style={{
-                            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                            border: '1px solid #E5E7EB', borderRadius: '8px',
-                            padding: '12px 16px', backgroundColor: '#fff',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            border: '1px solid #E5E7EB',
+                            borderRadius: '8px',
+                            padding: '12px 16px',
+                            marginBottom: '10px',
+                            backgroundColor: '#fff',
                           }}
                         >
                           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                            <span style={{ color: '#9CA3AF', display: 'flex', alignItems: 'center' }}><FileIcon /></span>
-                            <span style={{ fontSize: '13.5px', fontWeight: 500, color: '#374151' }}>{docName}</span>
+                            <span style={{ color: '#9CA3AF', display: 'flex', alignItems: 'center' }}>
+                              <FileIcon />
+                            </span>
+                            <span style={{ fontSize: '13.5px', fontWeight: 500, color: '#374151' }}>
+                              {docName}
+                            </span>
                           </div>
+
                           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                            {step6AttachedFiles[docName] ? (
+                            {step5AttachedFiles[docName] ? (
                               <>
-                                <span style={{ fontSize: '12.5px', color: '#0056b3', fontWeight: 600, textDecoration: 'underline', cursor: 'pointer' }}>
-                                  {step6AttachedFiles[docName]}
+                                <span style={{
+                                  fontSize: '12.5px',
+                                  color: '#0056b3',
+                                  fontWeight: 600,
+                                  textDecoration: 'underline',
+                                  cursor: 'pointer'
+                                }}>
+                                  {step5AttachedFiles[docName]}
                                 </span>
-                                <span style={{ color: '#10B981', display: 'flex', alignItems: 'center', fontWeight: 'bold', fontSize: '14px' }}>✓</span>
+                                <span style={{
+                                  color: '#10B981',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  fontWeight: 'bold',
+                                  fontSize: '14px'
+                                }}>
+                                  ✓
+                                </span>
                                 <button
-                                  onClick={() => setStep6AttachedFiles(prev => ({ ...prev, [docName]: prev[docName] ? '' : 'documento_cargado.pdf' }))}
-                                  style={{ display: 'flex', alignItems: 'center', gap: '4px', border: '1px solid #D1D5DB', borderRadius: '6px', padding: '5px 12px', fontSize: '12.5px', fontWeight: 500, color: '#374151', backgroundColor: '#fff', cursor: 'pointer' }}
+                                  onClick={() => handleAttachFile(docName)}
+                                  style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '4px',
+                                    border: '1px solid #D1D5DB',
+                                    borderRadius: '6px',
+                                    padding: '5px 12px',
+                                    fontSize: '12.5px',
+                                    fontWeight: 500,
+                                    color: '#374151',
+                                    backgroundColor: '#fff',
+                                    cursor: 'pointer',
+                                  }}
                                 >
-                                  <UploadIcon /> Modificar
+                                  <UploadIcon />
+                                  Modificar
                                 </button>
                               </>
                             ) : (
                               <button
-                                onClick={() => setStep6AttachedFiles(prev => ({ ...prev, [docName]: 'documento_cargado.pdf' }))}
-                                style={{ display: 'flex', alignItems: 'center', gap: '4px', border: '1px solid #D1D5DB', borderRadius: '6px', padding: '5px 12px', fontSize: '12.5px', fontWeight: 500, color: '#374151', backgroundColor: '#fff', cursor: 'pointer' }}
+                                onClick={() => handleAttachFile(docName)}
+                                style={{
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: '4px',
+                                  border: '1px solid #D1D5DB',
+                                  borderRadius: '6px',
+                                  padding: '5px 12px',
+                                  fontSize: '12.5px',
+                                  fontWeight: 500,
+                                  color: '#374151',
+                                  backgroundColor: '#fff',
+                                  cursor: 'pointer',
+                                }}
                               >
-                                <UploadIcon /> Adjuntar
+                                <UploadIcon />
+                                Adjuntar
                               </button>
                             )}
                           </div>
                         </div>
                       ))}
                     </div>
+                  </div>
+                ) : activeStep === 6 ? (
+                  // ── STEP 6: DOCUMENTACIÓN LEGAL ──
+                  <div>
+                    <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#111827', marginBottom: '4px' }}>
+                      Documentacion legal
+                    </h3>
+                    <p style={{ fontSize: '13px', color: '#6B7280', marginBottom: '24px' }}>
+                      Por favor, completá la siguiente información obligatoria (*)
+                    </p>
 
-                    <SectionTitle>ANTECEDENTES</SectionTitle>
+                    {!(cidiData?.represented.includes('Sanatorio')) ? (
+                      <>
+                        <SectionTitle>ANTECEDENTES (OPCIONAL)</SectionTitle>
 
-                    {/* Agregar experiencia profesional accordion row */}
-                    <div
-                      onClick={() => {
-                        setAntecedenteDescripcion('')
-                        setAntecedentePeriodoInicio('26/11/2010')
-                        setAntecedentePeriodoFin('26/11/2025')
-                        setAntecedenteEstablecimiento('Colegio San Antonio')
-                        setAntecedenteEstablecimientoCuit('30-12343212')
-                        setShowAntecedentesModal(true)
-                      }}
-                      style={{
-                        border: '1px solid #E5E7EB', borderRadius: '8px', padding: '12px 16px',
-                        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                        cursor: 'pointer', backgroundColor: '#fff', marginBottom: '8px',
-                        transition: 'border-color 0.15s ease',
-                      }}
-                      onMouseEnter={(e) => e.currentTarget.style.borderColor = '#bbb'}
-                      onMouseLeave={(e) => e.currentTarget.style.borderColor = '#E5E7EB'}
-                    >
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <span style={{ fontSize: '20px', fontWeight: 300, color: '#00AC99', lineHeight: 1 }}>+</span>
-                        <span style={{ fontSize: '13.5px', fontWeight: 600, color: '#00AC99' }}>Agregar tu experiencia profesional</span>
-                      </div>
-                      <span style={{ color: '#9CA3AF', display: 'flex', alignItems: 'center' }}><ChevronDownIcon /></span>
-                    </div>
+                        {/* "+ Agregar tu experiencia profesional" Accordion row */}
+                        <div
+                          onClick={() => {
+                            setAntecedenteDescripcion('')
+                            setAntecedentePeriodoInicio('26/11/2010')
+                            setAntecedentePeriodoFin('26/11/2025')
+                            setAntecedenteEstablecimiento('Colegio San Antonio')
+                            setAntecedenteEstablecimientoCuit('30-12343212')
+                            setShowAntecedentesModal(true)
+                          }}
+                          style={{
+                            border: '1px solid #E5E7EB',
+                            borderRadius: '8px',
+                            padding: '12px 16px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            cursor: 'pointer',
+                            backgroundColor: '#fff',
+                            marginBottom: '20px',
+                            transition: 'border-color 0.15s ease',
+                          }}
+                          onMouseEnter={(e) => e.currentTarget.style.borderColor = '#bbb'}
+                          onMouseLeave={(e) => e.currentTarget.style.borderColor = '#E5E7EB'}
+                        >
+                          <div style={{ display: 'flex', alignItems: 'center' }}>
+                            <div style={{
+                              width: '32px', height: '32px', borderRadius: '6px',
+                              backgroundColor: '#E6F6F4', color: '#00AC99',
+                              display: 'flex', alignItems: 'center', justifyContent: 'center',
+                              fontSize: '18px', fontWeight: 'bold', marginRight: '12px',
+                            }}>
+                              +
+                            </div>
+                            <span style={{ fontSize: '13.5px', fontWeight: 600, color: '#00AC99' }}>
+                              Agregar tu experiencia profesional
+                            </span>
+                          </div>
+                          <span style={{ color: '#9CA3AF', display: 'flex', alignItems: 'center' }}>
+                            <ChevronDownIcon />
+                          </span>
+                        </div>
 
-                    {/* Antecedentes list */}
-                    {antecedentesList.length > 0 && (
-                      <div style={{ marginTop: '12px' }}>
-                        <SectionTitle>Experiencia Profesional Cargada ({antecedentesList.length})</SectionTitle>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                          {antecedentesList.map((ant, idx) => (
-                            <div key={idx} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', border: '1px solid #E5E7EB', borderRadius: '8px', padding: '12px 16px', backgroundColor: '#F9FAFB' }}>
-                              <div>
-                                <p style={{ fontSize: '13.5px', fontWeight: 600, color: '#111827', margin: 0 }}>{ant.descripcion}</p>
-                                <p style={{ fontSize: '12px', color: '#6B7280', margin: '4px 0 0 0' }}>
-                                  Establecimiento: <strong style={{ color: '#4B5563' }}>{ant.establecimiento}</strong> | CUIT: <strong style={{ color: '#4B5563' }}>{ant.establecimientoCuit || 'N/A'}</strong> | Período: <strong style={{ color: '#4B5563' }}>{ant.periodoInicio} - {ant.periodoFin}</strong>
-                                </p>
+                        {/* Antecedentes list */}
+                        {antecedentesList.length > 0 && (
+                          <div style={{ marginBottom: '24px' }}>
+                            <SectionTitle>Experiencia Profesional Cargada ({antecedentesList.length})</SectionTitle>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                              {antecedentesList.map((ant, idx) => (
+                                <div
+                                  key={idx}
+                                  style={{
+                                    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                                    border: '1px solid #E5E7EB', borderRadius: '8px', padding: '12px 16px',
+                                    backgroundColor: '#F9FAFB',
+                                  }}
+                                >
+                                  <div>
+                                    <p style={{ fontSize: '13.5px', fontWeight: 600, color: '#111827', margin: 0 }}>
+                                      {ant.descripcion}
+                                    </p>
+                                    <p style={{ fontSize: '12px', color: '#6B7280', margin: '4px 0 0 0' }}>
+                                      Establecimiento: <strong style={{ color: '#4B5563' }}>{ant.establecimiento}</strong> |
+                                      CUIT: <strong style={{ color: '#4B5563' }}>{ant.establecimientoCuit || 'N/A'}</strong> |
+                                      Período: <strong style={{ color: '#4B5563' }}>{ant.periodoInicio} - {ant.periodoFin}</strong>
+                                    </p>
+                                  </div>
+
+                                  <button
+                                    onClick={() => setAntecedentesList(antecedentesList.filter((_, i) => i !== idx))}
+                                    style={{
+                                      border: 'none', backgroundColor: 'transparent',
+                                      color: '#EF4444', fontSize: '12px', fontWeight: 600,
+                                      cursor: 'pointer',
+                                    }}
+                                  >
+                                    Eliminar
+                                  </button>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <>
+                        {/* Info banner */}
+                        <div style={{
+                          display: 'flex', alignItems: 'flex-start', gap: '10px',
+                          backgroundColor: '#EFF6FF', border: '1px solid #BFDBFE',
+                          borderRadius: '8px', padding: '12px 16px', marginBottom: '24px',
+                        }}>
+                          <span style={{ color: '#3B82F6', display: 'flex', flexShrink: 0, marginTop: '1px' }}>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
+                            </svg>
+                          </span>
+                          <p style={{ fontSize: '13px', color: '#1E40AF', margin: 0, lineHeight: 1.5 }}>
+                            A continuación se lista la documentación requerida según tu tipo de prestador. Adjuntá cada archivo en formato JPG, PNG o PDF (máx. 10 MB por archivo).
+                          </p>
+                        </div>
+
+                        <SectionTitle>DOCUMENTACION DE PERSONERIA JURIDICA</SectionTitle>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '28px' }}>
+                          {[
+                            'Estatuto o contrato social vigente',
+                            'Acta designación autoridades',
+                            'Acreditacion de personeria IPJ',
+                            'Poder representación Legal',
+                          ].map((docName) => (
+                            <div
+                              key={docName}
+                              style={{
+                                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                                border: '1px solid #E5E7EB', borderRadius: '8px',
+                                padding: '12px 16px', backgroundColor: '#fff',
+                              }}
+                            >
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                <span style={{ color: '#9CA3AF', display: 'flex', alignItems: 'center' }}><FileIcon /></span>
+                                <span style={{ fontSize: '13.5px', fontWeight: 500, color: '#374151' }}>{docName}</span>
                               </div>
-                              <button
-                                onClick={() => setAntecedentesList(antecedentesList.filter((_, i) => i !== idx))}
-                                style={{ border: 'none', backgroundColor: 'transparent', color: '#EF4444', fontSize: '12px', fontWeight: 600, cursor: 'pointer' }}
-                              >
-                                Eliminar
-                              </button>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                {step6AttachedFiles[docName] ? (
+                                  <>
+                                    <span style={{ fontSize: '12.5px', color: '#0056b3', fontWeight: 600, textDecoration: 'underline', cursor: 'pointer' }}>
+                                      {step6AttachedFiles[docName]}
+                                    </span>
+                                    <span style={{ color: '#10B981', display: 'flex', alignItems: 'center', fontWeight: 'bold', fontSize: '14px' }}>✓</span>
+                                    <button
+                                      onClick={() => setStep6AttachedFiles(prev => ({ ...prev, [docName]: prev[docName] ? '' : 'documento_cargado.pdf' }))}
+                                      style={{ display: 'flex', alignItems: 'center', gap: '4px', border: '1px solid #D1D5DB', borderRadius: '6px', padding: '5px 12px', fontSize: '12.5px', fontWeight: 500, color: '#374151', backgroundColor: '#fff', cursor: 'pointer' }}
+                                    >
+                                      <UploadIcon /> Modificar
+                                    </button>
+                                  </>
+                                ) : (
+                                  <button
+                                    onClick={() => setStep6AttachedFiles(prev => ({ ...prev, [docName]: 'documento_cargado.pdf' }))}
+                                    style={{ display: 'flex', alignItems: 'center', gap: '4px', border: '1px solid #D1D5DB', borderRadius: '6px', padding: '5px 12px', fontSize: '12.5px', fontWeight: 500, color: '#374151', backgroundColor: '#fff', cursor: 'pointer' }}
+                                  >
+                                    <UploadIcon /> Adjuntar
+                                  </button>
+                                )}
+                              </div>
                             </div>
                           ))}
                         </div>
-                      </div>
+
+                        <SectionTitle>ANTECEDENTES</SectionTitle>
+
+                        {/* Agregar experiencia profesional accordion row */}
+                        <div
+                          onClick={() => {
+                            setAntecedenteDescripcion('')
+                            setAntecedentePeriodoInicio('26/11/2010')
+                            setAntecedentePeriodoFin('26/11/2025')
+                            setAntecedenteEstablecimiento('Colegio San Antonio')
+                            setAntecedenteEstablecimientoCuit('30-12343212')
+                            setShowAntecedentesModal(true)
+                          }}
+                          style={{
+                            border: '1px solid #E5E7EB', borderRadius: '8px', padding: '12px 16px',
+                            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                            cursor: 'pointer', backgroundColor: '#fff', marginBottom: '8px',
+                            transition: 'border-color 0.15s ease',
+                          }}
+                          onMouseEnter={(e) => e.currentTarget.style.borderColor = '#bbb'}
+                          onMouseLeave={(e) => e.currentTarget.style.borderColor = '#E5E7EB'}
+                        >
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <span style={{ fontSize: '20px', fontWeight: 300, color: '#00AC99', lineHeight: 1 }}>+</span>
+                            <span style={{ fontSize: '13.5px', fontWeight: 600, color: '#00AC99' }}>Agregar tu experiencia profesional</span>
+                          </div>
+                          <span style={{ color: '#9CA3AF', display: 'flex', alignItems: 'center' }}><ChevronDownIcon /></span>
+                        </div>
+
+                        {/* Antecedentes list */}
+                        {antecedentesList.length > 0 && (
+                          <div style={{ marginTop: '12px' }}>
+                            <SectionTitle>Experiencia Profesional Cargada ({antecedentesList.length})</SectionTitle>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                              {antecedentesList.map((ant, idx) => (
+                                <div key={idx} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', border: '1px solid #E5E7EB', borderRadius: '8px', padding: '12px 16px', backgroundColor: '#F9FAFB' }}>
+                                  <div>
+                                    <p style={{ fontSize: '13.5px', fontWeight: 600, color: '#111827', margin: 0 }}>{ant.descripcion}</p>
+                                    <p style={{ fontSize: '12px', color: '#6B7280', margin: '4px 0 0 0' }}>
+                                      Establecimiento: <strong style={{ color: '#4B5563' }}>{ant.establecimiento}</strong> | CUIT: <strong style={{ color: '#4B5563' }}>{ant.establecimientoCuit || 'N/A'}</strong> | Período: <strong style={{ color: '#4B5563' }}>{ant.periodoInicio} - {ant.periodoFin}</strong>
+                                    </p>
+                                  </div>
+                                  <button
+                                    onClick={() => setAntecedentesList(antecedentesList.filter((_, i) => i !== idx))}
+                                    style={{ border: 'none', backgroundColor: 'transparent', color: '#EF4444', fontSize: '12px', fontWeight: 600, cursor: 'pointer' }}
+                                  >
+                                    Eliminar
+                                  </button>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </>
                     )}
-                  </>
-                )}
-              </div>
-            ) : activeStep === 7 ? (
-              // ── STEP 7: CBU ──
-              <div>
-                <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#111827', marginBottom: '4px' }}>
-                  CBU
-                </h3>
-                <p style={{ fontSize: '13px', color: '#6B7280', marginBottom: '24px' }}>
-                  Por favor, completá la siguiente información obligatoria (*)
-                </p>
+                  </div>
+                ) : activeStep === 7 ? (
+                  // ── STEP 7: CBU ──
+                  <div>
+                    <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#111827', marginBottom: '4px' }}>
+                      CBU
+                    </h3>
+                    <p style={{ fontSize: '13px', color: '#6B7280', marginBottom: '24px' }}>
+                      Por favor, completá la siguiente información obligatoria (*)
+                    </p>
 
-                {/* Top Light Blue Banner */}
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  backgroundColor: '#EFF6FF',
-                  border: '1px solid #BFDBFE',
-                  borderRadius: '8px',
-                  padding: '16px 20px',
-                  marginBottom: '24px',
-                  gap: '16px',
-                }}>
-                  <p style={{ fontSize: '13.5px', color: '#1E40AF', margin: 0, lineHeight: '1.6', flex: 1 }}>
-                    <strong style={{ color: '#1D4ED8' }}>Importante:</strong> Las cuentas bancarias se obtienen directamente desde Ciudadano Digital (CiDi).<br />
-                    Si no tenés ninguna cuenta cargada o querés agregar una nueva, debés declararla en el portal de CiDi.
-                  </p>
-                  
-                  <a
-                    href="https://cidi.cba.gov.ar/portal-publico/tramite/70AF1B8B-190B-F011-BD48-005056A190FF"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '8px',
-                      backgroundColor: '#00AC99',
-                      color: '#fff',
-                      textDecoration: 'none',
-                      fontWeight: 600,
-                      fontSize: '13.5px',
-                      padding: '10px 20px',
-                      borderRadius: '6px',
-                      whiteSpace: 'nowrap',
-                      transition: 'background-color 0.2s ease',
-                    }}
-                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#0056b3'}
-                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#00AC99'}
-                  >
-                    Declarar CBU en CiDi
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                      <polyline points="15 3 21 3 21 9" />
-                      <line x1="10" y1="14" x2="21" y2="3" />
-                    </svg>
-                  </a>
-                </div>
-
-                {/* Section Title and Refrescar Button */}
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  marginBottom: '16px',
-                }}>
-                  <p style={{
-                    fontSize: '12px', fontWeight: 700, color: '#374151',
-                    letterSpacing: '0.08em', textTransform: 'uppercase',
-                    margin: 0,
-                  }}>
-                    MIS CUENTAS <span style={{ color: '#EF4444' }}>*</span>
-                  </p>
-
-                  {!cbuLoaded && (
-                    <button
-                      onClick={() => setCbuLoaded(true)}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '6px',
-                        backgroundColor: '#fff',
-                        border: '1px solid #D1D5DB',
-                        borderRadius: '6px',
-                        padding: '6px 14px',
-                        fontSize: '12.5px',
-                        fontWeight: 600,
-                        color: '#374151',
-                        cursor: 'pointer',
-                        transition: 'all 0.15s ease',
-                      }}
-                      onMouseEnter={(e) => e.currentTarget.style.borderColor = '#9CA3AF'}
-                      onMouseLeave={(e) => e.currentTarget.style.borderColor = '#D1D5DB'}
-                    >
-                      Refrescar
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" />
-                      </svg>
-                    </button>
-                  )}
-                </div>
-
-                {/* Accounts Box */}
-                {!cbuLoaded ? (
-                  /* IMAGE 2: NO INFO YET */
-                  <>
+                    {/* Top Light Blue Banner */}
                     <div style={{
-                      border: validationErrors.includes('Debe cargar un CBU válido') ? '1px solid #EF4444' : '1px solid #E5E7EB',
-                      borderRadius: '8px',
-                      backgroundColor: '#fff',
-                      padding: '48px 32px',
-                      textAlign: 'center',
                       display: 'flex',
-                      flexDirection: 'column',
                       alignItems: 'center',
-                      justifyContent: 'center',
-                      marginBottom: '28px',
+                      justifyContent: 'space-between',
+                      backgroundColor: '#EFF6FF',
+                      border: '1px solid #BFDBFE',
+                      borderRadius: '8px',
+                      padding: '16px 20px',
+                      marginBottom: '24px',
+                      gap: '16px',
                     }}>
-                      <div style={{ color: '#4B5563', marginBottom: '16px', display: 'flex', alignItems: 'center' }}>
-                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.0" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
-                          <line x1="12" y1="9" x2="12" y2="13" />
-                          <line x1="12" y1="17" x2="12.01" y2="17" />
-                        </svg>
-                      </div>
-                      <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#111827', margin: '0 0 6px 0' }}>
-                        No existe información
-                      </h4>
-                      <p style={{ fontSize: '13px', color: '#6B7280', margin: 0 }}>
-                        No encontramos cuentas bancarias registradas a tu nombre en CiDi
+                      <p style={{ fontSize: '13.5px', color: '#1E40AF', margin: 0, lineHeight: '1.6', flex: 1 }}>
+                        <strong style={{ color: '#1D4ED8' }}>Importante:</strong> Las cuentas bancarias se obtienen directamente desde Ciudadano Digital (CiDi).<br />
+                        Si no tenés ninguna cuenta cargada o querés agregar una nueva, debés declararla en el portal de CiDi.
                       </p>
+
+                      <a
+                        href="https://cidi.cba.gov.ar/portal-publico/tramite/70AF1B8B-190B-F011-BD48-005056A190FF"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '8px',
+                          backgroundColor: '#00AC99',
+                          color: '#fff',
+                          textDecoration: 'none',
+                          fontWeight: 600,
+                          fontSize: '13.5px',
+                          padding: '10px 20px',
+                          borderRadius: '6px',
+                          whiteSpace: 'nowrap',
+                          transition: 'background-color 0.2s ease',
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#0056b3'}
+                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#00AC99'}
+                      >
+                        Declarar CBU en CiDi
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                          <polyline points="15 3 21 3 21 9" />
+                          <line x1="10" y1="14" x2="21" y2="3" />
+                        </svg>
+                      </a>
                     </div>
-                    {validationErrors.includes('Debe cargar un CBU válido') && (
-                      <p style={{ color: '#EF4444', fontSize: '11px', margin: '-16px 0 28px 0' }}>Debe cargar un CBU válido para continuar</p>
+
+                    {/* Section Title and Refrescar Button */}
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      marginBottom: '16px',
+                    }}>
+                      <p style={{
+                        fontSize: '12px', fontWeight: 700, color: '#374151',
+                        letterSpacing: '0.08em', textTransform: 'uppercase',
+                        margin: 0,
+                      }}>
+                        MIS CUENTAS <span style={{ color: '#EF4444' }}>*</span>
+                      </p>
+
+                      {!cbuLoaded && (
+                        <button
+                          onClick={() => setCbuLoaded(true)}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            backgroundColor: '#fff',
+                            border: '1px solid #D1D5DB',
+                            borderRadius: '6px',
+                            padding: '6px 14px',
+                            fontSize: '12.5px',
+                            fontWeight: 600,
+                            color: '#374151',
+                            cursor: 'pointer',
+                            transition: 'all 0.15s ease',
+                          }}
+                          onMouseEnter={(e) => e.currentTarget.style.borderColor = '#9CA3AF'}
+                          onMouseLeave={(e) => e.currentTarget.style.borderColor = '#D1D5DB'}
+                        >
+                          Refrescar
+                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" />
+                          </svg>
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Accounts Box */}
+                    {!cbuLoaded ? (
+                      /* IMAGE 2: NO INFO YET */
+                      <>
+                        <div style={{
+                          border: validationErrors.includes('Debe cargar un CBU válido') ? '1px solid #EF4444' : '1px solid #E5E7EB',
+                          borderRadius: '8px',
+                          backgroundColor: '#fff',
+                          padding: '48px 32px',
+                          textAlign: 'center',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          marginBottom: '28px',
+                        }}>
+                          <div style={{ color: '#4B5563', marginBottom: '16px', display: 'flex', alignItems: 'center' }}>
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.0" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+                              <line x1="12" y1="9" x2="12" y2="13" />
+                              <line x1="12" y1="17" x2="12.01" y2="17" />
+                            </svg>
+                          </div>
+                          <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#111827', margin: '0 0 6px 0' }}>
+                            No existe información
+                          </h4>
+                          <p style={{ fontSize: '13px', color: '#6B7280', margin: 0 }}>
+                            No encontramos cuentas bancarias registradas a tu nombre en CiDi
+                          </p>
+                        </div>
+                        {validationErrors.includes('Debe cargar un CBU válido') && (
+                          <p style={{ color: '#EF4444', fontSize: '11px', margin: '-16px 0 28px 0' }}>Debe cargar un CBU válido para continuar</p>
+                        )}
+                      </>
+                    ) : (
+                      /* IMAGE 1: ACCOUNTS LIST LOADED */
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '28px' }}>
+
+                        {/* Account 1: Bancor */}
+                        <div
+                          onClick={() => setSelectedCbuIndex(0)}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            borderRadius: '8px',
+                            border: selectedCbuIndex === 0 ? '1.5px solid #00AC99' : '1px solid #E5E7EB',
+                            backgroundColor: selectedCbuIndex === 0 ? '#F0FDF4' : '#fff',
+                            padding: '16px 20px',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s ease',
+                          }}
+                        >
+                          {/* Radio dot */}
+                          <div style={{
+                            width: '18px', height: '18px', borderRadius: '50%',
+                            border: selectedCbuIndex === 0 ? '2px solid #00AC99' : '2px solid #bbb',
+                            backgroundColor: '#fff',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            marginRight: '16px',
+                          }}>
+                            {selectedCbuIndex === 0 && (
+                              <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#00AC99' }} />
+                            )}
+                          </div>
+
+                          {/* Bank Icon */}
+                          <span style={{ color: '#4B5563', marginRight: '10px', display: 'flex', alignItems: 'center' }}>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <rect x="3" y="11" width="18" height="11" rx="2" />
+                              <path d="M12 2 3 7v4h18V7l-9-5z" />
+                              <line x1="6" y1="15" x2="6" y2="18" />
+                              <line x1="18" y1="15" x2="18" y2="18" />
+                              <line x1="12" y1="15" x2="12" y2="18" />
+                            </svg>
+                          </span>
+
+                          <div>
+                            <p style={{ fontSize: '13.5px', fontWeight: 700, color: '#111827', margin: 0 }}>
+                              Bancor
+                            </p>
+                            <p style={{ fontSize: '12px', color: '#6B7280', margin: '4px 0 0 0' }}>
+                              Cbu: <strong style={{ color: '#4B5563' }}>0200925811000001234567</strong> | Estado: <strong style={{ color: '#059669' }}>Activo</strong> | Solicitud: 10/05/2023
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Account 2: Banco Nacion */}
+                        <div
+                          onClick={() => setSelectedCbuIndex(1)}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            borderRadius: '8px',
+                            border: selectedCbuIndex === 1 ? '1.5px solid #00AC99' : '1px solid #E5E7EB',
+                            backgroundColor: selectedCbuIndex === 1 ? '#F0FDF4' : '#fff',
+                            padding: '16px 20px',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s ease',
+                          }}
+                        >
+                          {/* Radio dot */}
+                          <div style={{
+                            width: '18px', height: '18px', borderRadius: '50%',
+                            border: selectedCbuIndex === 1 ? '2px solid #00AC99' : '2px solid #bbb',
+                            backgroundColor: '#fff',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            marginRight: '16px',
+                          }}>
+                            {selectedCbuIndex === 1 && (
+                              <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#00AC99' }} />
+                            )}
+                          </div>
+
+                          {/* Bank Icon */}
+                          <span style={{ color: '#4B5563', marginRight: '10px', display: 'flex', alignItems: 'center' }}>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <rect x="3" y="11" width="18" height="11" rx="2" />
+                              <path d="M12 2 3 7v4h18V7l-9-5z" />
+                              <line x1="6" y1="15" x2="6" y2="18" />
+                              <line x1="18" y1="15" x2="18" y2="18" />
+                              <line x1="12" y1="15" x2="12" y2="18" />
+                            </svg>
+                          </span>
+
+                          <div>
+                            <p style={{ fontSize: '13.5px', fontWeight: 700, color: '#111827', margin: 0 }}>
+                              Banco Nacion
+                            </p>
+                            <p style={{ fontSize: '12px', color: '#6B7280', margin: '4px 0 0 0' }}>
+                              Cbu: <strong style={{ color: '#4B5563' }}>011059530000023456789</strong> | Estado: <strong style={{ color: '#059669' }}>Activo</strong> | Solicitud: 10/05/2024
+                            </p>
+                          </div>
+                        </div>
+
+                      </div>
                     )}
-                  </>
+                  </div>
                 ) : (
-                  /* IMAGE 1: ACCOUNTS LIST LOADED */
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '28px' }}>
-                    
-                    {/* Account 1: Bancor */}
-                    <div
-                      onClick={() => setSelectedCbuIndex(0)}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        borderRadius: '8px',
-                        border: selectedCbuIndex === 0 ? '1.5px solid #00AC99' : '1px solid #E5E7EB',
-                        backgroundColor: selectedCbuIndex === 0 ? '#F0FDF4' : '#fff',
-                        padding: '16px 20px',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s ease',
-                      }}
-                    >
-                      {/* Radio dot */}
-                      <div style={{
-                        width: '18px', height: '18px', borderRadius: '50%',
-                        border: selectedCbuIndex === 0 ? '2px solid #00AC99' : '2px solid #bbb',
-                        backgroundColor: '#fff',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        marginRight: '16px',
-                      }}>
-                        {selectedCbuIndex === 0 && (
-                          <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#00AC99' }} />
-                        )}
-                      </div>
-
-                      {/* Bank Icon */}
-                      <span style={{ color: '#4B5563', marginRight: '10px', display: 'flex', alignItems: 'center' }}>
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <rect x="3" y="11" width="18" height="11" rx="2" />
-                          <path d="M12 2 3 7v4h18V7l-9-5z" />
-                          <line x1="6" y1="15" x2="6" y2="18" />
-                          <line x1="18" y1="15" x2="18" y2="18" />
-                          <line x1="12" y1="15" x2="12" y2="18" />
-                        </svg>
-                      </span>
-
-                      <div>
-                        <p style={{ fontSize: '13.5px', fontWeight: 700, color: '#111827', margin: 0 }}>
-                          Bancor
-                        </p>
-                        <p style={{ fontSize: '12px', color: '#6B7280', margin: '4px 0 0 0' }}>
-                          Cbu: <strong style={{ color: '#4B5563' }}>0200925811000001234567</strong> | Estado: <strong style={{ color: '#059669' }}>Activo</strong> | Solicitud: 10/05/2023
-                        </p>
-                      </div>
+                  // ── OTHER STEPS placeholder ──
+                  <div style={{ minHeight: '350px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', padding: '40px' }}>
+                    <div style={{
+                      width: '64px', height: '64px', borderRadius: '50%',
+                      backgroundColor: '#E6F6F4', display: 'flex',
+                      alignItems: 'center', justifyContent: 'center',
+                      color: '#00AC99', marginBottom: '20px',
+                    }}>
+                      <FileIcon />
                     </div>
-
-                    {/* Account 2: Banco Nacion */}
-                    <div
-                      onClick={() => setSelectedCbuIndex(1)}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        borderRadius: '8px',
-                        border: selectedCbuIndex === 1 ? '1.5px solid #00AC99' : '1px solid #E5E7EB',
-                        backgroundColor: selectedCbuIndex === 1 ? '#F0FDF4' : '#fff',
-                        padding: '16px 20px',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s ease',
-                      }}
-                    >
-                      {/* Radio dot */}
-                      <div style={{
-                        width: '18px', height: '18px', borderRadius: '50%',
-                        border: selectedCbuIndex === 1 ? '2px solid #00AC99' : '2px solid #bbb',
-                        backgroundColor: '#fff',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        marginRight: '16px',
-                      }}>
-                        {selectedCbuIndex === 1 && (
-                          <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#00AC99' }} />
-                        )}
-                      </div>
-
-                      {/* Bank Icon */}
-                      <span style={{ color: '#4B5563', marginRight: '10px', display: 'flex', alignItems: 'center' }}>
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <rect x="3" y="11" width="18" height="11" rx="2" />
-                          <path d="M12 2 3 7v4h18V7l-9-5z" />
-                          <line x1="6" y1="15" x2="6" y2="18" />
-                          <line x1="18" y1="15" x2="18" y2="18" />
-                          <line x1="12" y1="15" x2="12" y2="18" />
-                        </svg>
+                    <h3 style={{ fontSize: '22px', fontWeight: 700, color: '#111827', marginBottom: '8px' }}>
+                      {steps[activeStep - 1].name}
+                    </h3>
+                    <p style={{ fontSize: '14px', color: '#6B7280', maxWidth: '500px', lineHeight: 1.6, marginBottom: '24px' }}>
+                      Este es el paso interactivo <strong>Paso {activeStep}</strong> del trámite.
+                      <br />
+                      Se adaptará con los requisitos correspondientes a la categoría:
+                      <br />
+                      <span style={{ display: 'inline-block', marginTop: '10px', backgroundColor: '#E6F6F4', color: '#00AC99', padding: '6px 16px', borderRadius: '20px', fontWeight: 600 }}>
+                        {cidiData?.category || 'Sin categoría'}
                       </span>
-
-                      <div>
-                        <p style={{ fontSize: '13.5px', fontWeight: 700, color: '#111827', margin: 0 }}>
-                          Banco Nacion
-                        </p>
-                        <p style={{ fontSize: '12px', color: '#6B7280', margin: '4px 0 0 0' }}>
-                          Cbu: <strong style={{ color: '#4B5563' }}>011059530000023456789</strong> | Estado: <strong style={{ color: '#059669' }}>Activo</strong> | Solicitud: 10/05/2024
-                        </p>
-                      </div>
-                    </div>
-
+                    </p>
                   </div>
                 )}
-              </div>
-            ) : (
-              // ── OTHER STEPS placeholder ──
-              <div style={{ minHeight: '350px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', padding: '40px' }}>
+
+                {/* ── ACTION BUTTONS ── */}
                 <div style={{
-                  width: '64px', height: '64px', borderRadius: '50%',
-                  backgroundColor: '#E6F6F4', display: 'flex',
-                  alignItems: 'center', justifyContent: 'center',
-                  color: '#00AC99', marginBottom: '20px',
+                  borderTop: '1px solid #ebebeb', paddingTop: '24px',
+                  display: 'flex', gap: '12px', justifyContent: 'space-between',
                 }}>
-                  <FileIcon />
+                  <button
+                    onClick={handlePrevStep}
+                    style={{
+                      flex: 1, padding: '11px 24px', borderRadius: '6px',
+                      border: '1px solid #d0d0d0', backgroundColor: '#fff',
+                      color: '#555', fontSize: '14px', fontWeight: 500,
+                      cursor: 'pointer',
+                    }}
+                  >
+                    {(activeStep === 1 || activeStep === 5) ? 'Cancelar' : 'Anterior'}
+                  </button>
+
+                  <button
+                    onClick={handleNextStep}
+                    style={{
+                      flex: 1, padding: '11px 24px', borderRadius: '6px',
+                      border: 'none', fontSize: '14px', fontWeight: 600,
+                      cursor: validateCurrentStep().length > 0 ? 'not-allowed' : 'pointer',
+                      backgroundColor: validateCurrentStep().length > 0 ? '#D1D5DB' : '#00AC99',
+                      color: validateCurrentStep().length > 0 ? '#6B7280' : '#fff',
+                      transition: 'all 0.25s ease',
+                    }}
+                    title={validateCurrentStep().length > 0 ? 'Completa los campos obligatorios para continuar' : ''}
+                  >
+                    Continuar
+                  </button>
                 </div>
-                <h3 style={{ fontSize: '22px', fontWeight: 700, color: '#111827', marginBottom: '8px' }}>
-                  {steps[activeStep - 1].name}
-                </h3>
-                <p style={{ fontSize: '14px', color: '#6B7280', maxWidth: '500px', lineHeight: 1.6, marginBottom: '24px' }}>
-                  Este es el paso interactivo <strong>Paso {activeStep}</strong> del trámite.
-                  <br />
-                  Se adaptará con los requisitos correspondientes a la categoría:
-                  <br />
-                  <span style={{ display: 'inline-block', marginTop: '10px', backgroundColor: '#E6F6F4', color: '#00AC99', padding: '6px 16px', borderRadius: '20px', fontWeight: 600 }}>
-                    {cidiData?.category || 'Sin categoría'}
-                  </span>
-                </p>
+
+
+
               </div>
-            )}
-
-            {/* ── ACTION BUTTONS ── */}
-            <div style={{
-              borderTop: '1px solid #ebebeb', paddingTop: '24px',
-              display: 'flex', gap: '12px', justifyContent: 'space-between',
-            }}>
-              <button
-                onClick={handlePrevStep}
-                style={{
-                  flex: 1, padding: '11px 24px', borderRadius: '6px',
-                  border: '1px solid #d0d0d0', backgroundColor: '#fff',
-                  color: '#555', fontSize: '14px', fontWeight: 500,
-                  cursor: 'pointer',
-                }}
-              >
-                {(activeStep === 1 || activeStep === 5) ? 'Cancelar' : 'Anterior'}
-              </button>
-
-              <button
-                onClick={handleNextStep}
-                style={{
-                  flex: 1, padding: '11px 24px', borderRadius: '6px',
-                  border: 'none', fontSize: '14px', fontWeight: 600,
-                  cursor: validateCurrentStep().length > 0 ? 'not-allowed' : 'pointer',
-                  backgroundColor: validateCurrentStep().length > 0 ? '#D1D5DB' : '#00AC99',
-                  color: validateCurrentStep().length > 0 ? '#6B7280' : '#fff',
-                  transition: 'all 0.25s ease',
-                }}
-                title={validateCurrentStep().length > 0 ? 'Completa los campos obligatorios para continuar' : ''}
-              >
-                Continuar
-              </button>
-            </div>
-
-
-
-          </div>
-          </>
+            </>
           )}
         </main>
       </div>
@@ -3471,7 +3471,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
             boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
             boxSizing: 'border-box',
           }}>
-            
+
             <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#111827', margin: '0 0 2px 0' }}>
               Staff
             </h3>
@@ -3645,7 +3645,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
             maxHeight: '90vh',
             overflowY: 'auto'
           }}>
-            
+
             {/* Header row with Location pin and text */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px', borderBottom: '1px solid #E5E7EB', paddingBottom: '16px' }}>
               <div style={{
@@ -3732,7 +3732,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                   }}
                 />
               </div>
-              
+
               <div>
                 <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
                   Nº (puerta) <span style={{ color: '#EF4444' }}>*</span>
@@ -3906,7 +3906,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
               gap: '16px',
               marginBottom: '20px',
             }}>
-              
+
               <div style={{ position: 'relative' }}>
                 <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
                   Dias de la semana
@@ -4079,7 +4079,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
             boxSizing: 'border-box',
             position: 'relative',
           }}>
-            
+
             {/* Close Button X at top right */}
             <button
               onClick={() => setShowDeleteConfirmModal(false)}
@@ -4092,7 +4092,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
             >
               ×
             </button>
- 
+
             {/* Red Alert Exclamation Badge */}
             <div style={{
               width: '56px', height: '56px', borderRadius: '50%',
@@ -4170,7 +4170,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
             boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
             boxSizing: 'border-box',
           }}>
-            
+
             <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#111827', margin: '0 0 2px 0' }}>
               Antecedentes
             </h3>
@@ -4336,7 +4336,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
             textAlign: 'center',
             boxSizing: 'border-box',
           }}>
-            
+
             {/* Circular Teal Badge with white FileUp Icon */}
             <div style={{
               width: '80px', height: '80px', borderRadius: '50%',
