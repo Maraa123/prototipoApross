@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import Header from '../components/Header'
-import Sidebar from '../components/Sidebar'
+import Sidebar2 from '../components/Sidebar2'
 import { PencilIcon, CheckIcon } from '../components/Icons'
 
 // ------- Read-only field component -------
@@ -65,7 +65,7 @@ export default function ConfirmacionInstitucion({
       <Header />
 
       <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
-        <Sidebar />
+        <Sidebar2 />
 
         {/* Main content */}
         <main style={{ flex: 1, overflowY: 'auto', padding: '24px 28px' }}>

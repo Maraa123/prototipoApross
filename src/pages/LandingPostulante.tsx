@@ -1,11 +1,16 @@
 import Header from '../components/Header'
-import Sidebar from '../components/Sidebar'
+import Sidebar2 from '../components/Sidebar2'
 
 interface LandingPostulanteProps {
   onStart: () => void
   submittedList?: Array<{
+    cuit?: string
+    represented?: string
     categoria: string
-    profesion: string
+    profesion?: string
+    nivelAtencion?: string
+    tipoInstitucionNivel?: string
+    tipoInstitucion?: string
     estado: string
   }>
 }
@@ -16,7 +21,7 @@ export default function LandingPostulante({ onStart, submittedList = [] }: Landi
       <Header />
 
       <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
-        <Sidebar />
+        <Sidebar2 />
 
         <main style={{ flex: 1, overflowY: 'auto', padding: '28px 32px' }}>
           <div style={{ maxWidth: '1100px', width: '100%', margin: '0 auto' }}>
@@ -136,33 +141,7 @@ export default function LandingPostulante({ onStart, submittedList = [] }: Landi
                 </div>
               </div>
 
-              {/* ── RIGHT: Image ── */}
-              <div style={{
-                width: '260px',
-                flexShrink: 0,
-                position: 'relative',
-                overflow: 'hidden',
-                display: 'flex',
-                alignItems: 'flex-end',
-                justifyContent: 'center',
-              }}>
-                {/* Glow behind image */}
-                <div style={{
-                  position: 'absolute', bottom: 0, left: '50%', transform: 'translateX(-50%)',
-                  width: '160px', height: '160px', borderRadius: '50%',
-                  backgroundColor: 'rgba(255,255,255,0.10)', filter: 'blur(24px)',
-                }} />
-                <img
-                  src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=500&q=80&fit=crop&crop=top"
-                  alt="Profesional de la salud"
-                  style={{
-                    width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top center',
-                    position: 'relative', zIndex: 1,
-                    maskImage: 'linear-gradient(to right, transparent 0%, black 30%)',
-                    WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 30%)',
-                  }}
-                />
-              </div>
+
 
             </div>
 
@@ -196,41 +175,106 @@ export default function LandingPostulante({ onStart, submittedList = [] }: Landi
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  {submittedList.map((info, idx) => (
-                    <div key={idx} style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      backgroundColor: '#F9FAFB',
-                      padding: '12px 20px',
-                      borderRadius: '8px',
-                      border: '1px solid #F3F4F6',
-                    }}>
-                      <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', alignItems: 'center' }}>
-                        <span style={{ fontSize: '13px', color: '#374151' }}>
-                          Categoría: <strong>{info.categoria}</strong>
-                        </span>
-                        <span style={{ width: '4px', height: '4px', borderRadius: '50%', backgroundColor: '#D1D5DB' }} />
-                        <span style={{ fontSize: '13px', color: '#374151' }}>
-                          Profesión/Tipo: <strong>{info.profesion}</strong>
-                        </span>
-                      </div>
-
-                      <div style={{
-                        display: 'inline-flex', alignItems: 'center', gap: '6px',
-                        backgroundColor: '#FFFBEB', border: '1px solid #FDE68A',
-                        borderRadius: '20px', padding: '4px 12px',
+                  {submittedList.map((info, idx) => {
+                    const isProfessional = info.categoria === 'Profesional de la salud'
+                    const isInstitution = info.categoria === 'Institución'
+                    const isDisability = info.categoria === 'Prestador de discapacidad'
+                    
+                    return (
+                      <div key={idx} style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '6px',
+                        backgroundColor: '#F9FAFB',
+                        padding: '16px 20px',
+                        borderRadius: '8px',
+                        border: '1px solid #F3F4F6',
+                        position: 'relative'
                       }}>
-                        <span style={{
-                          width: '6px', height: '6px', borderRadius: '50%',
-                          backgroundColor: '#F59E0B',
-                        }} />
-                        <span style={{ fontSize: '11px', fontWeight: 700, color: '#B45309', textTransform: 'uppercase', letterSpacing: '0.03em' }}>
-                          {info.estado}
-                        </span>
+                        {/* Upper row: CUIT/CUIL and Represented name */}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap', paddingRight: '120px' }}>
+                          <span style={{ fontSize: '12px', color: '#6B7280' }}>
+                            CUIT/CUIL: <strong style={{ color: '#4B5563' }}>{info.cuit || '27-457475-9'}</strong>
+                          </span>
+                          <span style={{ width: '3px', height: '3px', borderRadius: '50%', backgroundColor: '#D1D5DB' }} />
+                          <span style={{ fontSize: '12.5px', color: '#374151', fontWeight: 600 }}>
+                            {info.represented || 'Camila Gonzales'}
+                          </span>
+                        </div>
+
+                        {/* Lower row: Category and details */}
+                        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center', paddingRight: '120px' }}>
+                          <span style={{ fontSize: '13px', color: '#4B5563' }}>
+                            Categoría: <strong style={{ color: '#1F2937' }}>{info.categoria}</strong>
+                          </span>
+                          
+                          {isProfessional && (
+                            <>
+                              <span style={{ width: '4px', height: '4px', borderRadius: '50%', backgroundColor: '#D1D5DB' }} />
+                              <span style={{ fontSize: '13px', color: '#4B5563' }}>
+                                Profesión/Tipo: <strong style={{ color: '#1F2937' }}>{info.profesion || 'Medico'}</strong>
+                              </span>
+                            </>
+                          )}
+
+                          {isInstitution && (
+                            <>
+                              {info.nivelAtencion && (
+                                <>
+                                  <span style={{ width: '4px', height: '4px', borderRadius: '50%', backgroundColor: '#D1D5DB' }} />
+                                  <span style={{ fontSize: '13px', color: '#4B5563' }}>
+                                    Clasificación: <strong style={{ color: '#1F2937' }}>{info.nivelAtencion}</strong>
+                                  </span>
+                                </>
+                              )}
+                              {info.tipoInstitucionNivel && (
+                                <>
+                                  <span style={{ width: '4px', height: '4px', borderRadius: '50%', backgroundColor: '#D1D5DB' }} />
+                                  <span style={{ fontSize: '13px', color: '#4B5563' }}>
+                                    Tipo: <strong style={{ color: '#1F2937' }}>{info.tipoInstitucionNivel}</strong>
+                                  </span>
+                                </>
+                              )}
+                            </>
+                          )}
+
+                          {isDisability && (
+                            <>
+                              <span style={{ width: '4px', height: '4px', borderRadius: '50%', backgroundColor: '#D1D5DB' }} />
+                              <span style={{ fontSize: '13px', color: '#4B5563' }}>
+                                Tipo: <strong style={{ color: '#1F2937' }}>{info.tipoInstitucion || 'Centro de Rehabilitación'}</strong>
+                              </span>
+                            </>
+                          )}
+                        </div>
+
+                        {/* Status pill on the absolute top-right / right */}
+                        <div style={{
+                          position: 'absolute',
+                          right: '20px',
+                          top: '50%',
+                          transform: 'translateY(-50%)',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          backgroundColor: '#FFFBEB',
+                          border: '1px solid #FDE68A',
+                          borderRadius: '20px',
+                          padding: '4px 12px',
+                        }}>
+                          <span style={{
+                            width: '6px',
+                            height: '6px',
+                            borderRadius: '50%',
+                            backgroundColor: '#F59E0B',
+                          }} />
+                          <span style={{ fontSize: '11px', fontWeight: 700, color: '#B45309', textTransform: 'uppercase', letterSpacing: '0.03em' }}>
+                            {info.estado}
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    )
+                  })}
                 </div>
               </div>
             )}

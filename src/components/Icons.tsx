@@ -12,7 +12,9 @@ import {
   Activity,
   Upload,
   Trash2,
-  Edit2
+  Edit2,
+  Briefcase,
+  ChevronLeft
 } from 'lucide-react'
 
 // Exporting modernized Lucide React icons with prop-forwarding support
@@ -70,4 +72,12 @@ export const TrashIcon = (props: any) => (
 
 export const PencilEditIcon = (props: any) => (
   <Edit2 size={14} strokeWidth={2} {...props} />
+)
+
+export const BriefcaseIcon = (props: any) => (
+  <Briefcase size={16} strokeWidth={1.8} {...props} />
+)
+
+export const ChevronLeftIcon = (props: any) => (
+  <ChevronLeft size={14} strokeWidth={2} {...props} />
 )

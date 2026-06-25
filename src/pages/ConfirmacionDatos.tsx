@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import Header from '../components/Header'
-import Sidebar from '../components/Sidebar'
+import Sidebar2 from '../components/Sidebar2'
 import {
   PencilIcon, CalendarIcon, CheckIcon,
   HeartIcon, PulseIcon, ChevronDownIcon
@@ -55,23 +55,20 @@ export default function ConfirmacionDatos({ onConfirm }: { onConfirm: (represent
   const [isModalOpen, setIsModalOpen] = useState(false)
   
   // Modal states
-  const [represented, setRepresented] = useState<'camila' | 'sanatorio'>('camila')
-  const [category, setCategory] = useState<'profesional' | 'institucion' | 'discapacidad'>('profesional')
+  const [represented, setRepresented] = useState<'camila' | 'sanatorio' | null>(null)
+  const [category, setCategory] = useState<'profesional' | 'institucion' | 'discapacidad' | null>(null)
   const [dropdownOpen, setDropdownOpen] = useState(false)
 
   const CIDI_URL = 'https://cidi.cba.gov.ar'
 
   const handleRepresentedChange = (val: 'camila' | 'sanatorio') => {
     setRepresented(val)
-    if (val === 'camila') {
-      setCategory('profesional')
-    } else {
-      setCategory('institucion')
-    }
+    setCategory(null) // Reset category to make them choose after changing representation
     setDropdownOpen(false)
   }
 
   const handleModalConfirm = () => {
+    if (!represented || !category) return
     const isCamila = represented === 'camila'
     onConfirm(
       isCamila ? 'Camila Gonzales' : 'Sanatorio Allende S.A.',
@@ -86,7 +83,7 @@ export default function ConfirmacionDatos({ onConfirm }: { onConfirm: (represent
       <Header />
 
       <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
-        <Sidebar />
+        <Sidebar2 />
 
         {/* Main content */}
         <main style={{ flex: 1, overflowY: 'auto', padding: '24px 28px' }}>
@@ -275,7 +272,9 @@ export default function ConfirmacionDatos({ onConfirm }: { onConfirm: (represent
                 <span>
                   {represented === 'camila'
                     ? '(27452521770) Camila Gonzales'
-                    : '(30452521770) Sanatorio Allende S.A'}
+                    : represented === 'sanatorio'
+                    ? '(30452521770) Sanatorio Allende S.A'
+                    : 'Seleccione...'}
                 </span>
                 <span style={{ transform: dropdownOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s ease', color: '#6B7280' }}>
                   <ChevronDownIcon />
@@ -322,7 +321,21 @@ export default function ConfirmacionDatos({ onConfirm }: { onConfirm: (represent
 
               {/* Dynamic Category Cards */}
               <div className="responsive-flex-col" style={{ display: 'flex', gap: '16px' }}>
-                {represented === 'camila' ? (
+                {represented === null ? (
+                  <div style={{
+                    flex: 1,
+                    fontSize: '13px',
+                    color: '#6B7280',
+                    fontStyle: 'italic',
+                    padding: '24px',
+                    border: '1px dashed #D1D5DB',
+                    borderRadius: '8px',
+                    textAlign: 'center',
+                    backgroundColor: '#F9FAFB'
+                  }}>
+                    Seleccione primero a quién representar para habilitar la elección de la categoría.
+                  </div>
+                ) : represented === 'camila' ? (
                   <>
                     {/* Profesional de la salud */}
                     <div
@@ -497,12 +510,16 @@ export default function ConfirmacionDatos({ onConfirm }: { onConfirm: (represent
               </button>
 
               <button
+                disabled={represented === null || category === null}
                 onClick={handleModalConfirm}
                 style={{
                   flex: 1, padding: '11px 24px', borderRadius: '6px',
-                  border: 'none', backgroundColor: '#00AC99',
-                  color: '#fff', fontSize: '14px', fontWeight: 600,
-                  cursor: 'pointer',
+                  border: 'none',
+                  backgroundColor: represented === null || category === null ? '#e5e5e5' : '#00AC99',
+                  color: represented === null || category === null ? '#a3a3a3' : '#fff',
+                  fontSize: '14px', fontWeight: 600,
+                  cursor: represented === null || category === null ? 'not-allowed' : 'pointer',
+                  transition: 'background-color 0.25s ease, color 0.25s ease',
                 }}
               >
                 Confirmar

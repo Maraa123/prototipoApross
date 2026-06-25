@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import Header from '../components/Header'
-import Sidebar from '../components/Sidebar'
+import Sidebar2 from '../components/Sidebar2'
 import {
   CalendarIcon, UploadIcon, FileIcon, ChevronDownIcon, CheckIcon,
   TrashIcon, PencilEditIcon, PersonIcon
@@ -9,7 +9,15 @@ import {
 interface AltaPostulanteProps {
   cidiData: { represented: string; category: string; cuit: string } | null
   onGoBack: () => void
-  onComplete?: (profesion: string) => void
+  onComplete?: (data: {
+    cuit: string
+    represented: string
+    categoria: string
+    profesion?: string
+    nivelAtencion?: string
+    tipoInstitucionNivel?: string
+    tipoInstitucion?: string
+  }) => void
 }
 
 const steps = [
@@ -804,7 +812,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
       <Header />
 
       <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
-        <Sidebar />
+        <Sidebar2 />
 
         {/* Main Content Area */}
         <main id="alta-postulante-main" style={{ flex: 1, overflowY: 'auto', padding: '24px 28px' }}>
@@ -1137,6 +1145,9 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                         }}
                       />
                     </div>
+                    {validationErrors.includes('Inicio de Actividades') && (
+                      <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>El inicio de actividades es requerido</p>
+                    )}
                   </div>
 
                   {/* ROW 2: Responsabilidad Fiscal & Constancia Inscripción - ARCA */}
@@ -1183,6 +1194,9 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                         ))}
                       </div>
                     )}
+                    {validationErrors.includes('Responsabilidad Fiscal') && (
+                      <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>La responsabilidad fiscal es requerida</p>
+                    )}
                   </div>
 
                   <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
@@ -1224,6 +1238,9 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                         outline: 'none', boxSizing: 'border-box',
                       }}
                     />
+                    {validationErrors.includes('Ingresos Brutos') && (
+                      <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>El Nº de ingresos brutos es requerido</p>
+                    )}
                   </div>
 
                   <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
@@ -1332,6 +1349,9 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                         outline: 'none', boxSizing: 'border-box',
                       }}
                     />
+                    {validationErrors.includes('Teléfono Administrativo') && (
+                      <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>El teléfono administrativo es requerido</p>
+                    )}
                   </div>
 
                   <div>
@@ -1348,6 +1368,9 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                         outline: 'none', boxSizing: 'border-box',
                       }}
                     />
+                    {validationErrors.includes('Email Administrativo') && (
+                      <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>El e-mail administrativo es requerido</p>
+                    )}
                   </div>
 
                 </div>
@@ -1378,6 +1401,9 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                         outline: 'none', boxSizing: 'border-box',
                       }}
                     />
+                    {validationErrors.includes('Calle (Domicilio Fiscal)') && (
+                      <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>La calle es requerida</p>
+                    )}
                   </div>
                   
                   {/* Numero */}
@@ -1395,6 +1421,9 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                         outline: 'none', boxSizing: 'border-box',
                       }}
                     />
+                    {validationErrors.includes('Número de puerta (Domicilio Fiscal)') && (
+                      <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>El número es requerido</p>
+                    )}
                   </div>
 
                   {/* Apartamento */}
@@ -1429,6 +1458,9 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                         outline: 'none', boxSizing: 'border-box',
                       }}
                     />
+                    {validationErrors.includes('Código Postal') && (
+                      <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>El CP es requerido</p>
+                    )}
                   </div>
                 </div>
 
@@ -1451,6 +1483,9 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                         outline: 'none', boxSizing: 'border-box',
                       }}
                     />
+                    {validationErrors.includes('Barrio') && (
+                      <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>El barrio es requerido</p>
+                    )}
                   </div>
 
                   {/* Localidad */}
@@ -1468,6 +1503,9 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                         outline: 'none', boxSizing: 'border-box',
                       }}
                     />
+                    {validationErrors.includes('Localidad') && (
+                      <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>La localidad es requerida</p>
+                    )}
                   </div>
                 </div>
 
@@ -1630,6 +1668,9 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                       onChange={(e) => setDisposicionAndis(e.target.value)}
                       style={{ width: '100%', border: validationErrors.includes('Disposición ANDIS') ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px', padding: '9px 12px', fontSize: '13.5px', color: '#1F2937', outline: 'none', boxSizing: 'border-box' }}
                     />
+                    {validationErrors.includes('Disposición ANDIS') && (
+                      <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>La disposición ANDIS es requerida</p>
+                    )}
                   </div>
 
                   {/* RNP Section */}
@@ -1716,6 +1757,9 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                         >{opt}</div>
                       ))}
                     </div>
+                  )}
+                  {validationErrors.includes('Clasificación / Nivel de Atención') && (
+                    <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>El nivel de atención es requerido</p>
                   )}
                 </div>
 
@@ -1924,6 +1968,9 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                         ))}
                       </div>
                     )}
+                    {validationErrors.includes('Tipo de Profesión') && (
+                      <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>El tipo de profesión es requerido</p>
+                    )}
                   </div>
 
                   {/* Field 2: Condicional Especialidad Médica if 'Medico' OR Ámbito de la Matrícula */}
@@ -2127,6 +2174,9 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                             outline: 'none', boxSizing: 'border-box',
                           }}
                         />
+                        {validationErrors.includes('Número de Matrícula') && (
+                          <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>El número de matrícula es requerido</p>
+                        )}
                       </div>
                     </>
                   ) : (
@@ -2146,6 +2196,9 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                             outline: 'none', boxSizing: 'border-box',
                           }}
                         />
+                        {validationErrors.includes('Número de Matrícula') && (
+                          <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>El número de matrícula es requerido</p>
+                        )}
                       </div>
 
                       {/* Col 2: Empty placeholder */}
@@ -2528,6 +2581,9 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                     </svg>
                   </span>
                 </div>
+                {validationErrors.includes('Debe agregar al menos un lugar de atención') && (
+                  <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 20px 0' }}>Debe agregar al menos un lugar de atención</p>
+                )}
               </div>
             ) : activeStep === 5 ? (
               // ── STEP 5: SEGURO Y HABILITACIONES ──
@@ -2564,6 +2620,9 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                         outline: 'none', boxSizing: 'border-box',
                       }}
                     />
+                    {validationErrors.includes('Razón Social de la Aseguradora') && (
+                      <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>La razón social es requerida</p>
+                    )}
                   </div>
 
                   {/* CUIT */}
@@ -2585,6 +2644,9 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                         outline: 'none', boxSizing: 'border-box',
                       }}
                     />
+                    {validationErrors.includes('CUIT de la Aseguradora') && (
+                      <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>El CUIT de la aseguradora es requerido</p>
+                    )}
                   </div>
 
                   {/* Vencimiento */}
@@ -2608,6 +2670,9 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                         }}
                       />
                     </div>
+                    {validationErrors.includes('Fecha de Vencimiento del Seguro') && (
+                      <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>La fecha de vencimiento es requerida</p>
+                    )}
                   </div>
 
                   {/* Nº Póliza */}
@@ -2629,6 +2694,9 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                         outline: 'none', boxSizing: 'border-box',
                       }}
                     />
+                    {validationErrors.includes('Número de Póliza') && (
+                      <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>El número de póliza es requerido</p>
+                    )}
                   </div>
 
                 </div>
@@ -3082,32 +3150,37 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                 {/* Accounts Box */}
                 {!cbuLoaded ? (
                   /* IMAGE 2: NO INFO YET */
-                  <div style={{
-                    border: validationErrors.includes('Debe cargar un CBU válido') ? '1px solid #EF4444' : '1px solid #E5E7EB',
-                    borderRadius: '8px',
-                    backgroundColor: '#fff',
-                    padding: '48px 32px',
-                    textAlign: 'center',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginBottom: '28px',
-                  }}>
-                    <div style={{ color: '#4B5563', marginBottom: '16px', display: 'flex', alignItems: 'center' }}>
-                      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.0" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
-                        <line x1="12" y1="9" x2="12" y2="13" />
-                        <line x1="12" y1="17" x2="12.01" y2="17" />
-                      </svg>
+                  <>
+                    <div style={{
+                      border: validationErrors.includes('Debe cargar un CBU válido') ? '1px solid #EF4444' : '1px solid #E5E7EB',
+                      borderRadius: '8px',
+                      backgroundColor: '#fff',
+                      padding: '48px 32px',
+                      textAlign: 'center',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginBottom: '28px',
+                    }}>
+                      <div style={{ color: '#4B5563', marginBottom: '16px', display: 'flex', alignItems: 'center' }}>
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.0" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+                          <line x1="12" y1="9" x2="12" y2="13" />
+                          <line x1="12" y1="17" x2="12.01" y2="17" />
+                        </svg>
+                      </div>
+                      <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#111827', margin: '0 0 6px 0' }}>
+                        No existe información
+                      </h4>
+                      <p style={{ fontSize: '13px', color: '#6B7280', margin: 0 }}>
+                        No encontramos cuentas bancarias registradas a tu nombre en CiDi
+                      </p>
                     </div>
-                    <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#111827', margin: '0 0 6px 0' }}>
-                      No existe información
-                    </h4>
-                    <p style={{ fontSize: '13px', color: '#6B7280', margin: 0 }}>
-                      No encontramos cuentas bancarias registradas a tu nombre en CiDi
-                    </p>
-                  </div>
+                    {validationErrors.includes('Debe cargar un CBU válido') && (
+                      <p style={{ color: '#EF4444', fontSize: '11px', margin: '-16px 0 28px 0' }}>Debe cargar un CBU válido para continuar</p>
+                    )}
+                  </>
                 ) : (
                   /* IMAGE 1: ACCOUNTS LIST LOADED */
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '28px' }}>
@@ -3326,7 +3399,12 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
               onClick={() => {
                 setShowCollegeModal(false)
                 if (onComplete) {
-                  onComplete(tipoProfesion || 'Médico')
+                  onComplete({
+                    cuit: cidiData?.cuit || '27-457475-9',
+                    represented: cidiData?.represented || 'Camila Gonzales',
+                    categoria: cidiData?.category || 'Profesional de la salud',
+                    profesion: tipoProfesion || 'Médico',
+                  })
                 } else {
                   onGoBack()
                 }
@@ -4298,7 +4376,15 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
               onClick={() => {
                 setShowSuccessModal(false)
                 if (onComplete) {
-                  onComplete(isInstitucionNivel || isInstitucionDiscapacidad ? 'Institución' : (tipoProfesion || 'Médico'))
+                  onComplete({
+                    cuit: cuit || cidiData?.cuit || '30-12345678-9',
+                    represented: cidiData?.represented || 'Sanatorio Allende S.A.',
+                    categoria: cidiData?.category || 'Institución',
+                    profesion: tipoProfesion !== 'Selecciona' ? tipoProfesion : undefined,
+                    nivelAtencion: nivelAtencion !== 'Selecciona' ? nivelAtencion : undefined,
+                    tipoInstitucionNivel: tipoInstitucionNivel !== 'Selecciona' ? tipoInstitucionNivel : undefined,
+                    tipoInstitucion: tipoInstitucion !== 'Selecciona' ? tipoInstitucion : undefined,
+                  })
                 } else {
                   onGoBack()
                 }
