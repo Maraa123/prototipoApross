@@ -84,30 +84,34 @@ export default function ConfirmacionInstitucion({
 
             {/* Info banner */}
             <div style={{
-              display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between',
-              gap: '16px', backgroundColor: '#F9FAFB', border: '1px solid #e8e8e8',
-              borderRadius: '8px', padding: '14px 18px', marginBottom: '28px',
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              gap: '24px', marginBottom: '28px',
             }}>
-              <p style={{ fontSize: '13.5px', color: '#555', lineHeight: '1.6', flex: 1, margin: 0 }}>
-                Los datos personales fueron obtenidos desde CiDi. Verificá que la información sea correcta antes de continuar.
-                <br />
-                Si necesitás realizar modificaciones, realizalo desde el portal de CiDi y luego actualizá la información.
-              </p>
+              <div style={{
+                backgroundColor: '#fff', border: '1px solid #C7E6F8',
+                borderRadius: '4px', padding: '14px 18px', flex: 1,
+              }}>
+                <p style={{ fontSize: '13.5px', color: '#374151', lineHeight: '1.6', margin: 0 }}>
+                  Los datos personales fueron obtenidos desde CiDi. Verificá que la información sea correcta antes de continuar.
+                  <br />
+                  Si necesitás realizar modificaciones, realizalo desde el portal de CiDi y luego actualizá la información.
+                </p>
+              </div>
               <a
                 href={CIDI_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{
-                  display: 'inline-flex', alignItems: 'center', gap: '7px',
-                  backgroundColor: '#2563EB', color: '#fff',
+                  display: 'inline-flex', alignItems: 'center', gap: '8px',
+                  backgroundColor: '#0284C7', color: '#fff',
                   border: 'none', borderRadius: '6px',
                   padding: '9px 16px', fontSize: '13.5px', fontWeight: 600,
                   cursor: 'pointer', textDecoration: 'none', flexShrink: 0,
                   whiteSpace: 'nowrap',
                 }}
               >
-                <PencilIcon />
                 Modificar
+                <PencilIcon />
               </a>
             </div>
 

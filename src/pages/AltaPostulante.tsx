@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Header from '../components/Header'
 import Sidebar from '../components/Sidebar'
 import {
@@ -244,7 +244,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
   const [tipoProfesion, setTipoProfesion] = useState('Selecciona')
   const [ambitoMatricula, setAmbitoMatricula] = useState('Selecciona')
   const [numMatricula, setNumMatricula] = useState('')
-  const [especialidadMedica, setEspecialidadMedica] = useState('Selecciona')
+  const [especialidadMedica, setEspecialidadMedica] = useState<string[]>([])
   const [certificadoRnp, setCertificadoRnp] = useState('')
 
   // Paso 2 (Institución Discapacidad): Tipo de Institución & transport state
@@ -310,7 +310,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
   const [locTelTurnos, setLocTelTurnos] = useState('')
   const [locTelEmergencia, setLocTelEmergencia] = useState('')
   const [locEmail, setLocEmail] = useState('')
-  const [locDia, setLocDia] = useState('Selecciona')
+  const [locDia, setLocDia] = useState<string[]>([])
   const [locHoraInicio, setLocHoraInicio] = useState('')
   const [locHoraFin, setLocHoraFin] = useState('')
 
@@ -349,9 +349,86 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
   // Validation state
   const [validationErrors, setValidationErrors] = useState<string[]>([])
 
+  // --- AUTOSAVE DRAFT LOGIC ---
+  const [isRestoring, setIsRestoring] = useState(true)
+  const draftKey = `apross_draft_${cidiData?.cuit || 'default'}_${cidiData?.category || 'default'}`
 
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(draftKey)
+      if (saved) {
+        const parsed = JSON.parse(saved)
+        if (parsed && typeof parsed === 'object') {
+          if (parsed.activeStep) setActiveStep(parsed.activeStep)
+          if (parsed.hasExtension !== undefined) setHasExtension(parsed.hasExtension)
+          if (parsed.inicioActividades) setInicioActividades(parsed.inicioActividades)
+          if (parsed.responsabilidadFiscal) setResponsabilidadFiscal(parsed.responsabilidadFiscal)
+          if (parsed.ingresosBrutos) setIngresosBrutos(parsed.ingresosBrutos)
+          if (parsed.tipoProfesion) setTipoProfesion(parsed.tipoProfesion)
+          if (parsed.ambitoMatricula) setAmbitoMatricula(parsed.ambitoMatricula)
+          if (parsed.numMatricula) setNumMatricula(parsed.numMatricula)
+          if (parsed.especialidadMedica) {
+            if (Array.isArray(parsed.especialidadMedica)) {
+              setEspecialidadMedica(parsed.especialidadMedica)
+            } else if (typeof parsed.especialidadMedica === 'string' && parsed.especialidadMedica !== 'Selecciona') {
+              setEspecialidadMedica([parsed.especialidadMedica])
+            }
+          }
+          if (parsed.certificadoRnp) setCertificadoRnp(parsed.certificadoRnp)
+          if (parsed.tipoInstitucion) setTipoInstitucion(parsed.tipoInstitucion)
+          if (parsed.disposicionAndis) setDisposicionAndis(parsed.disposicionAndis)
+          if (parsed.conductoresList) setConductoresList(parsed.conductoresList)
+          if (parsed.nivelAtencion) setNivelAtencion(parsed.nivelAtencion)
+          if (parsed.tipoInstitucionNivel) setTipoInstitucionNivel(parsed.tipoInstitucionNivel)
+          if (parsed.opcionesChecks) setOpcionesChecks(parsed.opcionesChecks)
+          if (parsed.tecnologiaChecks) setTecnologiaChecks(parsed.tecnologiaChecks)
+          if (parsed.diagnosticoSubChecks) setDiagnosticoSubChecks(parsed.diagnosticoSubChecks)
+          if (parsed.otrosTecnologiaText) setOtrosTecnologiaText(parsed.otrosTecnologiaText)
+          if (parsed.staffList) setStaffList(parsed.staffList)
+          if (parsed.locationsList) setLocationsList(parsed.locationsList)
+          if (parsed.aseguradoraRazonSocial) setAseguradoraRazonSocial(parsed.aseguradoraRazonSocial)
+          if (parsed.aseguradoraCuit) setAseguradoraCuit(parsed.aseguradoraCuit)
+          if (parsed.aseguradoraVencimiento) setAseguradoraVencimiento(parsed.aseguradoraVencimiento)
+          if (parsed.aseguradoraNoPoliza) setAseguradoraNoPoliza(parsed.aseguradoraNoPoliza)
+          if (parsed.antecedentesList) setAntecedentesList(parsed.antecedentesList)
+          if (parsed.cbuLoaded !== undefined) setCbuLoaded(parsed.cbuLoaded)
+        }
+      }
+    } catch (e) {
+      console.error("Error loading draft", e)
+    } finally {
+      setIsRestoring(false)
+    }
+  }, [draftKey])
 
+  useEffect(() => {
+    if (isRestoring) return;
 
+    try {
+      const draft = {
+        activeStep, hasExtension, inicioActividades, responsabilidadFiscal, ingresosBrutos,
+        tipoProfesion, ambitoMatricula, numMatricula, especialidadMedica, certificadoRnp,
+        tipoInstitucion, disposicionAndis, conductoresList, nivelAtencion,
+        tipoInstitucionNivel, opcionesChecks, tecnologiaChecks, diagnosticoSubChecks,
+        otrosTecnologiaText, staffList, locationsList, aseguradoraRazonSocial,
+        aseguradoraCuit, aseguradoraVencimiento, aseguradoraNoPoliza, antecedentesList,
+        cbuLoaded
+      }
+      localStorage.setItem(draftKey, JSON.stringify(draft))
+    } catch (e) {
+      console.error("Error saving draft", e)
+    }
+  }, [
+    draftKey, activeStep, hasExtension, inicioActividades, responsabilidadFiscal, ingresosBrutos,
+    tipoProfesion, ambitoMatricula, numMatricula, especialidadMedica, certificadoRnp,
+    tipoInstitucion, disposicionAndis, conductoresList, nivelAtencion,
+    tipoInstitucionNivel, opcionesChecks, tecnologiaChecks, diagnosticoSubChecks,
+    otrosTecnologiaText, staffList, locationsList, aseguradoraRazonSocial,
+    aseguradoraCuit, aseguradoraVencimiento, aseguradoraNoPoliza, antecedentesList,
+    cbuLoaded,
+    isRestoring
+  ])
+  // --- END AUTOSAVE DRAFT LOGIC ---
   const respFiscalOptions = [
     'IVA Responsable Inscripto',
     'IVA Responsable no Inscripto',
@@ -667,7 +744,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
       telTurnos: locTelTurnos,
       telEmergencia: locTelEmergencia,
       email: locEmail,
-      dia: locDia,
+      dia: locDia.length > 0 ? locDia.join(', ') : '',
       horaInicio: locHoraInicio,
       horaFin: locHoraFin
     }
@@ -783,6 +860,9 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                       {!isInstitucionNivel && !isInstitucionDiscapacidad ? (
                         <>
                           <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Tipo de Profesión</span><strong style={{ color: '#374151' }}>{tipoProfesion || 'Médico'}</strong></div>
+                          {tipoProfesion === 'Medico' && especialidadMedica.length > 0 && (
+                            <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Especialidad Médica</span><strong style={{ color: '#374151' }}>{especialidadMedica.join(', ')}</strong></div>
+                          )}
                           <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Matrícula</span><strong style={{ color: '#374151' }}>{numMatricula}</strong></div>
                         </>
                       ) : isInstitucionDiscapacidad ? (
@@ -905,9 +985,14 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                 <button
                   disabled={!declaracionJuradaAceptada}
                   onClick={() => {
-                    setShowReviewModal(false)
+                    // Do NOT setShowReviewModal(false) here, so the Review screen stays in the background
                     const isHealthProfessional = cidiData?.category === 'Profesional de la salud'
                     const isSpecialProfession = tipoProfesion === 'Kinesiólogo' || tipoProfesion === 'Bioquímico' || tipoProfesion === 'Bioquimico'
+                    
+                    // Clear the draft from localStorage because we are finishing the process
+                    const currentDraftKey = `apross_draft_${cidiData?.cuit || 'default'}_${cidiData?.category || 'default'}`
+                    localStorage.removeItem(currentDraftKey)
+
                     if (activeStep === 2 && isHealthProfessional && isSpecialProfession) {
                       setShowCollegeModal(true)
                     } else {
@@ -953,14 +1038,14 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                       minWidth: '130px',
                       textAlign: 'center',
                       padding: '12px 6px',
-                      borderTop: isActive ? '3px solid #007BFF' : '1px solid transparent',
+                      borderTop: isActive ? '3px solid #00AC99' : '1px solid transparent',
                       marginTop: '-1px',
-                      color: isActive ? '#007BFF' : '#6B7280',
+                      color: isActive ? '#00AC99' : '#6B7280',
                       cursor: 'default',
                       transition: 'all 0.15s ease',
                     }}
                   >
-                    <div style={{ fontSize: '10.5px', fontWeight: 700, textTransform: 'uppercase', marginBottom: '2px', color: isActive ? '#007BFF' : '#9CA3AF' }}>
+                    <div style={{ fontSize: '10.5px', fontWeight: 700, textTransform: 'uppercase', marginBottom: '2px', color: isActive ? '#00AC99' : '#9CA3AF' }}>
                       Paso {step.num}
                     </div>
                     <div style={{ fontSize: '11.5px', fontWeight: isActive ? 600 : 500 }}>
@@ -1089,7 +1174,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                             }}
                             style={{
                               padding: '8px 12px', fontSize: '13px', cursor: 'pointer',
-                              backgroundColor: responsabilidadFiscal === opt ? '#007BFF' : '#fff',
+                              backgroundColor: responsabilidadFiscal === opt ? '#00AC99' : '#fff',
                               color: responsabilidadFiscal === opt ? '#fff' : '#1F2937',
                             }}
                           >
@@ -1178,8 +1263,8 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                       >
                         <div style={{
                           width: '16px', height: '16px', borderRadius: '3px',
-                          border: hasExtension ? '2px solid #007BFF' : '2px solid #bbb',
-                          backgroundColor: hasExtension ? '#007BFF' : '#fff',
+                          border: hasExtension ? '2px solid #00AC99' : '2px solid #bbb',
+                          backgroundColor: hasExtension ? '#00AC99' : '#fff',
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
                         }}>
                           {hasExtension && <CheckIcon />}
@@ -1193,8 +1278,8 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                       >
                         <div style={{
                           width: '16px', height: '16px', borderRadius: '3px',
-                          border: !hasExtension ? '2px solid #007BFF' : '2px solid #bbb',
-                          backgroundColor: !hasExtension ? '#007BFF' : '#fff',
+                          border: !hasExtension ? '2px solid #00AC99' : '2px solid #bbb',
+                          backgroundColor: !hasExtension ? '#00AC99' : '#fff',
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
                         }}>
                           {!hasExtension && <CheckIcon />}
@@ -1830,7 +1915,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                             }}
                             style={{
                               padding: '8px 12px', fontSize: '13px', cursor: 'pointer',
-                              backgroundColor: tipoProfesion === opt ? '#007BFF' : '#fff',
+                              backgroundColor: tipoProfesion === opt ? '#00AC99' : '#fff',
                               color: tipoProfesion === opt ? '#fff' : '#1F2937',
                             }}
                           >
@@ -1860,7 +1945,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                           backgroundColor: '#fff', cursor: 'pointer', userSelect: 'none', boxSizing: 'border-box',
                         }}
                       >
-                        <span>{especialidadMedica}</span>
+                        <span>{especialidadMedica.length > 0 ? especialidadMedica.join(', ') : 'Selecciona'}</span>
                         <ChevronDownIcon />
                       </div>
 
@@ -1891,17 +1976,26 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                             return (
                               <div
                                 key={index}
-                                onClick={() => {
-                                  setEspecialidadMedica(opt.label)
-                                  setEspecialidadDropdownOpen(false)
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  if (especialidadMedica.includes(opt.label)) {
+                                    setEspecialidadMedica(especialidadMedica.filter(d => d !== opt.label))
+                                  } else {
+                                    setEspecialidadMedica([...especialidadMedica, opt.label])
+                                  }
                                 }}
                                 style={{
                                   padding: '8px 12px 8px 20px', fontSize: '13px', cursor: 'pointer',
-                                  backgroundColor: especialidadMedica === opt.label ? '#007BFF' : '#fff',
-                                  color: especialidadMedica === opt.label ? '#fff' : '#1F2937',
+                                  backgroundColor: especialidadMedica.includes(opt.label) ? '#E6F6F4' : '#fff',
+                                  color: especialidadMedica.includes(opt.label) ? '#00AC99' : '#1F2937',
+                                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                                  fontWeight: especialidadMedica.includes(opt.label) ? 600 : 400
                                 }}
                               >
                                 {opt.label}
+                                {especialidadMedica.includes(opt.label) && (
+                                  <CheckIcon />
+                                )}
                               </div>
                             )
                           })}
@@ -1947,7 +2041,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                               }}
                               style={{
                                 padding: '8px 12px', fontSize: '13px', cursor: 'pointer',
-                                backgroundColor: ambitoMatricula === opt ? '#007BFF' : '#fff',
+                                backgroundColor: ambitoMatricula === opt ? '#00AC99' : '#fff',
                                 color: ambitoMatricula === opt ? '#fff' : '#1F2937',
                               }}
                             >
@@ -2007,7 +2101,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                                 }}
                                 style={{
                                   padding: '8px 12px', fontSize: '13px', cursor: 'pointer',
-                                  backgroundColor: ambitoMatricula === opt ? '#007BFF' : '#fff',
+                                  backgroundColor: ambitoMatricula === opt ? '#00AC99' : '#fff',
                                   color: ambitoMatricula === opt ? '#fff' : '#1F2937',
                                 }}
                               >
@@ -2333,7 +2427,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                           setLocTelTurnos(loc.telTurnos)
                           setLocTelEmergencia(loc.telEmergencia)
                           setLocEmail(loc.email)
-                          setLocDia(loc.dia)
+                          setLocDia(loc.dia ? loc.dia.split(', ') : [])
                           setLocHoraInicio(loc.horaInicio)
                           setLocHoraFin(loc.horaFin)
                           setEditingLocationIndex(idx)
@@ -2386,14 +2480,14 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                     setLocTelTurnos('351-13222432')
                     setLocTelEmergencia('3541-123432')
                     setLocEmail('consultas@hospital.com')
-                    setLocDia('Lunes')
+                    setLocDia(['Lunes'])
                     setLocHoraInicio('08:00hs')
                     setLocHoraFin('18:00hs')
                     setEditingLocationIndex(null)
                     setShowLocationModal(true)
                   }}
                   style={{
-                    border: '1px solid #E5E7EB',
+                    border: validationErrors.includes('Debe agregar al menos un lugar de atención') ? '1px solid #EF4444' : '1px solid #E5E7EB',
                     borderRadius: '12px',
                     padding: '24px 32px',
                     display: 'flex',
@@ -2404,8 +2498,16 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                     marginBottom: '20px',
                     transition: 'border-color 0.15s ease',
                   }}
-                  onMouseEnter={(e) => e.currentTarget.style.borderColor = '#bbb'}
-                  onMouseLeave={(e) => e.currentTarget.style.borderColor = '#E5E7EB'}
+                  onMouseEnter={(e) => {
+                    if (!validationErrors.includes('Debe agregar al menos un lugar de atención')) {
+                      e.currentTarget.style.borderColor = '#bbb'
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!validationErrors.includes('Debe agregar al menos un lugar de atención')) {
+                      e.currentTarget.style.borderColor = '#E5E7EB'
+                    }
+                  }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center' }}>
                     <div style={{
@@ -2417,7 +2519,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                       +
                     </div>
                     <span style={{ fontSize: '15px', fontWeight: 700, color: '#00AC99' }}>
-                      Agregar lugar de atención
+                      Agregar lugar de atención <span style={{ color: '#EF4444' }}>*</span>
                     </span>
                   </div>
                   <span style={{ color: '#00AC99', display: 'flex', alignItems: 'center' }}>
@@ -2446,14 +2548,18 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                   {/* Razón Social */}
                   <div>
                     <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
-                      Razón Social de la Aseguradora
+                      Razón Social de la Aseguradora <span style={{ color: '#EF4444' }}>*</span>
                     </label>
                     <input
                       type="text"
                       value={aseguradoraRazonSocial}
-                      onChange={(e) => setAseguradoraRazonSocial(e.target.value)}
+                      onChange={(e) => {
+                        setAseguradoraRazonSocial(e.target.value)
+                        setValidationErrors(prev => prev.filter(err => err !== 'Razón Social de la Aseguradora'))
+                      }}
                       style={{
-                        width: '100%', border: '1px solid #D1D5DB', borderRadius: '6px',
+                        width: '100%', borderRadius: '6px',
+                        border: validationErrors.includes('Razón Social de la Aseguradora') ? '1px solid #EF4444' : '1px solid #D1D5DB',
                         padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
                         outline: 'none', boxSizing: 'border-box',
                       }}
@@ -2463,14 +2569,18 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                   {/* CUIT */}
                   <div>
                     <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
-                      CUIT de la Aseguradora
+                      CUIT de la Aseguradora <span style={{ color: '#EF4444' }}>*</span>
                     </label>
                     <input
                       type="text"
                       value={aseguradoraCuit}
-                      onChange={(e) => setAseguradoraCuit(e.target.value)}
+                      onChange={(e) => {
+                        setAseguradoraCuit(e.target.value)
+                        setValidationErrors(prev => prev.filter(err => err !== 'CUIT de la Aseguradora'))
+                      }}
                       style={{
-                        width: '100%', border: '1px solid #D1D5DB', borderRadius: '6px',
+                        width: '100%', borderRadius: '6px',
+                        border: validationErrors.includes('CUIT de la Aseguradora') ? '1px solid #EF4444' : '1px solid #D1D5DB',
                         padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
                         outline: 'none', boxSizing: 'border-box',
                       }}
@@ -2480,36 +2590,41 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                   {/* Vencimiento */}
                   <div>
                     <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
-                      Vencimiento de la Póliza
+                      Vencimiento de la Póliza <span style={{ color: '#EF4444' }}>*</span>
                     </label>
                     <div style={{ position: 'relative' }}>
                       <input
-                        type="text"
+                        type="date"
                         value={aseguradoraVencimiento}
-                        onChange={(e) => setAseguradoraVencimiento(e.target.value)}
+                        onChange={(e) => {
+                          setAseguradoraVencimiento(e.target.value)
+                          setValidationErrors(prev => prev.filter(err => err !== 'Fecha de Vencimiento del Seguro'))
+                        }}
                         style={{
-                          width: '100%', border: '1px solid #D1D5DB', borderRadius: '6px',
-                          padding: '7px 12px 7px 34px', fontSize: '13.5px', color: '#1F2937',
+                          width: '100%', borderRadius: '6px',
+                          border: validationErrors.includes('Fecha de Vencimiento del Seguro') ? '1px solid #EF4444' : '1px solid #D1D5DB',
+                          padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
                           outline: 'none', boxSizing: 'border-box',
                         }}
                       />
-                      <span style={{ position: 'absolute', left: '10px', top: '9px', color: '#888', display: 'flex', alignItems: 'center' }}>
-                        <CalendarIcon />
-                      </span>
                     </div>
                   </div>
 
                   {/* Nº Póliza */}
                   <div>
                     <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
-                      Nº Póliza
+                      Nº Póliza <span style={{ color: '#EF4444' }}>*</span>
                     </label>
                     <input
                       type="text"
                       value={aseguradoraNoPoliza}
-                      onChange={(e) => setAseguradoraNoPoliza(e.target.value)}
+                      onChange={(e) => {
+                        setAseguradoraNoPoliza(e.target.value)
+                        setValidationErrors(prev => prev.filter(err => err !== 'Número de Póliza'))
+                      }}
                       style={{
-                        width: '100%', border: '1px solid #D1D5DB', borderRadius: '6px',
+                        width: '100%', borderRadius: '6px',
+                        border: validationErrors.includes('Número de Póliza') ? '1px solid #EF4444' : '1px solid #D1D5DB',
                         padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
                         outline: 'none', boxSizing: 'border-box',
                       }}
@@ -2899,7 +3014,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                       display: 'inline-flex',
                       alignItems: 'center',
                       gap: '8px',
-                      backgroundColor: '#007BFF',
+                      backgroundColor: '#00AC99',
                       color: '#fff',
                       textDecoration: 'none',
                       fontWeight: 600,
@@ -2910,7 +3025,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                       transition: 'background-color 0.2s ease',
                     }}
                     onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#0056b3'}
-                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#007BFF'}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#00AC99'}
                   >
                     Declarar CBU en CiDi
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -2933,7 +3048,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                     letterSpacing: '0.08em', textTransform: 'uppercase',
                     margin: 0,
                   }}>
-                    MIS CUENTAS
+                    MIS CUENTAS <span style={{ color: '#EF4444' }}>*</span>
                   </p>
 
                   {!cbuLoaded && (
@@ -2968,7 +3083,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                 {!cbuLoaded ? (
                   /* IMAGE 2: NO INFO YET */
                   <div style={{
-                    border: '1px solid #E5E7EB',
+                    border: validationErrors.includes('Debe cargar un CBU válido') ? '1px solid #EF4444' : '1px solid #E5E7EB',
                     borderRadius: '8px',
                     backgroundColor: '#fff',
                     padding: '48px 32px',
@@ -3103,7 +3218,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                   width: '64px', height: '64px', borderRadius: '50%',
                   backgroundColor: '#E6F6F4', display: 'flex',
                   alignItems: 'center', justifyContent: 'center',
-                  color: '#007BFF', marginBottom: '20px',
+                  color: '#00AC99', marginBottom: '20px',
                 }}>
                   <FileIcon />
                 </div>
@@ -3115,7 +3230,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                   <br />
                   Se adaptará con los requisitos correspondientes a la categoría:
                   <br />
-                  <span style={{ display: 'inline-block', marginTop: '10px', backgroundColor: '#E6F6F4', color: '#007BFF', padding: '6px 16px', borderRadius: '20px', fontWeight: 600 }}>
+                  <span style={{ display: 'inline-block', marginTop: '10px', backgroundColor: '#E6F6F4', color: '#00AC99', padding: '6px 16px', borderRadius: '20px', fontWeight: 600 }}>
                     {cidiData?.category || 'Sin categoría'}
                   </span>
                 </p>
@@ -3166,7 +3281,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
       {/* ── COLLEGE MODAL (Paso 2 Exception) ── */}
       {showCollegeModal && (
         <div style={{
-          position: 'absolute',
+          position: 'fixed',
           top: 0, left: 0, right: 0, bottom: 0,
           backgroundColor: 'rgba(15, 23, 42, 0.45)',
           display: 'flex',
@@ -3727,7 +3842,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                     backgroundColor: '#fff', cursor: 'pointer', userSelect: 'none', boxSizing: 'border-box',
                   }}
                 >
-                  <span>{locDia}</span>
+                  <span>{locDia.length > 0 ? locDia.join(', ') : 'Selecciona'}</span>
                   <ChevronDownIcon />
                 </div>
 
@@ -3741,17 +3856,26 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                     {locDiaOptions.map((opt) => (
                       <div
                         key={opt}
-                        onClick={() => {
-                          setLocDia(opt)
-                          setLocDiaDropdownOpen(false)
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          if (locDia.includes(opt)) {
+                            setLocDia(locDia.filter(d => d !== opt))
+                          } else {
+                            setLocDia([...locDia, opt])
+                          }
                         }}
                         style={{
                           padding: '8px 12px', fontSize: '13px', cursor: 'pointer',
-                          backgroundColor: locDia === opt ? '#007BFF' : '#fff',
-                          color: locDia === opt ? '#fff' : '#1F2937',
+                          backgroundColor: locDia.includes(opt) ? '#E6F6F4' : '#fff',
+                          color: locDia.includes(opt) ? '#00AC99' : '#1F2937',
+                          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                          fontWeight: locDia.includes(opt) ? 600 : 400
                         }}
                       >
                         {opt}
+                        {locDia.includes(opt) && (
+                          <CheckIcon />
+                        )}
                       </div>
                     ))}
                   </div>
@@ -4115,7 +4239,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
       {/* ── SUCCESS COMPLETION MODAL ── */}
       {showSuccessModal && (
         <div style={{
-          position: 'absolute',
+          position: 'fixed',
           top: 0, left: 0, right: 0, bottom: 0,
           backgroundColor: 'rgba(15, 23, 42, 0.45)',
           display: 'flex',
@@ -4286,4 +4410,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
     </div>
   )
 }
+
+
+
 

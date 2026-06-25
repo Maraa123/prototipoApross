@@ -53,6 +53,7 @@
     /* Ensure modal containers are fully responsive */
     div[style*="width: 840px"], 
     div[style*="width: 640px"], 
+    div[style*="width: 520px"], 
     div[style*="width: 480px"] {
       width: 100% !important;
       max-width: 100% !important;
@@ -60,15 +61,39 @@
       border-radius: 12px !important;
     }
     
-    /* Ensure buttons and banners stretch properly */
-    button {
-      width: 100% !important;
-    }
-    
     /* Adjust specific banner layouts */
     div[style*="background-color: #F9FAFB"] {
       flex-direction: column !important;
       align-items: stretch !important;
     }
+
+    /* Fix Hero Banner */
+    .responsive-hero {
+      flex-direction: column !important;
+      align-items: center !important;
+      text-align: center !important;
+    }
+    .responsive-hero > div:first-child {
+      padding: 24px 20px !important;
+    }
+    .responsive-hero > div:last-child {
+      width: 100% !important;
+      height: 180px !important;
+    }
+    .responsive-hero img {
+      object-position: top center !important;
+    }
+
+    /* Fix Main Padding */
+    main {
+      padding: 16px !important;
+    }
+
+    /* Fix flex rows that shouldn't stay in row on mobile */
+    .responsive-flex-col {
+      flex-direction: column !important;
+      align-items: stretch !important;
+    }
   }
 }
+

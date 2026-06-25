@@ -3,7 +3,7 @@ import { MenuIcon } from './Icons'
 export default function Header() {
   return (
     <header style={{
-      height: '52px', backgroundColor: '#E63026',
+      height: '52px', backgroundColor: 'rgb(255 41 0)',
       display: 'flex', alignItems: 'center', justifyContent: 'space-between',
       padding: '0 16px', flexShrink: 0,
     }}>
@@ -13,17 +13,17 @@ export default function Header() {
           <MenuIcon />
         </button>
         {/* APROSS logo image */}
-        <img 
-          src="/Logo-Apross-prestadores.png" 
-          alt="Apross Prestadores" 
-          style={{ height: '28px', objectFit: 'contain' }} 
+        <img
+          src="/Logo-Apross-prestadores.png"
+          alt="Apross Prestadores"
+          style={{ height: '28px', objectFit: 'contain' }}
         />
       </div>
 
       {/* Right: logout / power icon */}
-      <button 
-        style={{ 
-          background: 'none', border: 'none', cursor: 'pointer', color: '#fff', 
+      <button
+        style={{
+          background: 'none', border: 'none', cursor: 'pointer', color: '#fff',
           display: 'flex', alignItems: 'center', opacity: 0.9, transition: 'opacity 0.2s'
         }}
         onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}

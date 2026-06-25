@@ -21,73 +21,7 @@ export default function LandingPostulante({ onStart, submittedList = [] }: Landi
         <main style={{ flex: 1, overflowY: 'auto', padding: '28px 32px' }}>
           <div style={{ maxWidth: '1100px', width: '100%', margin: '0 auto' }}>
 
-            {/* ── STATUS REVIEW BANNER (Only when submittedList has items) ── */}
-            {submittedList.length > 0 && (
-              <div style={{
-                backgroundColor: '#fff',
-                borderRadius: '16px',
-                border: '1px solid #E5E7EB',
-                padding: '24px 32px',
-                marginBottom: '24px',
-                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.05)',
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '18px', borderBottom: '1px solid #F3F4F6', paddingBottom: '12px' }}>
-                  <div style={{
-                    width: '32px', height: '32px', borderRadius: '50%',
-                    backgroundColor: '#FEF3C7', display: 'flex',
-                    alignItems: 'center', justifyContent: 'center',
-                    color: '#D97706',
-                  }}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                      <circle cx="12" cy="12" r="10" />
-                      <line x1="12" y1="8" x2="12" y2="12" />
-                      <line x1="12" y1="16" x2="12.01" y2="16" />
-                    </svg>
-                  </div>
-                  <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#1F2937', margin: 0 }}>
-                    Tus postulaciones en revisión ({submittedList.length})
-                  </h3>
-                </div>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  {submittedList.map((info, idx) => (
-                    <div key={idx} style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      backgroundColor: '#F9FAFB',
-                      padding: '12px 20px',
-                      borderRadius: '8px',
-                      border: '1px solid #F3F4F6',
-                    }}>
-                      <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', alignItems: 'center' }}>
-                        <span style={{ fontSize: '13px', color: '#374151' }}>
-                          Categoría: <strong>{info.categoria}</strong>
-                        </span>
-                        <span style={{ width: '4px', height: '4px', borderRadius: '50%', backgroundColor: '#D1D5DB' }} />
-                        <span style={{ fontSize: '13px', color: '#374151' }}>
-                          Profesión/Tipo: <strong>{info.profesion}</strong>
-                        </span>
-                      </div>
-
-                      <div style={{
-                        display: 'inline-flex', alignItems: 'center', gap: '6px',
-                        backgroundColor: '#FFFBEB', border: '1px solid #FDE68A',
-                        borderRadius: '20px', padding: '4px 12px',
-                      }}>
-                        <span style={{
-                          width: '6px', height: '6px', borderRadius: '50%',
-                          backgroundColor: '#F59E0B',
-                        }} />
-                        <span style={{ fontSize: '11px', fontWeight: 700, color: '#B45309', textTransform: 'uppercase', letterSpacing: '0.03em' }}>
-                          {info.estado}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
 
             {/* Title Row */}
             <div style={{ marginBottom: '20px', display: 'flex', alignItems: 'baseline', gap: '8px', flexWrap: 'wrap' }}>
@@ -100,7 +34,7 @@ export default function LandingPostulante({ onStart, submittedList = [] }: Landi
             </div>
 
             {/* ── HERO BANNER (THINNER) ── */}
-            <div style={{
+            <div className="responsive-hero" style={{
               background: 'linear-gradient(135deg, #00AC99 0%, #007B8A 100%)',
               borderRadius: '16px',
               overflow: 'hidden',
@@ -187,11 +121,11 @@ export default function LandingPostulante({ onStart, submittedList = [] }: Landi
                     }}
                     onMouseEnter={e => {
                       (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-2px)'
-                      ;(e.currentTarget as HTMLButtonElement).style.boxShadow = '0 6px 16px rgba(0,0,0,0.20)'
+                        ; (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 6px 16px rgba(0,0,0,0.20)'
                     }}
                     onMouseLeave={e => {
                       (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(0)'
-                      ;(e.currentTarget as HTMLButtonElement).style.boxShadow = '0 2px 10px rgba(0,0,0,0.15)'
+                        ; (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 2px 10px rgba(0,0,0,0.15)'
                     }}
                   >
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -231,6 +165,76 @@ export default function LandingPostulante({ onStart, submittedList = [] }: Landi
               </div>
 
             </div>
+
+            {/* ── STATUS REVIEW BANNER (Only when submittedList has items) ── */}
+            {submittedList.length > 0 && (
+              <div style={{
+                marginTop: '50px',
+                backgroundColor: '#fff',
+                borderRadius: '16px',
+                border: '1px solid #E5E7EB',
+                padding: '24px 32px',
+                marginBottom: '24px',
+                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.05)',
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '18px', borderBottom: '1px solid #F3F4F6', paddingBottom: '12px' }}>
+                  <div style={{
+                    width: '32px', height: '32px', borderRadius: '50%',
+                    backgroundColor: '#FEF3C7', display: 'flex',
+                    alignItems: 'center', justifyContent: 'center',
+                    color: '#D97706',
+                  }}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="10" />
+                      <line x1="12" y1="8" x2="12" y2="12" />
+                      <line x1="12" y1="16" x2="12.01" y2="16" />
+                    </svg>
+                  </div>
+                  <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#1F2937', margin: 0 }}>
+                    Tus postulaciones en revisión ({submittedList.length})
+                  </h3>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  {submittedList.map((info, idx) => (
+                    <div key={idx} style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      backgroundColor: '#F9FAFB',
+                      padding: '12px 20px',
+                      borderRadius: '8px',
+                      border: '1px solid #F3F4F6',
+                    }}>
+                      <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', alignItems: 'center' }}>
+                        <span style={{ fontSize: '13px', color: '#374151' }}>
+                          Categoría: <strong>{info.categoria}</strong>
+                        </span>
+                        <span style={{ width: '4px', height: '4px', borderRadius: '50%', backgroundColor: '#D1D5DB' }} />
+                        <span style={{ fontSize: '13px', color: '#374151' }}>
+                          Profesión/Tipo: <strong>{info.profesion}</strong>
+                        </span>
+                      </div>
+
+                      <div style={{
+                        display: 'inline-flex', alignItems: 'center', gap: '6px',
+                        backgroundColor: '#FFFBEB', border: '1px solid #FDE68A',
+                        borderRadius: '20px', padding: '4px 12px',
+                      }}>
+                        <span style={{
+                          width: '6px', height: '6px', borderRadius: '50%',
+                          backgroundColor: '#F59E0B',
+                        }} />
+                        <span style={{ fontSize: '11px', fontWeight: 700, color: '#B45309', textTransform: 'uppercase', letterSpacing: '0.03em' }}>
+                          {info.estado}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
 
           </div>
         </main>
