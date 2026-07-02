@@ -3,17 +3,33 @@ import {
   PencilEditIcon,
   BriefcaseIcon,
   FileIcon,
-  ChevronLeftIcon
+  ChevronDownIcon
 } from './Icons'
 
 export default function Sidebar2() {
-  const [activeItem, setActiveItem] = useState<string>('Actualización de Datos')
+  const [activeItem, setActiveItem] = useState<string>('Trámites')
+  const [openMenu, setOpenMenu] = useState<string | null>('Trámites')
 
   const menuItems = [
     { label: 'Actualización de Datos', icon: <PencilEditIcon size={16} style={{ color: '#4B5563' }} /> },
-    { label: 'Trámites', icon: <BriefcaseIcon size={16} style={{ color: '#4B5563' }} /> },
+    {
+      label: 'Trámites',
+      icon: <BriefcaseIcon size={16} style={{ color: '#4B5563' }} />,
+      subItems: [
+        { label: 'Registro Postulantes', path: '/' }
+      ]
+    },
     { label: 'Herr. Administrativas', icon: <FileIcon size={16} style={{ color: '#4B5563' }} /> },
   ]
+
+  const handleItemClick = (label: string) => {
+    setActiveItem(label)
+    if (openMenu === label) {
+      setOpenMenu(null)
+    } else {
+      setOpenMenu(label)
+    }
+  }
 
   return (
     <aside
@@ -89,47 +105,87 @@ export default function Sidebar2() {
           MENÚ
         </p>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
           {menuItems.map((item) => {
             const isActive = activeItem === item.label
+            const isOpen = openMenu === item.label
+            const hasSubItems = !!item.subItems
+
             return (
-              <button
-                key={item.label}
-                onClick={() => setActiveItem(item.label)}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  width: '100%',
-                  padding: '9px 10px',
-                  fontSize: '13px',
-                  border: 'none',
-                  borderRadius: '6px',
-                  cursor: 'pointer',
-                  backgroundColor: isActive ? '#F3F4F6' : 'transparent',
-                  color: isActive ? '#111827' : '#4B5563',
-                  fontWeight: isActive ? 600 : 500,
-                  textAlign: 'left',
-                  boxSizing: 'border-box',
-                  transition: 'all 0.15s ease',
-                }}
-                onMouseEnter={(e) => {
-                  if (!isActive) e.currentTarget.style.backgroundColor = '#F9FAFB'
-                }}
-                onMouseLeave={(e) => {
-                  if (!isActive) e.currentTarget.style.backgroundColor = 'transparent'
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <span style={{ display: 'flex', alignItems: 'center' }}>
-                    {item.icon}
+              <div key={item.label} style={{ display: 'flex', flexDirection: 'column' }}>
+                <button
+                  onClick={() => handleItemClick(item.label)}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    width: '100%',
+                    padding: '9px 10px',
+                    fontSize: '14.5px',
+                    border: 'none',
+                    borderRadius: '6px',
+                    cursor: 'pointer',
+                    backgroundColor: 'transparent',
+                    color: '#374151',
+                    fontWeight: isActive || isOpen ? 700 : 500,
+                    textAlign: 'left',
+                    boxSizing: 'border-box',
+                    transition: 'all 0.15s ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = '#F9FAFB'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'transparent'
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <span style={{ display: 'flex', alignItems: 'center' }}>
+                      {item.icon}
+                    </span>
+                    <span>{item.label}</span>
+                  </div>
+                  <span style={{
+                    color: '#9CA3AF',
+                    display: 'flex',
+                    alignItems: 'center',
+                    transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                    transition: 'transform 0.2s ease'
+                  }}>
+                    <ChevronDownIcon />
                   </span>
-                  <span>{item.label}</span>
-                </div>
-                <span style={{ color: '#9CA3AF', display: 'flex', alignItems: 'center' }}>
-                  <ChevronLeftIcon />
-                </span>
-              </button>
+                </button>
+
+                {/* Submenu Items */}
+                {hasSubItems && isOpen && (
+                  <div style={{ display: 'flex', flexDirection: 'column', marginTop: '4px', paddingLeft: '34px', gap: '4px' }}>
+                    {item.subItems!.map(subItem => (
+                      <div
+                        key={subItem.label}
+                        onClick={() => {
+                          // Clear drafts to ensure a completely fresh start when clicking "Registro Postulante"
+                          Object.keys(localStorage).forEach(key => {
+                            if (key.startsWith('apross_draft_')) localStorage.removeItem(key)
+                          })
+                          window.location.href = subItem.path
+                        }}
+                        style={{
+                          fontSize: '13.5px',
+                          color: '#4B5563',
+                          padding: '6px 10px',
+                          cursor: 'pointer',
+                          borderRadius: '4px',
+                          transition: 'background-color 0.15s',
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#F3F4F6'}
+                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                      >
+                        {subItem.label}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             )
           })}
         </div>

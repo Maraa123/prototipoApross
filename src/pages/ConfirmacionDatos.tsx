@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import Header from '../components/Header'
-import Sidebar2 from '../components/Sidebar'
+import Sidebar2 from '../components/Sidebar2'
 import {
   PencilIcon, CalendarIcon, CheckIcon,
   HeartIcon, PulseIcon, ChevronDownIcon

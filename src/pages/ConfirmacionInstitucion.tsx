@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import Header from '../components/Header'
-import Sidebar2 from '../components/Sidebar'
+import Sidebar2 from '../components/Sidebar2'
 import { PencilIcon, CheckIcon } from '../components/Icons'
 
 // ------- Read-only field component -------

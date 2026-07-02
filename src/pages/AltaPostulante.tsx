@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import Header from '../components/Header'
-import Sidebar2 from '../components/Sidebar'
+import Sidebar2 from '../components/Sidebar2'
 import {
   CalendarIcon, UploadIcon, FileIcon, ChevronDownIcon, CheckIcon,
   TrashIcon, PencilEditIcon, PersonIcon
@@ -18,6 +19,7 @@ interface AltaPostulanteProps {
     tipoInstitucionNivel?: string
     tipoInstitucion?: string
   }) => void
+  fase?: 'borrador' | 'aceptado'
 }
 
 const steps = [
@@ -223,42 +225,82 @@ const especialidadesMedicas = [
   { isHeader: false, label: 'Auditoría Médica' }
 ]
 
-export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaPostulanteProps) {
+export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 'borrador' }: AltaPostulanteProps) {
   const isDisabilityCategory = cidiData?.category === 'Prestador de discapacidad'
   const isInstitucionDiscapacidad = cidiData?.represented === 'Sanatorio Allende S.A.' && cidiData?.category === 'Prestador de discapacidad'
   const isInstitucionNivel = cidiData?.represented === 'Sanatorio Allende S.A.' && cidiData?.category === 'Institución'
+  const isPersonaFisica = !isDisabilityCategory && !isInstitucionNivel
 
-  const [activeStep, setActiveStep] = useState(1)
+  const [estadoPostulacion, setEstadoPostulacion] = useState<'borrador' | 'en_revision' | 'aceptado'>(fase)
+
+  const location = useLocation()
+  const navigate = useNavigate()
+
+  const postulacionTabs = isPersonaFisica
+    ? [{ path: 'datos-perfil', name: 'Datos del Perfil' }, { path: 'lugar-atencion', name: 'Lugar de Atención' }, { path: 'revision-postulacion', name: 'Revisión' }]
+    : [{ path: 'datos-perfil', name: 'Datos del Perfil' }, { path: 'staff', name: 'Staff' }, { path: 'lugar-atencion', name: 'Lugar de Atención' }, { path: 'revision-postulacion', name: 'Revisión' }];
+
+  const inscripcionTabs = [
+    { path: 'datos-fiscales', name: 'Datos Fiscales' },
+    { path: 'seguro-habilitaciones', name: 'Seguro y Habilitaciones' },
+    { path: 'documentacion-legal', name: 'Documentación Legal' },
+    { path: 'cbu', name: 'CBU' },
+    { path: 'revision-inscripcion', name: 'Revisión' }
+  ];
+
+  const activeTabs = estadoPostulacion === 'aceptado' ? inscripcionTabs : postulacionTabs;
+  const stepPaths = activeTabs.map(t => t.path);
+
+  const currentPath = location.pathname.split('/').pop() || (estadoPostulacion === 'aceptado' ? 'datos-fiscales' : 'datos-perfil');
+  const activeStepIndex = stepPaths.indexOf(currentPath)
+
+  const sectionMap: Record<string, number> = {
+    'datos-fiscales': 1,
+    'datos-perfil': 2,
+    'staff': 3,
+    'lugar-atencion': 4,
+    'seguro-habilitaciones': 5,
+    'documentacion-legal': 6,
+    'cbu': 7,
+    'revision-postulacion': 8,
+    'revision-inscripcion': 9,
+  }
+  const activeStep = sectionMap[currentPath] || (estadoPostulacion === 'aceptado' ? 1 : 2)
+
+  const setActiveStep = (_stepNum?: number) => {
+    // Keep this function around to not break existing callbacks unexpectedly, but we'll modify handleNextStep to not use it
+  }
+
   const [hasExtension, setHasExtension] = useState(true) // Poseo extension IIBB
 
   // Paso 1: Fiscal fields state
   const [cuit] = useState(cidiData?.cuit || '')
-  const [inicioActividades, setInicioActividades] = useState('')
-  const [responsabilidadFiscal, setResponsabilidadFiscal] = useState('Selecciona')
-  const [ingresosBrutos, setIngresosBrutos] = useState('')
-  const [telAdministrativo, setTelAdministrativo] = useState('')
-  const [emailAdministrativo, setEmailAdministrativo] = useState('')
+  const [inicioActividades, setInicioActividades] = useState('2023-01-01')
+  const [responsabilidadFiscal, setResponsabilidadFiscal] = useState('Responsable Inscripto')
+  const [ingresosBrutos, setIngresosBrutos] = useState('123456789')
+  const [telAdministrativo, setTelAdministrativo] = useState('3511234567')
+  const [emailAdministrativo, setEmailAdministrativo] = useState('ejemplo@apross.gov.ar')
 
   // Paso 1: Domicilio Fiscal
-  const [calle, setCalle] = useState('')
-  const [puerta, setPuerta] = useState('')
+  const [calle, setCalle] = useState('Av. Siempre Viva')
+  const [puerta, setPuerta] = useState('123')
   const [apartamento, setApartamento] = useState('')
-  const [codigoPostal, setCodigoPostal] = useState('')
-  const [barrio, setBarrio] = useState('')
-  const [localidad, setLocalidad] = useState('')
+  const [codigoPostal, setCodigoPostal] = useState('5000')
+  const [barrio, setBarrio] = useState('Centro')
+  const [localidad, setLocalidad] = useState('Córdoba')
   const [otrosDatos, setOtrosDatos] = useState('')
 
   // Paso 2: Datos del Perfil fields state
   const [tipoProfesion, setTipoProfesion] = useState('Selecciona')
   const [ambitoMatricula, setAmbitoMatricula] = useState('Selecciona')
-  const [numMatricula, setNumMatricula] = useState('')
+  const [numMatricula, setNumMatricula] = useState('A001MPX29223')
   const [especialidadMedica, setEspecialidadMedica] = useState<string[]>([])
-  const [certificadoRnp, setCertificadoRnp] = useState('')
+  const [certificadoRnp, setCertificadoRnp] = useState('RNP-987654321')
 
   // Paso 2 (Institución Discapacidad): Tipo de Institución & transport state
   const [tipoInstitucion, setTipoInstitucion] = useState('Selecciona')
   const [tipoInstitucionDropdownOpen, setTipoInstitucionDropdownOpen] = useState(false)
-  const [disposicionAndis, setDisposicionAndis] = useState('')
+  const [disposicionAndis, setDisposicionAndis] = useState('DISP-ANDIS-12345')
   const [conductoresList, setConductoresList] = useState<any[]>([])
   const [showConductorModal, setShowConductorModal] = useState(false)
   const [conductorNombre, setConductorNombre] = useState('')
@@ -331,14 +373,25 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
   const [locDiaDropdownOpen, setLocDiaDropdownOpen] = useState(false)
 
   // Paso 5: Seguro y Habilitaciones State
-  const [aseguradoraRazonSocial, setAseguradoraRazonSocial] = useState('')
-  const [aseguradoraCuit, setAseguradoraCuit] = useState('')
-  const [aseguradoraVencimiento, setAseguradoraVencimiento] = useState('')
-  const [aseguradoraNoPoliza, setAseguradoraNoPoliza] = useState('')
-  const [step5AttachedFiles, setStep5AttachedFiles] = useState<{ [key: string]: string }>({})
+  const [aseguradoraRazonSocial, setAseguradoraRazonSocial] = useState('Sancor Seguros')
+  const [aseguradoraCuit, setAseguradoraCuit] = useState('30-50000000-1')
+  const [aseguradoraVencimiento, setAseguradoraVencimiento] = useState('2027-12-31')
+  const [aseguradoraNoPoliza, setAseguradoraNoPoliza] = useState('POL-123456')
+  const [step5AttachedFiles, setStep5AttachedFiles] = useState<{ [key: string]: string }>({
+    'poliza': 'poliza_seguro.pdf',
+    'certificado': 'certificado_habilitacion.pdf'
+  })
 
   // Paso 6: Documentacion legal State
-  const [antecedentesList, setAntecedentesList] = useState<any[]>([])
+  const [antecedentesList, setAntecedentesList] = useState<any[]>([
+    {
+      descripcion: 'Médico Clínico de Guardia',
+      periodoInicio: '26/11/2010',
+      periodoFin: '26/11/2025',
+      establecimiento: 'Colegio San Antonio',
+      establecimientoCuit: '30-12343212'
+    }
+  ])
   const [showAntecedentesModal, setShowAntecedentesModal] = useState(false)
   const [antecedenteDescripcion, setAntecedenteDescripcion] = useState('')
   const [antecedentePeriodoInicio, setAntecedentePeriodoInicio] = useState('')
@@ -351,7 +404,6 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
   const [cbuLoaded, setCbuLoaded] = useState(false)
   const [selectedCbuIndex, setSelectedCbuIndex] = useState(0)
   const [showSuccessModal, setShowSuccessModal] = useState(false)
-  const [showReviewModal, setShowReviewModal] = useState(false)
   const [declaracionJuradaAceptada, setDeclaracionJuradaAceptada] = useState(false)
 
   // Validation state
@@ -367,7 +419,8 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
       if (saved) {
         const parsed = JSON.parse(saved)
         if (parsed && typeof parsed === 'object') {
-          if (parsed.activeStep) setActiveStep(parsed.activeStep)
+          if (parsed.activeStep) setActiveStep(parsed.activeStep) // Legacy
+          if (parsed.estadoPostulacion) setEstadoPostulacion(parsed.estadoPostulacion)
           if (parsed.hasExtension !== undefined) setHasExtension(parsed.hasExtension)
           if (parsed.inicioActividades) setInicioActividades(parsed.inicioActividades)
           if (parsed.responsabilidadFiscal) setResponsabilidadFiscal(parsed.responsabilidadFiscal)
@@ -414,7 +467,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
 
     try {
       const draft = {
-        activeStep, hasExtension, inicioActividades, responsabilidadFiscal, ingresosBrutos,
+        estadoPostulacion, hasExtension, inicioActividades, responsabilidadFiscal, ingresosBrutos,
         tipoProfesion, ambitoMatricula, numMatricula, especialidadMedica, certificadoRnp,
         tipoInstitucion, disposicionAndis, conductoresList, nivelAtencion,
         tipoInstitucionNivel, opcionesChecks, tecnologiaChecks, diagnosticoSubChecks,
@@ -427,7 +480,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
       console.error("Error saving draft", e)
     }
   }, [
-    draftKey, activeStep, hasExtension, inicioActividades, responsabilidadFiscal, ingresosBrutos,
+    draftKey, estadoPostulacion, hasExtension, inicioActividades, responsabilidadFiscal, ingresosBrutos,
     tipoProfesion, ambitoMatricula, numMatricula, especialidadMedica, certificadoRnp,
     tipoInstitucion, disposicionAndis, conductoresList, nivelAtencion,
     tipoInstitucionNivel, opcionesChecks, tecnologiaChecks, diagnosticoSubChecks,
@@ -702,25 +755,15 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
     }
     setValidationErrors([])
 
-    if (activeStep === 2) {
-      const isHealthProfessional = cidiData?.category === 'Profesional de la salud'
-      const isSpecialProfession = tipoProfesion === 'Kinesiólogo' || tipoProfesion === 'Bioquímico' || tipoProfesion === 'Bioquimico'
-      if (isHealthProfessional && isSpecialProfession) {
-        setShowReviewModal(true)
-        return
-      }
-    }
-
-    if (activeStep < 7) {
-      setActiveStep(activeStep + 1)
-    } else {
-      setShowReviewModal(true)
+    const nextIndex = activeStepIndex + 1
+    if (nextIndex < stepPaths.length) {
+      navigate('/alta/' + stepPaths[nextIndex])
     }
   }
 
   const handlePrevStep = () => {
-    if (activeStep > 1) {
-      setActiveStep(activeStep - 1)
+    if (activeStepIndex > 0) {
+      navigate('/alta/' + stepPaths[activeStepIndex - 1])
     } else {
       onGoBack()
     }
@@ -817,13 +860,30 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
         {/* Main Content Area */}
         <main id="alta-postulante-main" style={{ flex: 1, overflowY: 'auto', padding: '24px 28px' }}>
 
-          {showReviewModal ? (
+          {currentPath === 'revision-postulacion' || currentPath === 'revision-inscripcion' ? (
             <div style={{ width: '100%', maxWidth: '1200px', margin: '0 auto', paddingBottom: '40px' }}>
-              <h2 style={{ fontSize: '24px', fontWeight: 700, color: '#111827', marginBottom: '8px' }}>
-                Confirmación de Datos Declarados
-              </h2>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '8px' }}>
+                <h2 style={{ fontSize: '24px', fontWeight: 700, color: '#111827', margin: 0 }}>
+                  Confirmación de Datos Declarados
+                </h2>
+                <div style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  backgroundColor: estadoPostulacion === 'borrador' ? '#E0F2FE' : '#D1FAE5',
+                  padding: '4px 12px',
+                  borderRadius: '16px',
+                  border: `1px solid ${estadoPostulacion === 'borrador' ? '#BAE6FD' : '#A7F3D0'}`,
+                  fontSize: '12px',
+                  fontWeight: 700,
+                  color: estadoPostulacion === 'borrador' ? '#0369A1' : '#065F46',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.04em'
+                }}>
+                  Fase: {estadoPostulacion === 'borrador' ? 'Postulación' : 'Inscripción'}
+                </div>
+              </div>
               <p style={{ fontSize: '14px', color: '#6B7280', marginBottom: '32px' }}>
-                Por favor, verificá que toda la información ingresada sea correcta antes de enviar tu preinscripción.
+                Por favor, verificá que toda la información ingresada sea correcta antes de finalizar esta etapa.
               </p>
 
               {/* Represento a Banner */}
@@ -840,94 +900,133 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginBottom: '32px' }}>
 
-                {/* 1. Datos Fiscales (Full width) */}
-                <div style={{ backgroundColor: '#fff', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
-                  <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#1F2937', borderBottom: '1px solid #F3F4F6', paddingBottom: '12px', marginBottom: '16px' }}>
-                    1. Datos Fiscales
-                  </h4>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', fontSize: '13.5px' }}>
-                    <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>CUIT</span><strong style={{ color: '#374151' }}>{cuit}</strong></div>
-                    <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Inicio Actividades</span><strong style={{ color: '#374151' }}>{inicioActividades}</strong></div>
-                    <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Responsabilidad Fiscal</span><strong style={{ color: '#374151' }}>{responsabilidadFiscal}</strong></div>
-                    <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Ingresos Brutos</span><strong style={{ color: '#374151' }}>{ingresosBrutos}</strong></div>
-                    <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Email Administrativo</span><strong style={{ color: '#374151' }}>{emailAdministrativo}</strong></div>
-                    <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Domicilio</span><strong style={{ color: '#374151' }}>{calle} {puerta}, {localidad}</strong></div>
-                  </div>
-                </div>
+                {estadoPostulacion === 'aceptado' && (
+                  <>
+                    {/* 1. Datos Fiscales (Full width) */}
+                    <div style={{ backgroundColor: '#fff', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #F3F4F6', paddingBottom: '12px', marginBottom: '16px' }}>
+                        <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#1F2937', margin: 0 }}>
+                          1. Datos Fiscales
+                        </h4>
+                        <button onClick={() => navigate('/alta/datos-fiscales')} style={{ display: 'flex', alignItems: 'center', gap: '6px', backgroundColor: '#fff', border: '1px solid #E5E7EB', borderRadius: '16px', padding: '4px 12px', fontSize: '12px', fontWeight: 600, color: '#00AC99', cursor: 'pointer' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#F0FDF4'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#fff'}>
+                          Editar <PencilEditIcon size={12} />
+                        </button>
+                      </div>
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', fontSize: '13.5px' }}>
+                        <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>CUIT</span><strong style={{ color: '#374151' }}>{cuit}</strong></div>
+                        <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Inicio Actividades</span><strong style={{ color: '#374151' }}>{inicioActividades}</strong></div>
+                        <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Responsabilidad Fiscal</span><strong style={{ color: '#374151' }}>{responsabilidadFiscal}</strong></div>
+                        <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Ingresos Brutos</span><strong style={{ color: '#374151' }}>{ingresosBrutos}</strong></div>
+                        <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Email Administrativo</span><strong style={{ color: '#374151' }}>{emailAdministrativo}</strong></div>
+                        <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Domicilio</span><strong style={{ color: '#374151' }}>{calle} {puerta}, {localidad}</strong></div>
+                      </div>
+                    </div>
+                  </>
+                )}
 
                 {/* Grid for remaining cards: 2 columns */}
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
 
-                  {/* 2. Datos del perfil */}
-                  <div style={{ backgroundColor: '#fff', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
-                    <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#1F2937', borderBottom: '1px solid #F3F4F6', paddingBottom: '12px', marginBottom: '16px' }}>
-                      2. Datos del perfil
-                    </h4>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', fontSize: '13.5px' }}>
-                      <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Categoría</span><strong style={{ color: '#374151' }}>{cidiData?.category || 'Profesional de la salud'}</strong></div>
-                      {!isInstitucionNivel && !isInstitucionDiscapacidad ? (
-                        <>
-                          <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Tipo de Profesión</span><strong style={{ color: '#374151' }}>{tipoProfesion || 'Médico'}</strong></div>
-                          {tipoProfesion === 'Medico' && especialidadMedica.length > 0 && (
-                            <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Especialidad Médica</span><strong style={{ color: '#374151' }}>{especialidadMedica.join(', ')}</strong></div>
-                          )}
-                          <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Matrícula</span><strong style={{ color: '#374151' }}>{numMatricula}</strong></div>
-                        </>
-                      ) : isInstitucionDiscapacidad ? (
-                        <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Disposición ANDIS</span><strong style={{ color: '#374151' }}>{disposicionAndis}</strong></div>
-                      ) : (
-                        <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Nivel de Atención</span><strong style={{ color: '#374151' }}>{nivelAtencion}</strong></div>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Render steps 3 through 7 only if not in the Step 2 exception flow */}
-                  {activeStep > 2 && (
+                  {estadoPostulacion === 'borrador' && (
                     <>
-                      {/* 3. Staff */}
+                      {/* 2. Datos del perfil */}
                       <div style={{ backgroundColor: '#fff', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
-                        <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#1F2937', borderBottom: '1px solid #F3F4F6', paddingBottom: '12px', marginBottom: '16px' }}>
-                          3. Staff
-                        </h4>
-                        <div style={{ fontSize: '13.5px' }}>
-                          <span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Integrantes registrados</span>
-                          <strong style={{ color: '#374151' }}>{staffList.length} miembro(s)</strong>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #F3F4F6', paddingBottom: '12px', marginBottom: '16px' }}>
+                          <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#1F2937', margin: 0 }}>
+                            {estadoPostulacion === 'borrador' ? '1. ' : '2. '}Datos del perfil
+                          </h4>
+                          <button onClick={() => navigate('/alta/datos-perfil')} style={{ display: 'flex', alignItems: 'center', gap: '6px', backgroundColor: '#fff', border: '1px solid #E5E7EB', borderRadius: '16px', padding: '4px 12px', fontSize: '12px', fontWeight: 600, color: '#00AC99', cursor: 'pointer' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#F0FDF4'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#fff'}>
+                            Editar <PencilEditIcon size={12} />
+                          </button>
+                        </div>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', fontSize: '13.5px' }}>
+                          <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Categoría</span><strong style={{ color: '#374151' }}>{cidiData?.category || 'Profesional de la salud'}</strong></div>
+                          {!isInstitucionNivel && !isInstitucionDiscapacidad ? (
+                            <>
+                              <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Tipo de Profesión</span><strong style={{ color: '#374151' }}>{tipoProfesion || 'Médico'}</strong></div>
+                              {tipoProfesion === 'Medico' && especialidadMedica.length > 0 && (
+                                <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Especialidad Médica</span><strong style={{ color: '#374151' }}>{especialidadMedica.join(', ')}</strong></div>
+                              )}
+                              <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Matrícula</span><strong style={{ color: '#374151' }}>{numMatricula}</strong></div>
+                            </>
+                          ) : isInstitucionDiscapacidad ? (
+                            <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Disposición ANDIS</span><strong style={{ color: '#374151' }}>{disposicionAndis}</strong></div>
+                          ) : (
+                            <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Nivel de Atención</span><strong style={{ color: '#374151' }}>{nivelAtencion}</strong></div>
+                          )}
                         </div>
                       </div>
 
+                      {/* 3. Staff */}
+                      {!isPersonaFisica && (
+                        <div style={{ backgroundColor: '#fff', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #F3F4F6', paddingBottom: '12px', marginBottom: '16px' }}>
+                            <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#1F2937', margin: 0 }}>
+                              {estadoPostulacion === 'borrador' ? '2. ' : '3. '}Staff
+                            </h4>
+                            <button onClick={() => navigate('/alta/staff')} style={{ display: 'flex', alignItems: 'center', gap: '6px', backgroundColor: '#fff', border: '1px solid #E5E7EB', borderRadius: '16px', padding: '4px 12px', fontSize: '12px', fontWeight: 600, color: '#00AC99', cursor: 'pointer' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#F0FDF4'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#fff'}>
+                              Editar <PencilEditIcon size={12} />
+                            </button>
+                          </div>
+                          <div style={{ fontSize: '13.5px' }}>
+                            <span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Integrantes registrados</span>
+                            <strong style={{ color: '#374151' }}>{staffList.length} miembro(s)</strong>
+                          </div>
+                        </div>
+                      )}
+
                       {/* 4. Lugar de atencion */}
                       <div style={{ backgroundColor: '#fff', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
-                        <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#1F2937', borderBottom: '1px solid #F3F4F6', paddingBottom: '12px', marginBottom: '16px' }}>
-                          4. Lugar de atencion
-                        </h4>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #F3F4F6', paddingBottom: '12px', marginBottom: '16px' }}>
+                          <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#1F2937', margin: 0 }}>
+                            {estadoPostulacion === 'borrador' ? (isPersonaFisica ? '2. ' : '3. ') : '4. '}Lugar de atención
+                          </h4>
+                          <button onClick={() => navigate('/alta/lugar-atencion')} style={{ display: 'flex', alignItems: 'center', gap: '6px', backgroundColor: '#fff', border: '1px solid #E5E7EB', borderRadius: '16px', padding: '4px 12px', fontSize: '12px', fontWeight: 600, color: '#00AC99', cursor: 'pointer' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#F0FDF4'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#fff'}>
+                            Editar <PencilEditIcon size={12} />
+                          </button>
+                        </div>
                         <div style={{ fontSize: '13.5px' }}>
                           <span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Lugares cargados</span>
                           <strong style={{ color: '#374151' }}>{locationsList.length} lugar(es)</strong>
                           {locationsList.length > 0 && (
                             <div style={{ color: '#4B5563', marginTop: '8px', fontSize: '13px' }}>
-                              • Principal: {locationsList[0].nombre} ({locationsList[0].localidad})
+                              ✓ Principal: {locationsList[0].nombre} ({locationsList[0].localidad})
                             </div>
                           )}
                         </div>
                       </div>
+                    </>
+                  )}
 
+                  {estadoPostulacion === 'aceptado' && (
+                    <>
                       {/* 5. Seguro y Habilitaciones */}
                       <div style={{ backgroundColor: '#fff', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
-                        <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#1F2937', borderBottom: '1px solid #F3F4F6', paddingBottom: '12px', marginBottom: '16px' }}>
-                          5. Seguro y Habilitaciones
-                        </h4>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #F3F4F6', paddingBottom: '12px', marginBottom: '16px' }}>
+                          <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#1F2937', margin: 0 }}>
+                            5. Seguro y Habilitaciones
+                          </h4>
+                          <button onClick={() => navigate('/alta/seguro-habilitaciones')} style={{ display: 'flex', alignItems: 'center', gap: '6px', backgroundColor: '#fff', border: '1px solid #E5E7EB', borderRadius: '16px', padding: '4px 12px', fontSize: '12px', fontWeight: 600, color: '#00AC99', cursor: 'pointer' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#F0FDF4'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#fff'}>
+                            Editar <PencilEditIcon size={12} />
+                          </button>
+                        </div>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', fontSize: '13.5px' }}>
                           <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Aseguradora</span><strong style={{ color: '#374151' }}>{aseguradoraRazonSocial || 'Declarado'}</strong></div>
-                          <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Póliza Nº</span><strong style={{ color: '#374151' }}>{aseguradoraNoPoliza}</strong></div>
+                          <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Póliza N°</span><strong style={{ color: '#374151' }}>{aseguradoraNoPoliza}</strong></div>
                           <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Vencimiento</span><strong style={{ color: '#374151' }}>{aseguradoraVencimiento}</strong></div>
                         </div>
                       </div>
 
                       {/* 6. Documentacion legal */}
                       <div style={{ backgroundColor: '#fff', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
-                        <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#1F2937', borderBottom: '1px solid #F3F4F6', paddingBottom: '12px', marginBottom: '16px' }}>
-                          6. Documentacion legal
-                        </h4>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #F3F4F6', paddingBottom: '12px', marginBottom: '16px' }}>
+                          <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#1F2937', margin: 0 }}>
+                            6. Documentación legal
+                          </h4>
+                          <button onClick={() => navigate('/alta/documentacion-legal')} style={{ display: 'flex', alignItems: 'center', gap: '6px', backgroundColor: '#fff', border: '1px solid #E5E7EB', borderRadius: '16px', padding: '4px 12px', fontSize: '12px', fontWeight: 600, color: '#00AC99', cursor: 'pointer' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#F0FDF4'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#fff'}>
+                            Editar <PencilEditIcon size={12} />
+                          </button>
+                        </div>
                         <div style={{ fontSize: '13.5px' }}>
                           <span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Antecedentes profesionales cargados</span>
                           <strong style={{ color: '#374151' }}>{antecedentesList.length} registro(s)</strong>
@@ -936,9 +1035,14 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
 
                       {/* 7. CBU */}
                       <div style={{ backgroundColor: '#fff', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
-                        <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#1F2937', borderBottom: '1px solid #F3F4F6', paddingBottom: '12px', marginBottom: '16px' }}>
-                          7. CBU
-                        </h4>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #F3F4F6', paddingBottom: '12px', marginBottom: '16px' }}>
+                          <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#1F2937', margin: 0 }}>
+                            7. CBU
+                          </h4>
+                          <button onClick={() => navigate('/alta/cbu')} style={{ display: 'flex', alignItems: 'center', gap: '6px', backgroundColor: '#fff', border: '1px solid #E5E7EB', borderRadius: '16px', padding: '4px 12px', fontSize: '12px', fontWeight: 600, color: '#00AC99', cursor: 'pointer' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#F0FDF4'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#fff'}>
+                            Editar <PencilEditIcon size={12} />
+                          </button>
+                        </div>
                         <div style={{ fontSize: '13.5px' }}>
                           <span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Cuenta Bancaria Seleccionada</span>
                           <strong style={{ color: '#374151' }}>
@@ -979,7 +1083,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                 borderTop: '1px solid #E5E7EB', paddingTop: '24px',
               }}>
                 <button
-                  onClick={() => setShowReviewModal(false)}
+                  onClick={handlePrevStep}
                   style={{
                     padding: '12px 28px', borderRadius: '8px',
                     border: '1px solid #D1D5DB', backgroundColor: '#fff',
@@ -993,16 +1097,28 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                 <button
                   disabled={!declaracionJuradaAceptada}
                   onClick={() => {
-                    // Do NOT setShowReviewModal(false) here, so the Review screen stays in the background
-                    const isHealthProfessional = cidiData?.category === 'Profesional de la salud'
-                    const isSpecialProfession = tipoProfesion === 'Kinesiólogo' || tipoProfesion === 'Bioquímico' || tipoProfesion === 'Bioquimico'
-
-                    // Clear the draft from localStorage because we are finishing the process
                     const currentDraftKey = `apross_draft_${cidiData?.cuit || 'default'}_${cidiData?.category || 'default'}`
                     localStorage.removeItem(currentDraftKey)
 
-                    if (activeStep === 2 && isHealthProfessional && isSpecialProfession) {
-                      setShowCollegeModal(true)
+                    if (estadoPostulacion === 'borrador') {
+                      const isHealthProfessional = cidiData?.category === 'Profesional de la salud'
+                      const isSpecialProfession = tipoProfesion === 'Kinesiólogo' || tipoProfesion === 'Bioquímico' || tipoProfesion === 'Bioquimico'
+
+                      if (isHealthProfessional && isSpecialProfession) {
+                        setShowCollegeModal(true)
+                      } else {
+                        if (onComplete && cidiData) {
+                          onComplete({
+                            cuit: cuit || cidiData.cuit,
+                            represented: cidiData.represented,
+                            categoria: cidiData.category,
+                            profesion: tipoProfesion,
+                            nivelAtencion,
+                            tipoInstitucionNivel,
+                            tipoInstitucion
+                          })
+                        }
+                      }
                     } else {
                       setShowSuccessModal(true)
                     }
@@ -1017,10 +1133,37 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                     transition: 'all 0.2s ease'
                   }}
                 >
-                  Confirmar y Preinscribirme
+                  Confirmar y enviar
                 </button>
               </div>
 
+            </div>
+          ) : estadoPostulacion === 'en_revision' ? (
+            <div style={{ maxWidth: '900px', margin: '40px auto', padding: '32px' }}>
+              <div style={{ backgroundColor: '#FEF3C7', border: '1px solid #F59E0B', borderRadius: '8px', padding: '32px', textAlign: 'center' }}>
+                <h3 style={{ fontSize: '20px', fontWeight: 700, color: '#B45309', marginBottom: '12px' }}>Postulación en Revisión</h3>
+                <p style={{ color: '#92400E', marginBottom: '24px', fontSize: '15px' }}>
+                  Sus datos están siendo evaluados por nuestro equipo. Se le notificará una vez aprobada la postulación para continuar con la etapa de Inscripción.
+                </p>
+                <button
+                  onClick={() => {
+                    setEstadoPostulacion('aceptado')
+                    navigate('/alta/datos-fiscales')
+                  }}
+                  style={{
+                    padding: '12px 24px',
+                    backgroundColor: '#F59E0B',
+                    color: 'white',
+                    fontWeight: 600,
+                    fontSize: '14px',
+                    borderRadius: '6px',
+                    border: 'none',
+                    cursor: 'pointer'
+                  }}
+                >
+                  (Ejemplo) Simular Aprobación
+                </button>
+              </div>
             </div>
           ) : (
             <>
@@ -1031,16 +1174,17 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                 padding: '10px 0 0 0',
               }}>
                 <h2 style={{ fontSize: '20px', fontWeight: 600, color: '#1F2937', textAlign: 'center', marginBottom: '20px' }}>
-                  Alta de Postulante
+                  {estadoPostulacion === 'borrador' ? 'Postulación' : 'Inscripción'}
                 </h2>
 
                 {/* Stepper bar */}
                 <div style={{ display: 'flex', borderBottom: '1px solid #E5E7EB', overflowX: 'auto', WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none' }}>
-                  {steps.map((step) => {
-                    const isActive = step.num === activeStep
+                  {activeTabs.filter(tab => !tab.path.startsWith('revision-')).map((tab) => {
+                    const isActive = tab.path === currentPath
                     return (
                       <div
-                        key={step.num}
+                        key={tab.path}
+                        onClick={() => navigate('/alta/' + tab.path)}
                         style={{
                           flex: 1,
                           minWidth: '130px',
@@ -1049,15 +1193,12 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                           borderTop: isActive ? '3px solid #00AC99' : '1px solid transparent',
                           marginTop: '-1px',
                           color: isActive ? '#00AC99' : '#6B7280',
-                          cursor: 'default',
+                          cursor: 'pointer',
                           transition: 'all 0.15s ease',
                         }}
                       >
-                        <div style={{ fontSize: '10.5px', fontWeight: 700, textTransform: 'uppercase', marginBottom: '2px', color: isActive ? '#00AC99' : '#9CA3AF' }}>
-                          Paso {step.num}
-                        </div>
-                        <div style={{ fontSize: '11.5px', fontWeight: isActive ? 600 : 500 }}>
-                          {step.name}
+                        <div style={{ fontSize: '13px', fontWeight: isActive ? 700 : 500 }}>
+                          {tab.name}
                         </div>
                       </div>
                     )
@@ -1640,7 +1781,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                             ))}
                             {/* Agregar conductor */}
                             <div
-                              onClick={() => { setConductorNombre(''); setConductorApellido(''); setConductorCuit(''); setConductorCargo(''); setShowConductorModal(true) }}
+                              onClick={() => { setConductorNombre('Juan'); setConductorApellido('Pérez'); setConductorCuit('20-30405060-7'); setConductorCargo('Chofer principal'); setShowConductorModal(true) }}
                               style={{
                                 display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                                 padding: '12px 16px', cursor: 'pointer', color: '#00AC99',
@@ -3284,6 +3425,27 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                       </div>
                     )}
                   </div>
+                ) : activeStep === 8 ? (
+                  <div>
+                    <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#111827', marginBottom: '24px' }}>Revisión de Postulación</h3>
+                    <p style={{ color: '#4B5563', marginBottom: '24px' }}>Revise los datos ingresados. Al hacer clic en "Enviar Postulación" (Continuar), la solicitud pasará a revisión.</p>
+                    <div style={{ padding: '24px', backgroundColor: '#fff', borderRadius: '8px', border: '1px solid #E5E7EB' }}>
+                      <p style={{ marginBottom: '8px' }}><strong>Categoría:</strong> {cidiData?.category}</p>
+                      <p style={{ marginBottom: '8px' }}><strong>CUIT:</strong> {cuit}</p>
+                      <p style={{ marginBottom: '8px' }}><strong>Lugares de Atención cargados:</strong> {locationsList.length}</p>
+                      {staffList.length > 0 && <p style={{ marginBottom: '8px' }}><strong>Staff cargado:</strong> {staffList.length} miembros</p>}
+                    </div>
+                  </div>
+                ) : activeStep === 9 ? (
+                  <div>
+                    <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#111827', marginBottom: '24px' }}>Revisión de Inscripción</h3>
+                    <p style={{ color: '#4B5563', marginBottom: '24px' }}>Revise los datos fiscales, seguro, documentación y CBU.</p>
+                    <div style={{ padding: '24px', backgroundColor: '#fff', borderRadius: '8px', border: '1px solid #E5E7EB' }}>
+                      <p style={{ marginBottom: '8px' }}><strong>Resp. Fiscal:</strong> {responsabilidadFiscal}</p>
+                      <p style={{ marginBottom: '8px' }}><strong>Aseguradora:</strong> {aseguradoraRazonSocial || 'No cargada'}</p>
+                      <p style={{ marginBottom: '8px' }}><strong>CBU Cargado:</strong> {cbuLoaded ? 'Sí' : 'No'}</p>
+                    </div>
+                  </div>
                 ) : (
                   // ── OTHER STEPS placeholder ──
                   <div style={{ minHeight: '350px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', padding: '40px' }}>
@@ -3342,8 +3504,6 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
                     Continuar
                   </button>
                 </div>
-
-
 
               </div>
             </>
@@ -4359,7 +4519,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
               marginBottom: '12px',
               lineHeight: 1.3,
             }}>
-              ¡Postulacion exitosa!
+              {estadoPostulacion === 'aceptado' ? '¡Inscripción exitosa!' : '¡Postulación exitosa!'}
             </h3>
 
             <p style={{
@@ -4369,13 +4529,17 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
               maxWidth: '540px',
               margin: '0 auto 36px auto',
             }}>
-              Tus datos quedarán en nuestra base y, si tu perfil avanza a la etapa de inscripción, el sistema te habilitará la carga de la documentación necesaria.
+              {estadoPostulacion === 'aceptado'
+                ? 'Tu inscripción ha sido registrada correctamente.'
+                : 'Tus datos quedarán en nuestra base y, si tu perfil avanza a la etapa de inscripción, el sistema te habilitará la carga de la documentación necesaria.'}
             </p>
 
             <button
               onClick={() => {
                 setShowSuccessModal(false)
-                if (onComplete) {
+                if (estadoPostulacion === 'aceptado') {
+                  navigate('/fin-prototipo')
+                } else if (onComplete) {
                   onComplete({
                     cuit: cuit || cidiData?.cuit || '30-12345678-9',
                     represented: cidiData?.represented || 'Sanatorio Allende S.A.',
@@ -4406,7 +4570,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete }: AltaP
               onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#009584'}
               onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#00AC99'}
             >
-              Ir al inicio
+              {estadoPostulacion === 'aceptado' ? 'Siguiente' : 'Ir al inicio'}
             </button>
           </div>
         </div>

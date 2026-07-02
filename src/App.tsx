@@ -1,13 +1,15 @@
 import { useState } from 'react'
+import { Routes, Route, useNavigate } from 'react-router-dom'
 import LandingPostulante from './pages/LandingPostulante'
 import ConfirmacionDatos from './pages/ConfirmacionDatos'
 import ConfirmacionInstitucion from './pages/ConfirmacionInstitucion'
 import AltaPostulante from './pages/AltaPostulante'
+import FinPrototipo from './pages/FinPrototipo'
 
 function App() {
-  const [page, setPage] = useState<'landing' | 'confirmacion' | 'confirmacion-institucion' | 'alta'>('landing')
+  const navigate = useNavigate()
   const [cidiData, setCidiData] = useState<{ represented: string; category: string; cuit: string } | null>(null)
-  const [submittedList, setSubmittedList] = useState<Array<{
+  const [submittedPostulacion, setSubmittedPostulacion] = useState<{
     cuit: string
     represented: string
     categoria: string
@@ -16,29 +18,9 @@ function App() {
     tipoInstitucionNivel?: string
     tipoInstitucion?: string
     estado: string
-  }>>([
-    {
-      cuit: '27-457475-9',
-      represented: 'Camila Gonzales',
-      categoria: 'Profesional de la salud',
-      profesion: 'Medico',
-      estado: 'En revisión'
-    },
-    {
-      cuit: '27-457475-9',
-      represented: 'Camila Gonzales',
-      categoria: 'Profesional de la salud',
-      profesion: 'Bioquímico',
-      estado: 'En revisión'
-    },
-    {
-      cuit: '30-12345678-9',
-      represented: 'Sanatorio Allende S.A.',
-      categoria: 'Prestador de discapacidad',
-      tipoInstitucion: 'Centro de Rehabilitación',
-      estado: 'En revisión'
-    }
-  ])
+  } | null>(null)
+
+  const [fase, setFase] = useState<'borrador' | 'aceptado'>('borrador')
 
   const handleStartPostulacion = () => {
     try {
@@ -53,24 +35,25 @@ function App() {
     } catch (e) {
       console.error(e)
     }
-    setPage('confirmacion')
+    setFase('borrador')
+    navigate('/confirmacion')
   }
 
   const handleConfirmCidi = (represented: string, category: string, cuit: string) => {
     setCidiData({ represented, category, cuit })
     if (represented === 'Sanatorio Allende S.A.') {
-      setPage('confirmacion-institucion')
+      navigate('/confirmacion-institucion')
     } else {
-      setPage('alta')
+      navigate('/alta/datos-perfil')
     }
   }
 
   const handleConfirmInstitution = () => {
-    setPage('alta')
+    navigate('/alta/datos-perfil')
   }
 
   const handleCancelInstitution = () => {
-    setPage('confirmacion')
+    navigate('/confirmacion')
   }
 
   const handleGoBack = () => {
@@ -86,7 +69,7 @@ function App() {
     } catch (e) {
       console.error(e)
     }
-    setPage('landing')
+    navigate('/')
   }
 
   const handleCompletePostulacion = (data: {
@@ -98,47 +81,60 @@ function App() {
     tipoInstitucionNivel?: string
     tipoInstitucion?: string
   }) => {
-    setSubmittedList(prev => [
-      ...prev,
-      {
-        cuit: data.cuit,
-        represented: data.represented,
-        categoria: data.categoria,
-        profesion: data.profesion,
-        nivelAtencion: data.nivelAtencion,
-        tipoInstitucionNivel: data.tipoInstitucionNivel,
-        tipoInstitucion: data.tipoInstitucion,
-        estado: 'En revisión'
-      }
-    ])
-    setPage('landing')
+    setSubmittedPostulacion({
+      cuit: data.cuit,
+      represented: data.represented,
+      categoria: data.categoria,
+      profesion: data.profesion,
+      nivelAtencion: data.nivelAtencion,
+      tipoInstitucionNivel: data.tipoInstitucionNivel,
+      tipoInstitucion: data.tipoInstitucion,
+      estado: 'En revisión'
+    })
+    navigate('/')
   }
 
-  if (page === 'landing') {
-    return <LandingPostulante onStart={handleStartPostulacion} submittedList={submittedList} />
+  const handleSimularAprobacion = () => {
+    if (submittedPostulacion) {
+      setSubmittedPostulacion({ ...submittedPostulacion, estado: 'Aceptado' })
+    }
   }
 
-  if (page === 'confirmacion') {
-    return <ConfirmacionDatos onConfirm={handleConfirmCidi} />
+  const handleSimularNuevo = () => {
+    setSubmittedPostulacion(null)
   }
 
-  if (page === 'confirmacion-institucion') {
-    return (
-      <ConfirmacionInstitucion
-        onConfirm={handleConfirmInstitution}
-        onCancel={handleCancelInstitution}
-      />
-    )
+  const handleStartInscripcion = () => {
+    if (submittedPostulacion) {
+      setCidiData({ represented: submittedPostulacion.represented, category: submittedPostulacion.categoria, cuit: submittedPostulacion.cuit })
+      setFase('aceptado')
+      navigate('/alta/datos-fiscales')
+    }
   }
 
   return (
-    <AltaPostulante
-      cidiData={cidiData}
-      onGoBack={handleGoBack}
-      onComplete={handleCompletePostulacion}
-    />
+    <Routes>
+      <Route path="/" element={<LandingPostulante onStart={handleStartPostulacion} submittedPostulacion={submittedPostulacion} onSimularAprobacion={handleSimularAprobacion} onSimularNuevo={handleSimularNuevo} onStartInscripcion={handleStartInscripcion} />} />
+      <Route path="/confirmacion" element={<ConfirmacionDatos onConfirm={handleConfirmCidi} />} />
+      <Route path="/confirmacion-institucion" element={
+        <ConfirmacionInstitucion
+          onConfirm={handleConfirmInstitution}
+          onCancel={handleCancelInstitution}
+        />
+      } />
+      <Route path="/fin-prototipo" element={<FinPrototipo />} />
+      <Route path="/alta/*" element={
+        <AltaPostulante
+          cidiData={cidiData}
+          onGoBack={handleGoBack}
+          onComplete={handleCompletePostulacion}
+          fase={fase}
+        />
+      } />
+    </Routes>
   )
 }
 
 export default App
+
 
