@@ -248,7 +248,7 @@ export default function LandingPostulante({ onStart, submittedPostulacion, onSim
                         </h3>
                         <p style={{ margin: 0, fontSize: '13px', color: '#6B7280' }}>
                           {submittedPostulacion.estado === 'Aceptado'
-                            ? (submittedPostulacion.profesion === 'Kinesiólogo' || submittedPostulacion.profesion === 'Bioquímico' || submittedPostulacion.profesion === 'Bioquimico')
+                            ? (submittedPostulacion.profesion === 'Bioquímico' || submittedPostulacion.profesion === 'Bioquimico')
                               ? 'Felicidades, tu trámite continuará mediante validación de tu Colegio.'
                               : 'Felicidades, puedes continuar con la inscripción.'
                             : 'Nuestro equipo está evaluando tus datos iniciales.'}
@@ -358,7 +358,7 @@ export default function LandingPostulante({ onStart, submittedPostulacion, onSim
                   </div>
 
                   {/* Action Button Below Grey Card */}
-                  {submittedPostulacion.estado === 'Aceptado' && onStartInscripcion && !(submittedPostulacion.profesion === 'Kinesiólogo' || submittedPostulacion.profesion === 'Bioquímico' || submittedPostulacion.profesion === 'Bioquimico') && (
+                  {submittedPostulacion.estado === 'Aceptado' && onStartInscripcion && !(submittedPostulacion.profesion === 'Bioquímico' || submittedPostulacion.profesion === 'Bioquimico') && (
                     <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                       <button
                         onClick={onStartInscripcion}
@@ -396,7 +396,7 @@ export default function LandingPostulante({ onStart, submittedPostulacion, onSim
                 </div>
 
                 {/* Side Info Card */}
-                {(submittedPostulacion.profesion === 'Kinesiólogo' || submittedPostulacion.profesion === 'Bioquímico' || submittedPostulacion.profesion === 'Bioquimico') ? (
+                {(submittedPostulacion.profesion === 'Bioquímico' || submittedPostulacion.profesion === 'Bioquimico') ? (
                   <div style={{
                     backgroundColor: '#F8FAFC',
                     borderRadius: '16px',

@@ -293,7 +293,8 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
   // Paso 2: Datos del Perfil fields state
   const [tipoProfesion, setTipoProfesion] = useState('Selecciona')
   const [ambitoMatricula, setAmbitoMatricula] = useState('Selecciona')
-  const [numMatricula, setNumMatricula] = useState('A001MPX29223')
+  const [numMatricula, setNumMatricula] = useState('222311')
+  const [numMatriculaEspecialidad, setNumMatriculaEspecialidad] = useState('A001MPX29223')
   const [especialidadMedica, setEspecialidadMedica] = useState<string[]>([])
   const [certificadoRnp, setCertificadoRnp] = useState('RNP-987654321')
 
@@ -426,8 +427,8 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
           if (parsed.responsabilidadFiscal) setResponsabilidadFiscal(parsed.responsabilidadFiscal)
           if (parsed.ingresosBrutos) setIngresosBrutos(parsed.ingresosBrutos)
           if (parsed.tipoProfesion) setTipoProfesion(parsed.tipoProfesion)
-          if (parsed.ambitoMatricula) setAmbitoMatricula(parsed.ambitoMatricula)
           if (parsed.numMatricula) setNumMatricula(parsed.numMatricula)
+          if (parsed.numMatriculaEspecialidad) setNumMatriculaEspecialidad(parsed.numMatriculaEspecialidad)
           if (parsed.especialidadMedica) {
             if (Array.isArray(parsed.especialidadMedica)) {
               setEspecialidadMedica(parsed.especialidadMedica)
@@ -468,7 +469,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
     try {
       const draft = {
         estadoPostulacion, hasExtension, inicioActividades, responsabilidadFiscal, ingresosBrutos,
-        tipoProfesion, ambitoMatricula, numMatricula, especialidadMedica, certificadoRnp,
+        tipoProfesion, ambitoMatricula, numMatricula, numMatriculaEspecialidad, especialidadMedica, certificadoRnp,
         tipoInstitucion, disposicionAndis, conductoresList, nivelAtencion,
         tipoInstitucionNivel, opcionesChecks, tecnologiaChecks, diagnosticoSubChecks,
         otrosTecnologiaText, staffList, locationsList, aseguradoraRazonSocial,
@@ -481,7 +482,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
     }
   }, [
     draftKey, estadoPostulacion, hasExtension, inicioActividades, responsabilidadFiscal, ingresosBrutos,
-    tipoProfesion, ambitoMatricula, numMatricula, especialidadMedica, certificadoRnp,
+    tipoProfesion, ambitoMatricula, numMatricula, numMatriculaEspecialidad, especialidadMedica, certificadoRnp,
     tipoInstitucion, disposicionAndis, conductoresList, nivelAtencion,
     tipoInstitucionNivel, opcionesChecks, tecnologiaChecks, diagnosticoSubChecks,
     otrosTecnologiaText, staffList, locationsList, aseguradoraRazonSocial,
@@ -712,6 +713,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
     if (activeStep === 2) {
       if (!isInstitucionNivel && !isInstitucionDiscapacidad) {
         if (!numMatricula.trim()) errors.push('Número de Matrícula')
+        if (tipoProfesion === 'Medico' && especialidadMedica.length > 0 && !numMatriculaEspecialidad.trim()) errors.push('Número de Matrícula Especialidad')
         if (!tipoProfesion.trim() || tipoProfesion === 'Selecciona') errors.push('Tipo de Profesión')
       }
       if (isInstitucionDiscapacidad) {
@@ -945,7 +947,10 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                             <>
                               <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Tipo de Profesión</span><strong style={{ color: '#374151' }}>{tipoProfesion || 'Médico'}</strong></div>
                               {tipoProfesion === 'Medico' && especialidadMedica.length > 0 && (
-                                <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Especialidad Médica</span><strong style={{ color: '#374151' }}>{especialidadMedica.join(', ')}</strong></div>
+                                <>
+                                  <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Especialidad Médica</span><strong style={{ color: '#374151' }}>{especialidadMedica.join(', ')}</strong></div>
+                                  <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Matrícula Especialidad</span><strong style={{ color: '#374151' }}>{numMatriculaEspecialidad}</strong></div>
+                                </>
                               )}
                               <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Matrícula</span><strong style={{ color: '#374151' }}>{numMatricula}</strong></div>
                             </>
@@ -1102,7 +1107,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
 
                     if (estadoPostulacion === 'borrador') {
                       const isHealthProfessional = cidiData?.category === 'Profesional de la salud'
-                      const isSpecialProfession = tipoProfesion === 'Kinesiólogo' || tipoProfesion === 'Bioquímico' || tipoProfesion === 'Bioquimico'
+                      const isSpecialProfession = tipoProfesion === 'Bioquímico' || tipoProfesion === 'Bioquimico'
 
                       if (isHealthProfessional && isSpecialProfession) {
                         setShowCollegeModal(true)
@@ -2319,6 +2324,28 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                                 <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>El número de matrícula es requerido</p>
                               )}
                             </div>
+                            
+                            {/* Col 3: Número de Matrícula Especialidad */}
+                            {especialidadMedica.length > 0 && (
+                              <div style={{ gridColumn: '1 / -1' }}>
+                                <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
+                                  Número de Matrícula Especialidad <span style={{ color: '#EF4444' }}>*</span>
+                                </label>
+                                <input
+                                  type="text"
+                                  value={numMatriculaEspecialidad}
+                                  onChange={(e) => setNumMatriculaEspecialidad(e.target.value)}
+                                  style={{
+                                    width: '100%', border: validationErrors.includes('Número de Matrícula Especialidad') ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px',
+                                    padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
+                                    outline: 'none', boxSizing: 'border-box',
+                                  }}
+                                />
+                                {validationErrors.includes('Número de Matrícula Especialidad') && (
+                                  <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>El número de matrícula de especialidad es requerido</p>
+                                )}
+                              </div>
+                            )}
                           </>
                         ) : (
                           <>
