@@ -334,6 +334,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
   // Paso 3: Staff State
   const [staffList, setStaffList] = useState<any[]>([])
   const [showStaffModal, setShowStaffModal] = useState(false)
+  const [editingStaffIndex, setEditingStaffIndex] = useState<number | null>(null)
   const [staffCuit, setStaffCuit] = useState('')
   const [staffNombre, setStaffNombre] = useState('')
   const [staffEspecialidad, setStaffEspecialidad] = useState('')
@@ -346,7 +347,8 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
   const [editingLocationIndex, setEditingLocationIndex] = useState<number | null>(null)
 
   const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState(false)
-  const [locationToDeleteIndex, setLocationToDeleteIndex] = useState<number | null>(null)
+  const [itemToDeleteIndex, setItemToDeleteIndex] = useState<number | null>(null)
+  const [itemToDeleteType, setItemToDeleteType] = useState<'lugar' | 'staff' | 'antecedente' | null>(null)
 
   // Modal input fields
   const [locNombre, setLocNombre] = useState('')
@@ -394,6 +396,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
     }
   ])
   const [showAntecedentesModal, setShowAntecedentesModal] = useState(false)
+  const [editingAntecedenteIndex, setEditingAntecedenteIndex] = useState<number | null>(null)
   const [antecedenteDescripcion, setAntecedenteDescripcion] = useState('')
   const [antecedentePeriodoInicio, setAntecedentePeriodoInicio] = useState('')
   const [antecedentePeriodoFin, setAntecedentePeriodoFin] = useState('')
@@ -779,7 +782,15 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
       prescriptor: staffPrescriptor,
       matricula: staffMatricula
     }
-    setStaffList([...staffList, newMember])
+    
+    if (editingStaffIndex !== null) {
+      const updated = [...staffList]
+      updated[editingStaffIndex] = newMember
+      setStaffList(updated)
+      setEditingStaffIndex(null)
+    } else {
+      setStaffList([...staffList, newMember])
+    }
     setShowStaffModal(false)
   }
 
@@ -813,10 +824,17 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
     setShowLocationModal(false)
   }
 
-  const handleDeleteLocation = () => {
-    if (locationToDeleteIndex !== null) {
-      setLocationsList(locationsList.filter((_, idx) => idx !== locationToDeleteIndex))
-      setLocationToDeleteIndex(null)
+  const handleConfirmDelete = () => {
+    if (itemToDeleteIndex !== null && itemToDeleteType) {
+      if (itemToDeleteType === 'lugar') {
+        setLocationsList(locationsList.filter((_, idx) => idx !== itemToDeleteIndex))
+      } else if (itemToDeleteType === 'staff') {
+        setStaffList(staffList.filter((_, idx) => idx !== itemToDeleteIndex))
+      } else if (itemToDeleteType === 'antecedente') {
+        setAntecedentesList(antecedentesList.filter((_, idx) => idx !== itemToDeleteIndex))
+      }
+      setItemToDeleteIndex(null)
+      setItemToDeleteType(null)
     }
     setShowDeleteConfirmModal(false)
   }
@@ -845,7 +863,15 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
       establecimiento: antecedenteEstablecimiento,
       establecimientoCuit: antecedenteEstablecimientoCuit
     }
-    setAntecedentesList([...antecedentesList, newAntecedente])
+    
+    if (editingAntecedenteIndex !== null) {
+      const updated = [...antecedentesList]
+      updated[editingAntecedenteIndex] = newAntecedente
+      setAntecedentesList(updated)
+      setEditingAntecedenteIndex(null)
+    } else {
+      setAntecedentesList([...antecedentesList, newAntecedente])
+    }
     setShowAntecedentesModal(false)
     setAntecedenteDescripcion('')
   }
@@ -2559,16 +2585,46 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                                 </p>
                               </div>
 
-                              <button
-                                onClick={() => setStaffList(staffList.filter((_, i) => i !== idx))}
-                                style={{
-                                  border: 'none', backgroundColor: 'transparent',
-                                  color: '#EF4444', fontSize: '12px', fontWeight: 600,
-                                  cursor: 'pointer',
-                                }}
-                              >
-                                Eliminar
-                              </button>
+                              <div style={{ display: 'flex', gap: '8px' }}>
+                                <button
+                                  onClick={() => {
+                                    setStaffCuit(prof.cuit)
+                                    setStaffNombre(prof.nombre)
+                                    setStaffEspecialidad(prof.especialidad)
+                                    setStaffPrescriptor(prof.prescriptor)
+                                    setStaffMatricula(prof.matricula)
+                                    setEditingStaffIndex(idx)
+                                    setShowStaffModal(true)
+                                  }}
+                                  style={{
+                                    border: '1px solid #D1D5DB', borderRadius: '6px',
+                                    padding: '8px', cursor: 'pointer', backgroundColor: '#fff',
+                                    color: '#374151', display: 'flex', alignItems: 'center', justifyContent: 'center'
+                                  }}
+                                >
+                                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
+                                  </svg>
+                                </button>
+
+                                <button
+                                  onClick={() => {
+                                    setItemToDeleteIndex(idx)
+                                    setItemToDeleteType('staff')
+                                    setShowDeleteConfirmModal(true)
+                                  }}
+                                  style={{
+                                    border: '1px solid #FCA5A5', borderRadius: '6px',
+                                    padding: '8px', cursor: 'pointer', backgroundColor: '#FEF2F2',
+                                    color: '#EF4444', display: 'flex', alignItems: 'center', justifyContent: 'center'
+                                  }}
+                                >
+                                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                    <polyline points="3 6 5 6 21 6" />
+                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                  </svg>
+                                </button>
+                              </div>
                             </div>
                           ))}
                         </div>
@@ -2668,7 +2724,8 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                           {/* Delete Button */}
                           <button
                             onClick={() => {
-                              setLocationToDeleteIndex(idx)
+                              setItemToDeleteIndex(idx)
+                              setItemToDeleteType('lugar')
                               setShowDeleteConfirmModal(true)
                             }}
                             style={{
@@ -3201,12 +3258,46 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                                       Establecimiento: <strong style={{ color: '#4B5563' }}>{ant.establecimiento}</strong> | CUIT: <strong style={{ color: '#4B5563' }}>{ant.establecimientoCuit || 'N/A'}</strong> | Período: <strong style={{ color: '#4B5563' }}>{ant.periodoInicio} - {ant.periodoFin}</strong>
                                     </p>
                                   </div>
-                                  <button
-                                    onClick={() => setAntecedentesList(antecedentesList.filter((_, i) => i !== idx))}
-                                    style={{ border: 'none', backgroundColor: 'transparent', color: '#EF4444', fontSize: '12px', fontWeight: 600, cursor: 'pointer' }}
-                                  >
-                                    Eliminar
-                                  </button>
+                                  <div style={{ display: 'flex', gap: '8px' }}>
+                                    <button
+                                      onClick={() => {
+                                        setAntecedenteDescripcion(ant.descripcion)
+                                        setAntecedentePeriodoInicio(ant.periodoInicio)
+                                        setAntecedentePeriodoFin(ant.periodoFin)
+                                        setAntecedenteEstablecimiento(ant.establecimiento)
+                                        setAntecedenteEstablecimientoCuit(ant.establecimientoCuit)
+                                        setEditingAntecedenteIndex(idx)
+                                        setShowAntecedentesModal(true)
+                                      }}
+                                      style={{
+                                        border: '1px solid #D1D5DB', borderRadius: '6px',
+                                        padding: '8px', cursor: 'pointer', backgroundColor: '#fff',
+                                        color: '#374151', display: 'flex', alignItems: 'center', justifyContent: 'center'
+                                      }}
+                                    >
+                                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
+                                      </svg>
+                                    </button>
+
+                                    <button
+                                      onClick={() => {
+                                        setItemToDeleteIndex(idx)
+                                        setItemToDeleteType('antecedente')
+                                        setShowDeleteConfirmModal(true)
+                                      }}
+                                      style={{
+                                        border: '1px solid #FCA5A5', borderRadius: '6px',
+                                        padding: '8px', cursor: 'pointer', backgroundColor: '#FEF2F2',
+                                        color: '#EF4444', display: 'flex', alignItems: 'center', justifyContent: 'center'
+                                      }}
+                                    >
+                                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                        <polyline points="3 6 5 6 21 6" />
+                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                      </svg>
+                                    </button>
+                                  </div>
                                 </div>
                               ))}
                             </div>
@@ -4301,7 +4392,9 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
               marginBottom: '10px',
               lineHeight: 1.4,
             }}>
-              ¿Estás seguro de eliminar este lugar de atención?
+              {itemToDeleteType === 'lugar' ? '¿Estás seguro de eliminar este lugar de atención?' :
+               itemToDeleteType === 'staff' ? '¿Estás seguro de eliminar este profesional?' :
+               '¿Estás seguro de eliminar este antecedente?'}
             </h3>
 
             <p style={{
@@ -4313,7 +4406,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
             </p>
 
             <button
-              onClick={handleDeleteLocation}
+              onClick={handleConfirmDelete}
               style={{
                 width: '100%',
                 padding: '11px 24px',

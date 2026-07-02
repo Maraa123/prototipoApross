@@ -16,7 +16,8 @@ export default function Sidebar2() {
       label: 'Trámites',
       icon: <BriefcaseIcon size={16} style={{ color: '#4B5563' }} />,
       subItems: [
-        { label: 'Registro Postulantes', path: '/' }
+        { label: 'Registro Postulantes', path: '/' },
+        { label: 'Empadronamiento', path: '/' },
       ]
     },
     { label: 'Herr. Administrativas', icon: <FileIcon size={16} style={{ color: '#4B5563' }} /> },

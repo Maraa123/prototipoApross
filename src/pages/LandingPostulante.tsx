@@ -257,6 +257,12 @@ export default function LandingPostulante({ onStart, submittedPostulacion, onSim
                     </div>
                   </div>
 
+                  <div style={{ marginBottom: '16px' }}>
+                    <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#1F2937', margin: 0 }}>
+                      Nº de Expediente: 012345
+                    </h4>
+                  </div>
+
                   <div style={{
                     display: 'flex',
                     flexDirection: 'column',
