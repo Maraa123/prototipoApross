@@ -229,7 +229,9 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
   const isDisabilityCategory = cidiData?.category === 'Prestador de discapacidad'
   const isInstitucionDiscapacidad = cidiData?.represented === 'Sanatorio Allende S.A.' && cidiData?.category === 'Prestador de discapacidad'
   const isInstitucionNivel = cidiData?.represented === 'Sanatorio Allende S.A.' && cidiData?.category === 'Institución'
-  const isPersonaFisica = !isDisabilityCategory && !isInstitucionNivel
+  // Persona física = el representado NO es persona jurídica (Sanatorio). Staff solo aplica a personas jurídicas.
+  const isPersonaJuridica = cidiData?.represented === 'Sanatorio Allende S.A.'
+  const isPersonaFisica = !isPersonaJuridica
 
   const [estadoPostulacion, setEstadoPostulacion] = useState<'borrador' | 'en_revision' | 'aceptado'>(fase)
 
@@ -363,9 +365,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
   const [locTelTurnos, setLocTelTurnos] = useState('')
   const [locTelEmergencia, setLocTelEmergencia] = useState('')
   const [locEmail, setLocEmail] = useState('')
-  const [locDia, setLocDia] = useState<string[]>([])
-  const [locHoraInicio, setLocHoraInicio] = useState('')
-  const [locHoraFin, setLocHoraFin] = useState('')
+  const [locHorarios, setLocHorarios] = useState<{dias: string[], inicio: string, fin: string, diaOpen: boolean}[]>([])
 
   // UI State
   const [respFiscalDropdownOpen, setRespFiscalDropdownOpen] = useState(false)
@@ -373,7 +373,6 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
   const [ambitoMatriculaDropdownOpen, setAmbitoMatriculaDropdownOpen] = useState(false)
   const [especialidadDropdownOpen, setEspecialidadDropdownOpen] = useState(false)
   const [showCollegeModal, setShowCollegeModal] = useState(false)
-  const [locDiaDropdownOpen, setLocDiaDropdownOpen] = useState(false)
 
   // Paso 5: Seguro y Habilitaciones State
   const [aseguradoraRazonSocial, setAseguradoraRazonSocial] = useState('Sancor Seguros')
@@ -808,9 +807,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
       telTurnos: locTelTurnos,
       telEmergencia: locTelEmergencia,
       email: locEmail,
-      dia: locDia.length > 0 ? locDia.join(', ') : '',
-      horaInicio: locHoraInicio,
-      horaFin: locHoraFin
+      horarios: locHorarios.map(h => ({ dias: h.dias, inicio: h.inicio, fin: h.fin }))
     }
 
     if (editingLocationIndex !== null) {
@@ -890,25 +887,10 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
 
           {currentPath === 'revision-postulacion' || currentPath === 'revision-inscripcion' ? (
             <div style={{ width: '100%', maxWidth: '1200px', margin: '0 auto', paddingBottom: '40px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '8px' }}>
+              <div style={{ marginBottom: '8px' }}>
                 <h2 style={{ fontSize: '24px', fontWeight: 700, color: '#111827', margin: 0 }}>
                   Confirmación de Datos Declarados
                 </h2>
-                <div style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  backgroundColor: estadoPostulacion === 'borrador' ? '#E0F2FE' : '#D1FAE5',
-                  padding: '4px 12px',
-                  borderRadius: '16px',
-                  border: `1px solid ${estadoPostulacion === 'borrador' ? '#BAE6FD' : '#A7F3D0'}`,
-                  fontSize: '12px',
-                  fontWeight: 700,
-                  color: estadoPostulacion === 'borrador' ? '#0369A1' : '#065F46',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.04em'
-                }}>
-                  Fase: {estadoPostulacion === 'borrador' ? 'Postulación' : 'Inscripción'}
-                </div>
               </div>
               <p style={{ fontSize: '14px', color: '#6B7280', marginBottom: '32px' }}>
                 Por favor, verificá que toda la información ingresada sea correcta antes de finalizar esta etapa.
@@ -1031,11 +1013,11 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
 
                   {estadoPostulacion === 'aceptado' && (
                     <>
-                      {/* 5. Seguro y Habilitaciones */}
+                      {/* 2. Seguro y Habilitaciones */}
                       <div style={{ backgroundColor: '#fff', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #F3F4F6', paddingBottom: '12px', marginBottom: '16px' }}>
                           <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#1F2937', margin: 0 }}>
-                            5. Seguro y Habilitaciones
+                            2. Seguro y Habilitaciones
                           </h4>
                           <button onClick={() => navigate('/alta/seguro-habilitaciones')} style={{ display: 'flex', alignItems: 'center', gap: '6px', backgroundColor: '#fff', border: '1px solid #E5E7EB', borderRadius: '16px', padding: '4px 12px', fontSize: '12px', fontWeight: 600, color: '#00AC99', cursor: 'pointer' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#F0FDF4'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#fff'}>
                             Editar <PencilEditIcon size={12} />
@@ -1048,11 +1030,11 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                         </div>
                       </div>
 
-                      {/* 6. Documentacion legal */}
+                      {/* 3. Documentacion legal */}
                       <div style={{ backgroundColor: '#fff', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #F3F4F6', paddingBottom: '12px', marginBottom: '16px' }}>
                           <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#1F2937', margin: 0 }}>
-                            6. Documentación legal
+                            3. Documentación legal
                           </h4>
                           <button onClick={() => navigate('/alta/documentacion-legal')} style={{ display: 'flex', alignItems: 'center', gap: '6px', backgroundColor: '#fff', border: '1px solid #E5E7EB', borderRadius: '16px', padding: '4px 12px', fontSize: '12px', fontWeight: 600, color: '#00AC99', cursor: 'pointer' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#F0FDF4'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#fff'}>
                             Editar <PencilEditIcon size={12} />
@@ -1064,11 +1046,11 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                         </div>
                       </div>
 
-                      {/* 7. CBU */}
+                      {/* 4. CBU */}
                       <div style={{ backgroundColor: '#fff', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #F3F4F6', paddingBottom: '12px', marginBottom: '16px' }}>
                           <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#1F2937', margin: 0 }}>
-                            7. CBU
+                            4. CBU
                           </h4>
                           <button onClick={() => navigate('/alta/cbu')} style={{ display: 'flex', alignItems: 'center', gap: '6px', backgroundColor: '#fff', border: '1px solid #E5E7EB', borderRadius: '16px', padding: '4px 12px', fontSize: '12px', fontWeight: 600, color: '#00AC99', cursor: 'pointer' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#F0FDF4'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#fff'}>
                             Editar <PencilEditIcon size={12} />
@@ -2704,9 +2686,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                               setLocTelTurnos(loc.telTurnos)
                               setLocTelEmergencia(loc.telEmergencia)
                               setLocEmail(loc.email)
-                              setLocDia(loc.dia ? loc.dia.split(', ') : [])
-                              setLocHoraInicio(loc.horaInicio)
-                              setLocHoraFin(loc.horaFin)
+                              setLocHorarios((loc.horarios || []).map((h: any) => ({ ...h, diaOpen: false })))
                               setEditingLocationIndex(idx)
                               setShowLocationModal(true)
                             }}
@@ -2758,9 +2738,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                         setLocTelTurnos('351-13222432')
                         setLocTelEmergencia('3541-123432')
                         setLocEmail('consultas@hospital.com')
-                        setLocDia(['Lunes'])
-                        setLocHoraInicio('08:00hs')
-                        setLocHoraFin('18:00hs')
+                        setLocHorarios([{ dias: ['Lunes'], inicio: '08:00', fin: '18:00', diaOpen: false }])
                         setEditingLocationIndex(null)
                         setShowLocationModal(true)
                       }}
@@ -4175,131 +4153,150 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
               </div>
             </div>
 
-            <SectionTitle>Horarios de Atencion</SectionTitle>
+            <SectionTitle>Horarios de Atención</SectionTitle>
 
-            {/* Row 6: Dia, hora inicio, hora fin */}
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 1fr 1fr',
-              gap: '16px',
-              marginBottom: '20px',
-            }}>
-
-              <div style={{ position: 'relative' }}>
-                <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
-                  Dias de la semana
-                </label>
-                <div
-                  onClick={() => setLocDiaDropdownOpen(!locDiaDropdownOpen)}
-                  style={{
-                    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                    border: '1px solid #D1D5DB', borderRadius: '6px',
-                    padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
-                    backgroundColor: '#fff', cursor: 'pointer', userSelect: 'none', boxSizing: 'border-box',
-                  }}
-                >
-                  <span>{locDia.length > 0 ? locDia.join(', ') : 'Selecciona'}</span>
-                  <ChevronDownIcon />
-                </div>
-
-                {locDiaDropdownOpen && (
-                  <div style={{
-                    position: 'absolute', bottom: '100%', left: 0, right: 0,
-                    marginBottom: '4px', backgroundColor: '#fff', border: '1px solid #D1D5DB',
-                    borderRadius: '6px', boxShadow: '0 -4px 12px rgba(0, 0, 0, 0.08)',
-                    zIndex: 1010, maxHeight: '180px', overflowY: 'auto',
+            {/* Lista de franjas horarias */}
+            {locHorarios.length > 0 && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '12px' }}>
+                {locHorarios.map((h, idx) => (
+                  <div key={idx} style={{
+                    border: '1px solid #E5E7EB', borderRadius: '8px',
+                    padding: '12px 14px', backgroundColor: '#F9FAFB',
                   }}>
-                    {locDiaOptions.map((opt) => (
-                      <div
-                        key={opt}
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          if (locDia.includes(opt)) {
-                            setLocDia(locDia.filter(d => d !== opt))
-                          } else {
-                            setLocDia([...locDia, opt])
-                          }
-                        }}
-                        style={{
-                          padding: '8px 12px', fontSize: '13px', cursor: 'pointer',
-                          backgroundColor: locDia.includes(opt) ? '#E6F6F4' : '#fff',
-                          color: locDia.includes(opt) ? '#00AC99' : '#1F2937',
-                          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                          fontWeight: locDia.includes(opt) ? 600 : 400
-                        }}
-                      >
-                        {opt}
-                        {locDia.includes(opt) && (
-                          <CheckIcon />
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr auto', gap: '12px', alignItems: 'end' }}>
+
+                      {/* Días selector */}
+                      <div style={{ position: 'relative' }}>
+                        <label style={{ fontSize: '11px', fontWeight: 600, color: '#6B7280', display: 'block', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Días</label>
+                        <div
+                          onClick={() => setLocHorarios(locHorarios.map((x, i) => i === idx ? { ...x, diaOpen: !x.diaOpen } : { ...x, diaOpen: false }))}
+                          style={{
+                            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                            border: '1px solid #D1D5DB', borderRadius: '6px',
+                            padding: '7px 10px', fontSize: '13px', color: h.dias.length > 0 ? '#1F2937' : '#9CA3AF',
+                            backgroundColor: '#fff', cursor: 'pointer', userSelect: 'none', boxSizing: 'border-box',
+                          }}
+                        >
+                          <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '120px' }}>
+                            {h.dias.length > 0 ? h.dias.join(', ') : 'Seleccionar...'}
+                          </span>
+                          <ChevronDownIcon />
+                        </div>
+                        {h.diaOpen && (
+                          <div style={{
+                            position: 'absolute', top: '100%', left: 0, right: 0,
+                            marginTop: '4px', backgroundColor: '#fff', border: '1px solid #D1D5DB',
+                            borderRadius: '6px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                            zIndex: 1020, maxHeight: '180px', overflowY: 'auto',
+                          }}>
+                            {locDiaOptions.map((opt) => (
+                              <div
+                                key={opt}
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  const updated = locHorarios.map((x, i) => {
+                                    if (i !== idx) return x
+                                    const dias = x.dias.includes(opt) ? x.dias.filter(d => d !== opt) : [...x.dias, opt]
+                                    return { ...x, dias }
+                                  })
+                                  setLocHorarios(updated)
+                                }}
+                                style={{
+                                  padding: '8px 12px', fontSize: '13px', cursor: 'pointer',
+                                  backgroundColor: h.dias.includes(opt) ? '#E6F6F4' : '#fff',
+                                  color: h.dias.includes(opt) ? '#00AC99' : '#1F2937',
+                                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                                  fontWeight: h.dias.includes(opt) ? 600 : 400,
+                                }}
+                              >
+                                {opt}
+                                {h.dias.includes(opt) && <CheckIcon />}
+                              </div>
+                            ))}
+                          </div>
                         )}
                       </div>
-                    ))}
+
+                      {/* Hora inicio */}
+                      <div>
+                        <label style={{ fontSize: '11px', fontWeight: 600, color: '#6B7280', display: 'block', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Desde</label>
+                        <input
+                          type="text"
+                          placeholder="08:00"
+                          value={h.inicio}
+                          onChange={(e) => setLocHorarios(locHorarios.map((x, i) => i === idx ? { ...x, inicio: e.target.value } : x))}
+                          style={{
+                            width: '100%', border: '1px solid #D1D5DB', borderRadius: '6px',
+                            padding: '7px 10px', fontSize: '13px', color: '#1F2937',
+                            outline: 'none', boxSizing: 'border-box',
+                          }}
+                        />
+                      </div>
+
+                      {/* Hora fin */}
+                      <div>
+                        <label style={{ fontSize: '11px', fontWeight: 600, color: '#6B7280', display: 'block', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Hasta</label>
+                        <input
+                          type="text"
+                          placeholder="18:00"
+                          value={h.fin}
+                          onChange={(e) => setLocHorarios(locHorarios.map((x, i) => i === idx ? { ...x, fin: e.target.value } : x))}
+                          style={{
+                            width: '100%', border: '1px solid #D1D5DB', borderRadius: '6px',
+                            padding: '7px 10px', fontSize: '13px', color: '#1F2937',
+                            outline: 'none', boxSizing: 'border-box',
+                          }}
+                        />
+                      </div>
+
+                      {/* Eliminar fila */}
+                      <button
+                        onClick={() => setLocHorarios(locHorarios.filter((_, i) => i !== idx))}
+                        style={{
+                          width: '30px', height: '30px', borderRadius: '6px',
+                          border: '1px solid #FCA5A5', backgroundColor: '#FEF2F2',
+                          color: '#DC2626', cursor: 'pointer',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          flexShrink: 0, fontSize: '14px', fontWeight: 'bold',
+                        }}
+                      >
+                        ×
+                      </button>
+                    </div>
                   </div>
-                )}
+                ))}
               </div>
+            )}
 
-              <div>
-                <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
-                  Hora de inicio
-                </label>
-                <input
-                  type="text"
-                  value={locHoraInicio}
-                  onChange={(e) => setLocHoraInicio(e.target.value)}
-                  style={{
-                    width: '100%', border: '1px solid #D1D5DB', borderRadius: '6px',
-                    padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
-                    outline: 'none', boxSizing: 'border-box',
-                  }}
-                />
-              </div>
-
-              <div>
-                <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
-                  Hora de fin
-                </label>
-                <input
-                  type="text"
-                  value={locHoraFin}
-                  onChange={(e) => setLocHoraFin(e.target.value)}
-                  style={{
-                    width: '100%', border: '1px solid #D1D5DB', borderRadius: '6px',
-                    padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
-                    outline: 'none', boxSizing: 'border-box',
-                  }}
-                />
-              </div>
-            </div>
-
-            {/* Agregar Horarios de Atención banner */}
-            <div style={{
-              border: '1px solid #E5E7EB',
-              borderRadius: '6px',
-              padding: '10px 14px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              backgroundColor: '#fff',
-              cursor: 'pointer',
-              marginBottom: '28px',
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <div style={{
-                  width: '24px', height: '24px', borderRadius: '4px',
-                  backgroundColor: '#E6F6F4', color: '#00AC99',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: '15px', fontWeight: 'bold',
-                }}>
-                  +
-                </div>
-                <span style={{ fontSize: '13px', fontWeight: 700, color: '#00AC99' }}>
-                  Agregar Horarios de Atención
-                </span>
-              </div>
-              <span style={{ color: '#9CA3AF', display: 'flex', alignItems: 'center' }}>
-                <ChevronDownIcon />
+            {/* Botón Agregar Horario */}
+            <div
+              onClick={() => setLocHorarios([...locHorarios, { dias: [], inicio: '', fin: '', diaOpen: false }])}
+              style={{
+                border: '1px dashed #00AC99',
+                borderRadius: '6px',
+                padding: '10px 14px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                backgroundColor: '#fff',
+                cursor: 'pointer',
+                marginBottom: '28px',
+                transition: 'background-color 0.15s ease',
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#F0FDF9')}
+              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#fff')}
+            >
+              <div style={{
+                width: '22px', height: '22px', borderRadius: '4px',
+                backgroundColor: '#E6F6F4', color: '#00AC99',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: '16px', fontWeight: 'bold', flexShrink: 0,
+              }}>+</div>
+              <span style={{ fontSize: '13px', fontWeight: 700, color: '#00AC99' }}>
+                Agregar Horario de Atención
               </span>
             </div>
+
 
             {/* Modal action buttons */}
             <div style={{

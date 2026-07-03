@@ -41,6 +41,7 @@ export default function LandingPostulante({ onStart, submittedPostulacion, onSim
                 <h1 style={{ fontSize: '24px', fontWeight: 400, color: '#333', margin: 0, fontFamily: 'Arial, sans-serif' }}>
                   Registro Postulantes
                 </h1>
+
                 <span style={{ fontSize: '15px', color: '#6B7280', fontWeight: 400 }}>
                   Iniciá tu postulación para formar parte de la red de prestadores
                 </span>
@@ -137,7 +138,7 @@ export default function LandingPostulante({ onStart, submittedPostulacion, onSim
                     fontSize: '22px', fontWeight: 800, color: '#fff',
                     margin: '0 0 8px 0', lineHeight: 1.2,
                   }}>
-                    Registro de Postulantes a Prestadores
+                    Iniciá tu postulación
                   </h2>
 
                   {/* Subtitle */}
@@ -163,8 +164,7 @@ export default function LandingPostulante({ onStart, submittedPostulacion, onSim
                       lineHeight: 1.5, margin: 0,
                     }}>
                       <strong style={{ color: 'rgba(255,255,255,0.95)' }}>Importante:</strong>{' '}
-                      La aplicación mediante este formulario no implica la incorporación del prestador,
-                      el cual deberá cumplimentar con los datos solicitados y aguardar la evaluación.
+                      Este formulario es solo una postulación de interés. No implica alta ni vinculación contractual con APROSS. Su admisión definitiva queda sujeta a evaluación técnica, disponibilidad de cupos y validación documental.
                     </p>
                   </div>
 
@@ -255,12 +255,6 @@ export default function LandingPostulante({ onStart, submittedPostulacion, onSim
                         </p>
                       </div>
                     </div>
-                  </div>
-
-                  <div style={{ marginBottom: '16px' }}>
-                    <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#1F2937', margin: 0 }}>
-                      Nº de Expediente: 012345
-                    </h4>
                   </div>
 
                   <div style={{
