@@ -42,7 +42,7 @@ function App() {
   const handleConfirmCidi = (represented: string, category: string, cuit: string) => {
     setCidiData({ represented, category, cuit })
     if (represented === 'Sanatorio Allende S.A.') {
-      navigate('/confirmacion-institucion')
+      navigate('/alta/datos-institucion')
     } else {
       navigate('/alta/datos-perfil')
     }
