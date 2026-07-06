@@ -316,7 +316,14 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
   const [tipoProfesion, setTipoProfesion] = useState('Selecciona')
   const [ambitoMatricula, setAmbitoMatricula] = useState('Selecciona')
   const [numMatricula, setNumMatricula] = useState('222311')
-  const [numMatriculaEspecialidad, setNumMatriculaEspecialidad] = useState('A001MPX29223')
+  const [especialidadesData, setEspecialidadesData] = useState<Record<string, { matricula: string; constancia: string }>>({})
+
+  const updateEspecialidadMatricula = (esp: string, value: string) => {
+    setEspecialidadesData(prev => ({ ...prev, [esp]: { ...prev[esp], matricula: value } }))
+  }
+  const updateEspecialidadConstancia = (esp: string, fileName: string) => {
+    setEspecialidadesData(prev => ({ ...prev, [esp]: { ...prev[esp], constancia: fileName } }))
+  }
   const [especialidadMedica, setEspecialidadMedica] = useState<string[]>([])
   const [certificadoRnp, setCertificadoRnp] = useState('RNP-987654321')
   const [noTengoMatricula, setNoTengoMatricula] = useState(false)
@@ -452,7 +459,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
           if (parsed.ingresosBrutos) setIngresosBrutos(parsed.ingresosBrutos)
           if (parsed.tipoProfesion) setTipoProfesion(parsed.tipoProfesion)
           if (parsed.numMatricula) setNumMatricula(parsed.numMatricula)
-          if (parsed.numMatriculaEspecialidad) setNumMatriculaEspecialidad(parsed.numMatriculaEspecialidad)
+          if (parsed.especialidadesData && typeof parsed.especialidadesData === 'object') setEspecialidadesData(parsed.especialidadesData)
           if (parsed.especialidadMedica) {
             if (Array.isArray(parsed.especialidadMedica)) {
               setEspecialidadMedica(parsed.especialidadMedica)
@@ -493,7 +500,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
     try {
       const draft = {
         estadoPostulacion, hasExtension, inicioActividades, responsabilidadFiscal, ingresosBrutos,
-        tipoProfesion, ambitoMatricula, numMatricula, numMatriculaEspecialidad, especialidadMedica, certificadoRnp,
+        tipoProfesion, ambitoMatricula, numMatricula, especialidadesData, especialidadMedica, certificadoRnp,
         tipoInstitucion, disposicionAndis, conductoresList, nivelAtencion,
         tipoInstitucionNivel, opcionesChecks, tecnologiaChecks, diagnosticoSubChecks,
         otrosTecnologiaText, staffList, locationsList, aseguradoraRazonSocial,
@@ -506,7 +513,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
     }
   }, [
     draftKey, estadoPostulacion, hasExtension, inicioActividades, responsabilidadFiscal, ingresosBrutos,
-    tipoProfesion, ambitoMatricula, numMatricula, numMatriculaEspecialidad, especialidadMedica, certificadoRnp,
+    tipoProfesion, ambitoMatricula, numMatricula, especialidadesData, especialidadMedica, certificadoRnp,
     tipoInstitucion, disposicionAndis, conductoresList, nivelAtencion,
     tipoInstitucionNivel, opcionesChecks, tecnologiaChecks, diagnosticoSubChecks,
     otrosTecnologiaText, staffList, locationsList, aseguradoraRazonSocial,
@@ -750,7 +757,13 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
     if (activeStep === 2) {
       if (!isInstitucionNivel && !isInstitucionDiscapacidad) {
         if (!numMatricula.trim() && !noTengoMatricula) errors.push('Número de Matrícula')
-        if (tipoProfesion === 'Medico' && especialidadMedica.length > 0 && !numMatriculaEspecialidad.trim()) errors.push('Número de Matrícula Especialidad')
+        if (tipoProfesion === 'Medico' && especialidadMedica.length > 0) {
+          especialidadMedica.forEach(esp => {
+            if (!(especialidadesData[esp]?.matricula || '').trim()) {
+              errors.push(`Matrícula Especialidad: ${esp}`)
+            }
+          })
+        }
         if (!tipoProfesion.trim() || tipoProfesion === 'Selecciona') errors.push('Tipo de Profesión')
       }
       if (isInstitucionDiscapacidad || isInstitucionNivel) {
@@ -1021,10 +1034,16 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                             <>
                               <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Tipo de Profesión</span><strong style={{ color: '#374151' }}>{tipoProfesion || 'Médico'}</strong></div>
                               {tipoProfesion === 'Medico' && especialidadMedica.length > 0 && (
-                                <>
-                                  <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Especialidad Médica</span><strong style={{ color: '#374151' }}>{especialidadMedica.join(', ')}</strong></div>
-                                  <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Matrícula Especialidad</span><strong style={{ color: '#374151' }}>{numMatriculaEspecialidad}</strong></div>
-                                </>
+                                <div style={{ gridColumn: '1 / -1' }}>
+                                  <span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '6px' }}>Especialidades Médicas</span>
+                                  {especialidadMedica.map(esp => (
+                                    <div key={esp} style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '4px' }}>
+                                      <strong style={{ color: '#374151', fontSize: '13px' }}>{esp}</strong>
+                                      <span style={{ color: '#9CA3AF', fontSize: '12px' }}>Mat.: {especialidadesData[esp]?.matricula || '—'}</span>
+                                      {especialidadesData[esp]?.constancia && <span style={{ color: '#10B981', fontSize: '12px' }}>✓ Constancia</span>}
+                                    </div>
+                                  ))}
+                                </div>
                               )}
                               <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Matrícula</span><strong style={{ color: '#374151' }}>{numMatricula}</strong></div>
                             </>
@@ -1121,7 +1140,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                       <div style={{ backgroundColor: '#fff', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #F3F4F6', paddingBottom: '12px', marginBottom: '16px' }}>
                           <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#1F2937', margin: 0 }}>
-                            3. Documentación legal
+                            {isPersonaFisica ? '3.' : '2.'} Documentación legal
                           </h4>
                           <button onClick={() => navigate('/alta/documentacion-legal')} style={{ display: 'flex', alignItems: 'center', gap: '6px', backgroundColor: '#fff', border: '1px solid #E5E7EB', borderRadius: '16px', padding: '4px 12px', fontSize: '12px', fontWeight: 600, color: '#00AC99', cursor: 'pointer' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#F0FDF4'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#fff'}>
                             Editar <PencilEditIcon size={12} />
@@ -1137,7 +1156,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                       <div style={{ backgroundColor: '#fff', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #F3F4F6', paddingBottom: '12px', marginBottom: '16px' }}>
                           <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#1F2937', margin: 0 }}>
-                            4. CBU
+                            {isPersonaFisica ? '4.' : '3.'} CBU
                           </h4>
                           <button onClick={() => navigate('/alta/cbu')} style={{ display: 'flex', alignItems: 'center', gap: '6px', backgroundColor: '#fff', border: '1px solid #E5E7EB', borderRadius: '16px', padding: '4px 12px', fontSize: '12px', fontWeight: 600, color: '#00AC99', cursor: 'pointer' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#F0FDF4'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#fff'}>
                             Editar <PencilEditIcon size={12} />
@@ -2513,7 +2532,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                                     style={{ width: '16px', height: '16px', cursor: 'pointer' }}
                                   />
                                   <label htmlFor="noTengoMatricula1" style={{ fontSize: '13px', color: '#374151', cursor: 'pointer' }}>
-                                    No tengo Numero de Matricula
+                                    No tengo Número de Matrícula
                                   </label>
                                 </div>
                                 {!noTengoMatricula && validationErrors.includes('Número de Matrícula') && (
@@ -2569,25 +2588,82 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                               </div>
                             </div>
 
-                            {/* Col 3: Número de Matrícula Especialidad */}
+                            {/* Por cada especialidad seleccionada: Matrícula + Constancia */}
                             {especialidadMedica.length > 0 && (
-                              <div style={{ gridColumn: '1 / -1' }}>
-                                <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
-                                  Número de Matrícula Especialidad <span style={{ color: '#EF4444' }}>*</span>
-                                </label>
-                                <input
-                                  type="text"
-                                  value={numMatriculaEspecialidad}
-                                  onChange={(e) => setNumMatriculaEspecialidad(e.target.value)}
-                                  style={{
-                                    width: '100%', border: validationErrors.includes('Número de Matrícula Especialidad') ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px',
-                                    padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
-                                    outline: 'none', boxSizing: 'border-box',
-                                  }}
-                                />
-                                {validationErrors.includes('Número de Matrícula Especialidad') && (
-                                  <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>El número de matrícula de especialidad es requerido</p>
-                                )}
+                              <div style={{ gridColumn: '1 / -1', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                                <p style={{ fontSize: '11.5px', fontWeight: 700, color: '#4B5563', letterSpacing: '0.08em', textTransform: 'uppercase', margin: '4px 0 0 0' }}>
+                                  Datos por Especialidad
+                                </p>
+                                {especialidadMedica.map(esp => {
+                                  const data = especialidadesData[esp] || { matricula: '', constancia: '' }
+                                  const hasError = validationErrors.includes(`Matrícula Especialidad: ${esp}`)
+                                  return (
+                                    <div key={esp} style={{ backgroundColor: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: '10px', padding: '14px 16px' }}>
+                                      <p style={{ fontSize: '13px', fontWeight: 700, color: '#1F2937', margin: '0 0 12px 0' }}>
+                                        {esp}
+                                      </p>
+                                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', alignItems: 'flex-start' }}>
+                                        {/* Matrícula */}
+                                        <div>
+                                          <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
+                                            Número de Matrícula Especialidad <span style={{ color: '#EF4444' }}>*</span>
+                                          </label>
+                                          <input
+                                            type="text"
+                                            value={data.matricula}
+                                            onChange={e => updateEspecialidadMatricula(esp, e.target.value)}
+                                            placeholder="Ej: A001MPX29223"
+                                            style={{
+                                              width: '100%',
+                                              border: hasError ? '1px solid #EF4444' : '1px solid #D1D5DB',
+                                              borderRadius: '6px',
+                                              padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
+                                              outline: 'none', boxSizing: 'border-box',
+                                            }}
+                                          />
+                                          {hasError && (
+                                            <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>El número de matrícula de especialidad es requerido</p>
+                                          )}
+                                        </div>
+                                        {/* Constancia */}
+                                        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', paddingTop: '22px' }}>
+                                          <div style={{
+                                            border: data.constancia ? '1px solid #A7F3D0' : '1px solid #E5E7EB',
+                                            backgroundColor: data.constancia ? '#ECFDF5' : '#fff',
+                                            borderRadius: '8px',
+                                            padding: '10px 14px',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'space-between'
+                                          }}>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                              <FileIcon />
+                                              <span style={{ fontSize: '13px', fontWeight: 600, color: '#1F2937' }}>Constancia de Especialidad</span>
+                                            </div>
+                                            {data.constancia ? (
+                                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                                <span style={{ color: '#10B981', fontWeight: 'bold' }}>✓</span>
+                                                <button
+                                                  onClick={() => updateEspecialidadConstancia(esp, `constancia_${esp.replace(/\s+/g, '_').toLowerCase()}.pdf`)}
+                                                  style={{ display: 'flex', alignItems: 'center', gap: '4px', border: '1px solid #D1D5DB', borderRadius: '6px', padding: '5px 10px', fontSize: '12px', fontWeight: 500, color: '#374151', backgroundColor: '#fff', cursor: 'pointer' }}
+                                                >
+                                                  <UploadIcon /> Modificar
+                                                </button>
+                                              </div>
+                                            ) : (
+                                              <button
+                                                onClick={() => updateEspecialidadConstancia(esp, `constancia_${esp.replace(/\s+/g, '_').toLowerCase()}.pdf`)}
+                                                style={{ display: 'flex', alignItems: 'center', gap: '5px', border: '1px solid #D1D5DB', borderRadius: '6px', padding: '6px 12px', fontSize: '13px', fontWeight: 600, color: '#374151', backgroundColor: '#fff', cursor: 'pointer' }}
+                                              >
+                                                <UploadIcon /> Adjuntar
+                                              </button>
+                                            )}
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  )
+                                })}
                               </div>
                             )}
                           </>
@@ -2624,7 +2700,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                                     style={{ width: '16px', height: '16px', cursor: 'pointer' }}
                                   />
                                   <label htmlFor="noTengoMatricula2" style={{ fontSize: '13px', color: '#374151', cursor: 'pointer' }}>
-                                    No tengo Numero de Matricula
+                                    No tengo Número de Matrícula
                                   </label>
                                 </div>
                                 {!noTengoMatricula && validationErrors.includes('Número de Matrícula') && (
@@ -2646,7 +2722,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                     <FileIcon />
                                     <span style={{ fontSize: '13.5px', fontWeight: 600, color: '#1F2937' }}>
-                                      {noTengoMatricula ? 'Copia de Titulo' : 'Constancia de Matricula'}
+                                      {noTengoMatricula ? 'Copia de Título' : 'Constancia de Matrícula'}
                                     </span>
                                   </div>
 
@@ -2917,7 +2993,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                   // ── STEP 4: LUGAR DE ATENCIÓN ──
                   <div>
                     <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#111827', marginBottom: '4px' }}>
-                      Lugar de atencion
+                      Lugar de atención
                     </h3>
                     <p style={{ fontSize: '13px', color: '#6B7280', marginBottom: '24px' }}>
                       Por favor, completá la siguiente información obligatoria (*)
@@ -3263,46 +3339,43 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                       </>
                     ) : (
                       <>
-                      <>
-                        <div style={{ border: step5AttachedFiles['Póliza de Seguro de Responsabilidad Civil Profesional'] ? '1px solid #A7F3D0' : '1px solid #E5E7EB', backgroundColor: step5AttachedFiles['Póliza de Seguro de Responsabilidad Civil Profesional'] ? '#ECFDF5' : '#fff', borderRadius: '8px', padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-                          {step5AttachedFiles['Póliza de Seguro de Responsabilidad Civil Profesional'] ? (
-                            <>
-                              <span style={{ fontSize: '13.5px', fontWeight: 600, color: '#0056b3', textDecoration: 'underline' }}>
-                                Póliza_Seguro.pdf
-                              </span>
-                              <button onClick={() => handleAttachFile('Póliza de Seguro de Responsabilidad Civil Profesional')} style={{ display: 'flex', alignItems: 'center', gap: '4px', border: '1px solid #D1D5DB', borderRadius: '6px', padding: '5px 12px', fontSize: '12.5px', fontWeight: 500, color: '#374151', backgroundColor: '#fff', cursor: 'pointer' }}>
-                                <UploadIcon /> Adjuntar
-                              </button>
-                            </>
-                          ) : (
-                            <>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                <FileIcon />
-                                <span style={{ fontSize: '13.5px', fontWeight: 500, color: '#374151' }}>Póliza de Seguro de Responsabilidad Civil Profesional</span>
-                              </div>
-                              <button onClick={() => handleAttachFile('Póliza de Seguro de Responsabilidad Civil Profesional')} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 12px', border: '1px solid #D1D5DB', borderRadius: '6px', backgroundColor: '#fff', fontSize: '13px', fontWeight: 600, color: '#374151', cursor: 'pointer' }}>
-                                <UploadIcon /> Adjuntar
-                              </button>
-                            </>
-                          )}
-                        </div>
-                      </>
+                        <>
+                          <div style={{ border: step5AttachedFiles['Póliza de Seguro de Responsabilidad Civil Profesional'] ? '1px solid #A7F3D0' : '1px solid #E5E7EB', backgroundColor: step5AttachedFiles['Póliza de Seguro de Responsabilidad Civil Profesional'] ? '#ECFDF5' : '#fff', borderRadius: '8px', padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+                            {step5AttachedFiles['Póliza de Seguro de Responsabilidad Civil Profesional'] ? (
+                              <>
+                                <span style={{ fontSize: '13.5px', fontWeight: 600, color: '#0056b3', textDecoration: 'underline' }}>
+                                  Póliza_Seguro.pdf
+                                </span>
+                                <button onClick={() => handleAttachFile('Póliza de Seguro de Responsabilidad Civil Profesional')} style={{ display: 'flex', alignItems: 'center', gap: '4px', border: '1px solid #D1D5DB', borderRadius: '6px', padding: '5px 12px', fontSize: '12.5px', fontWeight: 500, color: '#374151', backgroundColor: '#fff', cursor: 'pointer' }}>
+                                  <UploadIcon /> Adjuntar
+                                </button>
+                              </>
+                            ) : (
+                              <>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                  <FileIcon />
+                                  <span style={{ fontSize: '13.5px', fontWeight: 500, color: '#374151' }}>Póliza de Seguro de Responsabilidad Civil Profesional</span>
+                                </div>
+                                <button onClick={() => handleAttachFile('Póliza de Seguro de Responsabilidad Civil Profesional')} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 12px', border: '1px solid #D1D5DB', borderRadius: '6px', backgroundColor: '#fff', fontSize: '13px', fontWeight: 600, color: '#374151', cursor: 'pointer' }}>
+                                  <UploadIcon /> Adjuntar
+                                </button>
+                              </>
+                            )}
+                          </div>
+                        </>
                       </>
                     )}
                   </div>
                 ) : activeStep === 6 ? (
                   // ── STEP 6: DOCUMENTACIÓN LEGAL ──
                   <div>
-                    <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#111827', marginBottom: '4px' }}>
-                      Documentacion legal
+                    <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#111827', marginBottom: '24px' }}>
+                      Documentación legal
                     </h3>
-                    <p style={{ fontSize: '13px', color: '#6B7280', marginBottom: '24px' }}>
-                      Por favor, completá la siguiente información obligatoria (*)
-                    </p>
 
                     {!(cidiData?.represented.includes('Sanatorio')) ? (
                       <>
-                        <SectionTitle>ANTECEDENTES (OPCIONAL)</SectionTitle>
+                        <SectionTitle>Experiencia Profesional</SectionTitle>
 
                         {/* "+ Agregar tu experiencia profesional" Accordion row */}
                         <div
@@ -3350,7 +3423,6 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                         {/* Antecedentes list */}
                         {antecedentesList.length > 0 && (
                           <div style={{ marginBottom: '24px' }}>
-                            <SectionTitle>Experiencia Profesional Cargada ({antecedentesList.length})</SectionTitle>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                               {antecedentesList.map((ant, idx) => (
                                 <div
@@ -3372,16 +3444,46 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                                     </p>
                                   </div>
 
-                                  <button
-                                    onClick={() => setAntecedentesList(antecedentesList.filter((_, i) => i !== idx))}
-                                    style={{
-                                      border: 'none', backgroundColor: 'transparent',
-                                      color: '#EF4444', fontSize: '12px', fontWeight: 600,
-                                      cursor: 'pointer',
-                                    }}
-                                  >
-                                    Eliminar
-                                  </button>
+                                  <div style={{ display: 'flex', gap: '8px' }}>
+                                    <button
+                                      onClick={() => {
+                                        setAntecedenteDescripcion(ant.descripcion)
+                                        setAntecedentePeriodoInicio(ant.periodoInicio)
+                                        setAntecedentePeriodoFin(ant.periodoFin)
+                                        setAntecedenteEstablecimiento(ant.establecimiento)
+                                        setAntecedenteEstablecimientoCuit(ant.establecimientoCuit)
+                                        setEditingAntecedenteIndex(idx)
+                                        setShowAntecedentesModal(true)
+                                      }}
+                                      style={{
+                                        border: '1px solid #D1D5DB', borderRadius: '6px',
+                                        padding: '8px', cursor: 'pointer', backgroundColor: '#fff',
+                                        color: '#374151', display: 'flex', alignItems: 'center', justifyContent: 'center'
+                                      }}
+                                    >
+                                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
+                                      </svg>
+                                    </button>
+
+                                    <button
+                                      onClick={() => {
+                                        setItemToDeleteIndex(idx)
+                                        setItemToDeleteType('antecedente')
+                                        setShowDeleteConfirmModal(true)
+                                      }}
+                                      style={{
+                                        border: '1px solid #FCA5A5', borderRadius: '6px',
+                                        padding: '8px', cursor: 'pointer', backgroundColor: '#FEF2F2',
+                                        color: '#EF4444', display: 'flex', alignItems: 'center', justifyContent: 'center'
+                                      }}
+                                    >
+                                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                        <polyline points="3 6 5 6 21 6" />
+                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                      </svg>
+                                    </button>
+                                  </div>
                                 </div>
                               ))}
                             </div>
@@ -3406,12 +3508,12 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                           </p>
                         </div>
 
-                        <SectionTitle>DOCUMENTACION DE PERSONERIA JURIDICA</SectionTitle>
+                        <SectionTitle>DOCUMENTACIÓN DE PERSONERÍA JURÍDICA</SectionTitle>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '28px' }}>
                           {[
                             'Estatuto o contrato social vigente',
                             'Acta designación autoridades',
-                            'Acreditacion de personeria IPJ',
+                            'Acreditación de personería IPJ',
                             'Poder representación Legal',
                           ].map((docName) => (
                             <div
@@ -3453,7 +3555,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                           ))}
                         </div>
 
-                        <SectionTitle>ANTECEDENTES</SectionTitle>
+                        <SectionTitle>Experiencia Profesional</SectionTitle>
 
                         {/* Agregar experiencia profesional accordion row */}
                         <div
@@ -3484,7 +3586,6 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                         {/* Antecedentes list */}
                         {antecedentesList.length > 0 && (
                           <div style={{ marginTop: '12px' }}>
-                            <SectionTitle>Experiencia Profesional Cargada ({antecedentesList.length})</SectionTitle>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                               {antecedentesList.map((ant, idx) => (
                                 <div key={idx} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', border: '1px solid #E5E7EB', borderRadius: '8px', padding: '12px 16px', backgroundColor: '#F9FAFB' }}>
@@ -3723,7 +3824,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                               Bancor
                             </p>
                             <p style={{ fontSize: '12px', color: '#6B7280', margin: '4px 0 0 0' }}>
-                              Cbu: <strong style={{ color: '#4B5563' }}>0200925811000001234567</strong> | Estado: <strong style={{ color: '#059669' }}>Activo</strong> | Solicitud: 10/05/2023
+                              CBU: <strong style={{ color: '#4B5563' }}>0200925811000001234567</strong> | Estado: <strong style={{ color: '#059669' }}>Activo</strong> | Solicitud: 10/05/2023
                             </p>
                           </div>
                         </div>
@@ -3771,7 +3872,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                               Banco Nacion
                             </p>
                             <p style={{ fontSize: '12px', color: '#6B7280', margin: '4px 0 0 0' }}>
-                              Cbu: <strong style={{ color: '#4B5563' }}>011059530000023456789</strong> | Estado: <strong style={{ color: '#059669' }}>Activo</strong> | Solicitud: 10/05/2024
+                              CBU: <strong style={{ color: '#4B5563' }}>011059530000023456789</strong> | Estado: <strong style={{ color: '#059669' }}>Activo</strong> | Solicitud: 10/05/2024
                             </p>
                           </div>
                         </div>
@@ -4649,7 +4750,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
             }}>
               {itemToDeleteType === 'lugar' ? '¿Estás seguro de eliminar este lugar de atención?' :
                 itemToDeleteType === 'staff' ? '¿Estás seguro de eliminar este profesional?' :
-                  '¿Estás seguro de eliminar este antecedente?'}
+                  '¿Estás seguro de eliminar esta experiencia profesional?'}
             </h3>
 
             <p style={{
