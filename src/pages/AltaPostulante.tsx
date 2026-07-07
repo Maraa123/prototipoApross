@@ -515,6 +515,13 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
   const [showSuccessModal, setShowSuccessModal] = useState(false)
   const [declaracionJuradaAceptada, setDeclaracionJuradaAceptada] = useState(false)
 
+  const [cbuOption, setCbuOption] = useState<'cidi' | 'manual'>('manual')
+  const [manualTitular, setManualTitular] = useState('Camila Gonzales')
+  const [manualBanco, setManualBanco] = useState('BNA')
+  const [manualCbu, setManualCbu] = useState('12345678910111222222')
+  const [manualAlias, setManualAlias] = useState('carta.barco.avion')
+  const [manualMoneda, setManualMoneda] = useState('Pesos')
+
   // Validation state
   const [validationErrors, setValidationErrors] = useState<string[]>([])
 
@@ -562,6 +569,12 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
           if (parsed.aseguradoraNoPoliza) setAseguradoraNoPoliza(parsed.aseguradoraNoPoliza)
           if (parsed.antecedentesList) setAntecedentesList(parsed.antecedentesList)
           if (parsed.cbuLoaded !== undefined) setCbuLoaded(parsed.cbuLoaded)
+          if (parsed.cbuOption) setCbuOption(parsed.cbuOption)
+          if (parsed.manualTitular) setManualTitular(parsed.manualTitular)
+          if (parsed.manualBanco) setManualBanco(parsed.manualBanco)
+          if (parsed.manualCbu) setManualCbu(parsed.manualCbu)
+          if (parsed.manualAlias) setManualAlias(parsed.manualAlias)
+          if (parsed.manualMoneda) setManualMoneda(parsed.manualMoneda)
         }
       }
     } catch (e) {
@@ -582,7 +595,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
         tipoInstitucionNivel, opcionesChecks, tecnologiaChecks, diagnosticoSubChecks,
         otrosTecnologiaText, staffList, locationsList, aseguradoraRazonSocial,
         aseguradoraCuit, aseguradoraVencimiento, aseguradoraNoPoliza, antecedentesList,
-        cbuLoaded
+        cbuLoaded, cbuOption, manualTitular, manualBanco, manualCbu, manualAlias, manualMoneda
       }
       localStorage.setItem(draftKey, JSON.stringify(draft))
     } catch (e) {
@@ -595,7 +608,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
     tipoInstitucionNivel, opcionesChecks, tecnologiaChecks, diagnosticoSubChecks,
     otrosTecnologiaText, staffList, locationsList, aseguradoraRazonSocial,
     aseguradoraCuit, aseguradoraVencimiento, aseguradoraNoPoliza, antecedentesList,
-    cbuLoaded,
+    cbuLoaded, cbuOption, manualTitular, manualBanco, manualCbu, manualAlias, manualMoneda,
     isRestoring
   ])
   // --- END AUTOSAVE DRAFT LOGIC ---
@@ -870,7 +883,12 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
     }
 
     if (activeStep === 7) {
-      if (!cbuLoaded) errors.push('Debe cargar un CBU válido')
+      if (cbuOption === 'cidi') {
+        if (!cbuLoaded) errors.push('Debe cargar un CBU válido')
+      } else {
+        if (!manualBanco.trim()) errors.push('Nombre del banco')
+        // We can add more required fields if needed, but the image only has * on 'Nombre del banco'
+      }
     }
 
     return errors
@@ -1273,10 +1291,22 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                           </button>
                         </div>
                         <div style={{ fontSize: '13.5px' }}>
-                          <span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Cuenta Bancaria Seleccionada</span>
-                          <strong style={{ color: '#374151' }}>
-                            {selectedCbuIndex === 0 ? 'Bancor - 0200925811000001234567' : 'Banco Nacion - 011059530000023456789'}
-                          </strong>
+                          {cbuOption === 'cidi' ? (
+                            <>
+                              <span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Cuenta Bancaria Seleccionada</span>
+                              <strong style={{ color: '#374151' }}>
+                                {selectedCbuIndex === 0 ? 'Bancor - 0200925811000001234567' : 'Banco Nacion - 011059530000023456789'}
+                              </strong>
+                            </>
+                          ) : (
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                              <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Titular de la cuenta</span><strong style={{ color: '#374151' }}>{manualTitular || '-'}</strong></div>
+                              <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Banco</span><strong style={{ color: '#374151' }}>{manualBanco || '-'}</strong></div>
+                              <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Alias</span><strong style={{ color: '#374151' }}>{manualAlias || '-'}</strong></div>
+                              <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Moneda</span><strong style={{ color: '#374151' }}>{manualMoneda || '-'}</strong></div>
+                              <div style={{ gridColumn: '1 / -1' }}><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>CBU</span><strong style={{ color: '#374151' }}>{manualCbu || '-'}</strong></div>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </>
@@ -3539,235 +3569,324 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                     <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#111827', marginBottom: '4px' }}>
                       CBU
                     </h3>
-                    <p style={{ fontSize: '13px', color: '#6B7280', marginBottom: '24px' }}>
-                      Por favor, completá la siguiente información obligatoria (*)
-                    </p>
-
-                    {/* Top Light Blue Banner */}
-                    <div style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      backgroundColor: '#EFF6FF',
-                      border: '1px solid #BFDBFE',
-                      borderRadius: '8px',
-                      padding: '16px 20px',
-                      marginBottom: '24px',
-                      gap: '16px',
-                    }}>
-                      <p style={{ fontSize: '13.5px', color: '#1E40AF', margin: 0, lineHeight: '1.6', flex: 1 }}>
-                        <strong style={{ color: '#1D4ED8' }}>Importante:</strong> Las cuentas bancarias se obtienen directamente desde Ciudadano Digital (CiDi).<br />
-                        Si no tenés ninguna cuenta cargada o querés agregar una nueva, debés declararla en el portal de CiDi.
-                      </p>
-
-                      <a
-                        href="https://cidi.cba.gov.ar/portal-publico/tramite/70AF1B8B-190B-F011-BD48-005056A190FF"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: '8px',
-                          backgroundColor: '#00AC99',
-                          color: '#fff',
-                          textDecoration: 'none',
-                          fontWeight: 600,
-                          fontSize: '13.5px',
-                          padding: '10px 20px',
-                          borderRadius: '6px',
-                          whiteSpace: 'nowrap',
-                          transition: 'background-color 0.2s ease',
-                        }}
-                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#0056b3'}
-                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#00AC99'}
-                      >
-                        Declarar CBU en CiDi
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                          <polyline points="15 3 21 3 21 9" />
-                          <line x1="10" y1="14" x2="21" y2="3" />
-                        </svg>
-                      </a>
-                    </div>
-
-                    {/* Section Title and Refrescar Button */}
-                    <div style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      marginBottom: '16px',
-                    }}>
-                      <p style={{
-                        fontSize: '12px', fontWeight: 700, color: '#374151',
-                        letterSpacing: '0.08em', textTransform: 'uppercase',
-                        margin: 0,
-                      }}>
-                        MIS CUENTAS <span style={{ color: '#EF4444' }}>*</span>
-                      </p>
-
-                      {!cbuLoaded && (
-                        <button
-                          onClick={() => setCbuLoaded(true)}
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '6px',
-                            backgroundColor: '#fff',
-                            border: '1px solid #D1D5DB',
-                            borderRadius: '6px',
-                            padding: '6px 14px',
-                            fontSize: '12.5px',
-                            fontWeight: 600,
-                            color: '#374151',
-                            cursor: 'pointer',
-                            transition: 'all 0.15s ease',
-                          }}
-                          onMouseEnter={(e) => e.currentTarget.style.borderColor = '#9CA3AF'}
-                          onMouseLeave={(e) => e.currentTarget.style.borderColor = '#D1D5DB'}
-                        >
-                          Refrescar
-                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" />
-                          </svg>
-                        </button>
-                      )}
-                    </div>
-
-                    {/* Accounts Box */}
-                    {!cbuLoaded ? (
-                      /* IMAGE 2: NO INFO YET */
+                    {cbuOption === 'cidi' ? (
                       <>
+                        {/* Top Light Blue Banner */}
                         <div style={{
-                          border: validationErrors.includes('Debe cargar un CBU válido') ? '1px solid #EF4444' : '1px solid #E5E7EB',
-                          borderRadius: '8px',
-                          backgroundColor: '#fff',
-                          padding: '48px 32px',
-                          textAlign: 'center',
                           display: 'flex',
-                          flexDirection: 'column',
                           alignItems: 'center',
-                          justifyContent: 'center',
-                          marginBottom: '28px',
+                          justifyContent: 'space-between',
+                          backgroundColor: '#EFF6FF',
+                          border: '1px solid #BFDBFE',
+                          borderRadius: '8px',
+                          padding: '16px 20px',
+                          marginBottom: '24px',
+                          gap: '16px',
                         }}>
-                          <div style={{ color: '#4B5563', marginBottom: '16px', display: 'flex', alignItems: 'center' }}>
-                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.0" strokeLinecap="round" strokeLinejoin="round">
-                              <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
-                              <line x1="12" y1="9" x2="12" y2="13" />
-                              <line x1="12" y1="17" x2="12.01" y2="17" />
-                            </svg>
-                          </div>
-                          <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#111827', margin: '0 0 6px 0' }}>
-                            No existe información
-                          </h4>
-                          <p style={{ fontSize: '13px', color: '#6B7280', margin: 0 }}>
-                            No encontramos cuentas bancarias registradas a tu nombre en CiDi
+                          <p style={{ fontSize: '13.5px', color: '#1E40AF', margin: 0, lineHeight: '1.6', flex: 1 }}>
+                            <strong style={{ color: '#1D4ED8' }}>Importante:</strong> Las cuentas bancarias se obtienen directamente desde Ciudadano Digital (CiDi).<br />
+                            Si no tenés ninguna cuenta cargada o querés agregar una nueva, debés declararla en el portal de CiDi.
                           </p>
+
+                          <a
+                            href="https://cidi.cba.gov.ar/portal-publico/tramite/70AF1B8B-190B-F011-BD48-005056A190FF"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '8px',
+                              backgroundColor: '#00AC99',
+                              color: '#fff',
+                              textDecoration: 'none',
+                              fontWeight: 600,
+                              fontSize: '13.5px',
+                              padding: '10px 20px',
+                              borderRadius: '6px',
+                              whiteSpace: 'nowrap',
+                              transition: 'background-color 0.2s ease',
+                            }}
+                            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#0056b3'}
+                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#00AC99'}
+                          >
+                            Declarar CBU en CiDi
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                              <polyline points="15 3 21 3 21 9" />
+                              <line x1="10" y1="14" x2="21" y2="3" />
+                            </svg>
+                          </a>
                         </div>
-                        {validationErrors.includes('Debe cargar un CBU válido') && (
-                          <p style={{ color: '#EF4444', fontSize: '11px', margin: '-16px 0 28px 0' }}>Debe cargar un CBU válido para continuar</p>
+
+                        {/* Section Title and Refrescar Button */}
+                        <div style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          marginBottom: '16px',
+                        }}>
+                          <p style={{
+                            fontSize: '12px', fontWeight: 700, color: '#374151',
+                            letterSpacing: '0.08em', textTransform: 'uppercase',
+                            margin: 0,
+                          }}>
+                            MIS CUENTAS <span style={{ color: '#EF4444' }}>*</span>
+                          </p>
+
+                          {!cbuLoaded && (
+                            <button
+                              onClick={() => setCbuLoaded(true)}
+                              style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '6px',
+                                backgroundColor: '#fff',
+                                border: '1px solid #D1D5DB',
+                                borderRadius: '6px',
+                                padding: '6px 14px',
+                                fontSize: '12.5px',
+                                fontWeight: 600,
+                                color: '#374151',
+                                cursor: 'pointer',
+                                transition: 'all 0.15s ease',
+                              }}
+                              onMouseEnter={(e) => e.currentTarget.style.borderColor = '#9CA3AF'}
+                              onMouseLeave={(e) => e.currentTarget.style.borderColor = '#D1D5DB'}
+                            >
+                              Refrescar
+                              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" />
+                              </svg>
+                            </button>
+                          )}
+                        </div>
+
+                        {/* Accounts Box */}
+                        {!cbuLoaded ? (
+                          /* IMAGE 2: NO INFO YET */
+                          <>
+                            <div style={{
+                              border: validationErrors.includes('Debe cargar un CBU válido') ? '1px solid #EF4444' : '1px solid #E5E7EB',
+                              borderRadius: '8px',
+                              backgroundColor: '#fff',
+                              padding: '48px 32px',
+                              textAlign: 'center',
+                              display: 'flex',
+                              flexDirection: 'column',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              marginBottom: '28px',
+                            }}>
+                              <div style={{ color: '#4B5563', marginBottom: '16px', display: 'flex', alignItems: 'center' }}>
+                                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.0" strokeLinecap="round" strokeLinejoin="round">
+                                  <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+                                  <line x1="12" y1="9" x2="12" y2="13" />
+                                  <line x1="12" y1="17" x2="12.01" y2="17" />
+                                </svg>
+                              </div>
+                              <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#111827', margin: '0 0 6px 0' }}>
+                                No existe información
+                              </h4>
+                              <p style={{ fontSize: '13px', color: '#6B7280', margin: 0 }}>
+                                No encontramos cuentas bancarias registradas a tu nombre en CiDi
+                              </p>
+                            </div>
+                            {validationErrors.includes('Debe cargar un CBU válido') && (
+                              <p style={{ color: '#EF4444', fontSize: '11px', margin: '-16px 0 28px 0' }}>Debe cargar un CBU válido para continuar</p>
+                            )}
+                          </>
+                        ) : (
+                          /* IMAGE 1: ACCOUNTS LIST LOADED */
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '28px' }}>
+
+                            {/* Account 1: Bancor */}
+                            <div
+                              onClick={() => setSelectedCbuIndex(0)}
+                              style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                borderRadius: '8px',
+                                border: selectedCbuIndex === 0 ? '1.5px solid #00AC99' : '1px solid #E5E7EB',
+                                backgroundColor: selectedCbuIndex === 0 ? '#F0FDF4' : '#fff',
+                                padding: '16px 20px',
+                                cursor: 'pointer',
+                                transition: 'all 0.2s ease',
+                              }}
+                            >
+                              {/* Radio dot */}
+                              <div style={{
+                                width: '18px', height: '18px', borderRadius: '50%',
+                                border: selectedCbuIndex === 0 ? '2px solid #00AC99' : '2px solid #bbb',
+                                backgroundColor: '#fff',
+                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                marginRight: '16px',
+                              }}>
+                                {selectedCbuIndex === 0 && (
+                                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#00AC99' }} />
+                                )}
+                              </div>
+
+                              {/* Bank Icon */}
+                              <span style={{ color: '#4B5563', marginRight: '10px', display: 'flex', alignItems: 'center' }}>
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                  <rect x="3" y="11" width="18" height="11" rx="2" />
+                                  <path d="M12 2 3 7v4h18V7l-9-5z" />
+                                  <line x1="6" y1="15" x2="6" y2="18" />
+                                  <line x1="18" y1="15" x2="18" y2="18" />
+                                  <line x1="12" y1="15" x2="12" y2="18" />
+                                </svg>
+                              </span>
+
+                              <div>
+                                <p style={{ fontSize: '13.5px', fontWeight: 700, color: '#111827', margin: 0 }}>
+                                  Bancor
+                                </p>
+                                <p style={{ fontSize: '12px', color: '#6B7280', margin: '4px 0 0 0' }}>
+                                  CBU: <strong style={{ color: '#4B5563' }}>0200925811000001234567</strong> | Estado: <strong style={{ color: '#059669' }}>Activo</strong> | Solicitud: 10/05/2023
+                                </p>
+                              </div>
+                            </div>
+
+                            {/* Account 2: Banco Nacion */}
+                            <div
+                              onClick={() => setSelectedCbuIndex(1)}
+                              style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                borderRadius: '8px',
+                                border: selectedCbuIndex === 1 ? '1.5px solid #00AC99' : '1px solid #E5E7EB',
+                                backgroundColor: selectedCbuIndex === 1 ? '#F0FDF4' : '#fff',
+                                padding: '16px 20px',
+                                cursor: 'pointer',
+                                transition: 'all 0.2s ease',
+                              }}
+                            >
+                              {/* Radio dot */}
+                              <div style={{
+                                width: '18px', height: '18px', borderRadius: '50%',
+                                border: selectedCbuIndex === 1 ? '2px solid #00AC99' : '2px solid #bbb',
+                                backgroundColor: '#fff',
+                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                marginRight: '16px',
+                              }}>
+                                {selectedCbuIndex === 1 && (
+                                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#00AC99' }} />
+                                )}
+                              </div>
+
+                              {/* Bank Icon */}
+                              <span style={{ color: '#4B5563', marginRight: '10px', display: 'flex', alignItems: 'center' }}>
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                  <rect x="3" y="11" width="18" height="11" rx="2" />
+                                  <path d="M12 2 3 7v4h18V7l-9-5z" />
+                                  <line x1="6" y1="15" x2="6" y2="18" />
+                                  <line x1="18" y1="15" x2="18" y2="18" />
+                                  <line x1="12" y1="15" x2="12" y2="18" />
+                                </svg>
+                              </span>
+
+                              <div>
+                                <p style={{ fontSize: '13.5px', fontWeight: 700, color: '#111827', margin: 0 }}>
+                                  Banco Nacion
+                                </p>
+                                <p style={{ fontSize: '12px', color: '#6B7280', margin: '4px 0 0 0' }}>
+                                  CBU: <strong style={{ color: '#4B5563' }}>011059530000023456789</strong> | Estado: <strong style={{ color: '#059669' }}>Activo</strong> | Solicitud: 10/05/2024
+                                </p>
+                              </div>
+                            </div>
+
+                          </div>
                         )}
                       </>
                     ) : (
-                      /* IMAGE 1: ACCOUNTS LIST LOADED */
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '28px' }}>
-
-                        {/* Account 1: Bancor */}
-                        <div
-                          onClick={() => setSelectedCbuIndex(0)}
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            borderRadius: '8px',
-                            border: selectedCbuIndex === 0 ? '1.5px solid #00AC99' : '1px solid #E5E7EB',
-                            backgroundColor: selectedCbuIndex === 0 ? '#F0FDF4' : '#fff',
-                            padding: '16px 20px',
-                            cursor: 'pointer',
-                            transition: 'all 0.2s ease',
-                          }}
-                        >
-                          {/* Radio dot */}
-                          <div style={{
-                            width: '18px', height: '18px', borderRadius: '50%',
-                            border: selectedCbuIndex === 0 ? '2px solid #00AC99' : '2px solid #bbb',
-                            backgroundColor: '#fff',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            marginRight: '16px',
-                          }}>
-                            {selectedCbuIndex === 0 && (
-                              <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#00AC99' }} />
-                            )}
-                          </div>
-
-                          {/* Bank Icon */}
-                          <span style={{ color: '#4B5563', marginRight: '10px', display: 'flex', alignItems: 'center' }}>
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                              <rect x="3" y="11" width="18" height="11" rx="2" />
-                              <path d="M12 2 3 7v4h18V7l-9-5z" />
-                              <line x1="6" y1="15" x2="6" y2="18" />
-                              <line x1="18" y1="15" x2="18" y2="18" />
-                              <line x1="12" y1="15" x2="12" y2="18" />
-                            </svg>
-                          </span>
-
+                      <>
+                        <p style={{ fontSize: '13px', color: '#6B7280', marginBottom: '24px' }}>
+                          Por favor, completá la siguiente información obligatoria (*)
+                        </p>
+                        <SectionTitle>DIRECCION</SectionTitle>
+                        
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', marginBottom: '16px' }}>
                           <div>
-                            <p style={{ fontSize: '13.5px', fontWeight: 700, color: '#111827', margin: 0 }}>
-                              Bancor
-                            </p>
-                            <p style={{ fontSize: '12px', color: '#6B7280', margin: '4px 0 0 0' }}>
-                              CBU: <strong style={{ color: '#4B5563' }}>0200925811000001234567</strong> | Estado: <strong style={{ color: '#059669' }}>Activo</strong> | Solicitud: 10/05/2023
-                            </p>
+                            <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
+                              Titular de la cuenta
+                            </label>
+                            <input
+                              type="text"
+                              value={manualTitular}
+                              onChange={(e) => setManualTitular(e.target.value)}
+                              style={{
+                                width: '100%', border: '1px solid #D1D5DB', borderRadius: '6px',
+                                padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
+                                outline: 'none', boxSizing: 'border-box',
+                              }}
+                            />
+                          </div>
+                          <div>
+                            <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
+                              Nombre del banco <span style={{ color: '#EF4444' }}>*</span>
+                            </label>
+                            <input
+                              type="text"
+                              value={manualBanco}
+                              onChange={(e) => setManualBanco(e.target.value)}
+                              style={{
+                                width: '100%', border: '1px solid #D1D5DB', borderRadius: '6px',
+                                padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
+                                outline: 'none', boxSizing: 'border-box',
+                              }}
+                            />
                           </div>
                         </div>
 
-                        {/* Account 2: Banco Nacion */}
-                        <div
-                          onClick={() => setSelectedCbuIndex(1)}
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            borderRadius: '8px',
-                            border: selectedCbuIndex === 1 ? '1.5px solid #00AC99' : '1px solid #E5E7EB',
-                            backgroundColor: selectedCbuIndex === 1 ? '#F0FDF4' : '#fff',
-                            padding: '16px 20px',
-                            cursor: 'pointer',
-                            transition: 'all 0.2s ease',
-                          }}
-                        >
-                          {/* Radio dot */}
-                          <div style={{
-                            width: '18px', height: '18px', borderRadius: '50%',
-                            border: selectedCbuIndex === 1 ? '2px solid #00AC99' : '2px solid #bbb',
-                            backgroundColor: '#fff',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            marginRight: '16px',
-                          }}>
-                            {selectedCbuIndex === 1 && (
-                              <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#00AC99' }} />
-                            )}
-                          </div>
-
-                          {/* Bank Icon */}
-                          <span style={{ color: '#4B5563', marginRight: '10px', display: 'flex', alignItems: 'center' }}>
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                              <rect x="3" y="11" width="18" height="11" rx="2" />
-                              <path d="M12 2 3 7v4h18V7l-9-5z" />
-                              <line x1="6" y1="15" x2="6" y2="18" />
-                              <line x1="18" y1="15" x2="18" y2="18" />
-                              <line x1="12" y1="15" x2="12" y2="18" />
-                            </svg>
-                          </span>
-
+                        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '24px', marginBottom: '32px' }}>
                           <div>
-                            <p style={{ fontSize: '13.5px', fontWeight: 700, color: '#111827', margin: 0 }}>
-                              Banco Nacion
-                            </p>
-                            <p style={{ fontSize: '12px', color: '#6B7280', margin: '4px 0 0 0' }}>
-                              CBU: <strong style={{ color: '#4B5563' }}>011059530000023456789</strong> | Estado: <strong style={{ color: '#059669' }}>Activo</strong> | Solicitud: 10/05/2024
-                            </p>
+                            <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
+                              CBU
+                            </label>
+                            <input
+                              type="text"
+                              value={manualCbu}
+                              onChange={(e) => setManualCbu(e.target.value)}
+                              style={{
+                                width: '100%', border: '1px solid #D1D5DB', borderRadius: '6px',
+                                padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
+                                outline: 'none', boxSizing: 'border-box',
+                              }}
+                            />
+                          </div>
+                          <div>
+                            <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
+                              Alias
+                            </label>
+                            <input
+                              type="text"
+                              value={manualAlias}
+                              onChange={(e) => setManualAlias(e.target.value)}
+                              style={{
+                                width: '100%', border: '1px solid #D1D5DB', borderRadius: '6px',
+                                padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
+                                outline: 'none', boxSizing: 'border-box',
+                              }}
+                            />
+                          </div>
+                          <div style={{ position: 'relative' }}>
+                            <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
+                              Moneda
+                            </label>
+                            <div
+                              style={{
+                                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                                border: '1px solid #D1D5DB', borderRadius: '6px',
+                                padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
+                                backgroundColor: '#fff', boxSizing: 'border-box',
+                              }}
+                            >
+                              <span>{manualMoneda}</span>
+                              <ChevronDownIcon />
+                            </div>
                           </div>
                         </div>
-
-                      </div>
+                      </>
                     )}
                   </div>
                 ) : activeStep === 8 ? (
@@ -3850,7 +3969,17 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                     )}
 
                     <SummarySection title="Cuenta Bancaria (CBU)">
-                      <SummaryItem label="CBU Cargado" value={cbuLoaded ? 'Sí' : 'No'} />
+                      {cbuOption === 'cidi' ? (
+                        <SummaryItem label="CBU Cargado" value={cbuLoaded ? 'Sí' : 'No'} />
+                      ) : (
+                        <>
+                          <SummaryItem label="Titular de la cuenta" value={manualTitular || 'N/A'} />
+                          <SummaryItem label="Nombre del banco" value={manualBanco || 'N/A'} />
+                          <SummaryItem label="CBU" value={manualCbu || 'N/A'} />
+                          <SummaryItem label="Alias" value={manualAlias || 'N/A'} />
+                          <SummaryItem label="Moneda" value={manualMoneda || 'N/A'} />
+                        </>
+                      )}
                     </SummarySection>
 
                   </div>
