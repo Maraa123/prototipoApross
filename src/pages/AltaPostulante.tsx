@@ -2390,37 +2390,6 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                               Seleccioná tu especialidad médica <span style={{ color: '#EF4444' }}>*</span>
                             </label>
 
-                            {/* Tags of selected specialties */}
-                            {especialidadMedica.length > 0 && (
-                              <div style={{
-                                display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '8px',
-                              }}>
-                                {especialidadMedica.map(esp => (
-                                  <span
-                                    key={esp}
-                                    style={{
-                                      display: 'inline-flex', alignItems: 'center', gap: '5px',
-                                      backgroundColor: '#E6F6F4', color: '#00AC99',
-                                      border: '1px solid #A7E8E1', borderRadius: '20px',
-                                      padding: '3px 10px', fontSize: '12px', fontWeight: 600,
-                                    }}
-                                  >
-                                    {esp}
-                                    <span
-                                      onClick={(e) => {
-                                        e.stopPropagation()
-                                        setEspecialidadMedica(especialidadMedica.filter(d => d !== esp))
-                                      }}
-                                      style={{
-                                        cursor: 'pointer', color: '#00AC99', fontWeight: 700,
-                                        lineHeight: 1, fontSize: '14px', display: 'flex', alignItems: 'center',
-                                      }}
-                                    >×</span>
-                                  </span>
-                                ))}
-                              </div>
-                            )}
-
                             <div
                               onClick={() => {
                                 setEspecialidadDropdownOpen(true)
@@ -2456,6 +2425,37 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                                 <ChevronDownIcon />
                               </span>
                             </div>
+
+                            {/* Tags of selected specialties moved BELOW input */}
+                            {especialidadMedica.length > 0 && (
+                              <div style={{
+                                display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '8px',
+                              }}>
+                                {especialidadMedica.map(esp => (
+                                  <span
+                                    key={esp}
+                                    style={{
+                                      display: 'inline-flex', alignItems: 'center', gap: '5px',
+                                      backgroundColor: '#E6F6F4', color: '#00AC99',
+                                      border: '1px solid #A7E8E1', borderRadius: '20px',
+                                      padding: '3px 10px', fontSize: '12px', fontWeight: 600,
+                                    }}
+                                  >
+                                    {esp}
+                                    <span
+                                      onClick={(e) => {
+                                        e.stopPropagation()
+                                        setEspecialidadMedica(especialidadMedica.filter(d => d !== esp))
+                                      }}
+                                      style={{
+                                        cursor: 'pointer', color: '#00AC99', fontWeight: 700,
+                                        lineHeight: 1, fontSize: '14px', display: 'flex', alignItems: 'center',
+                                      }}
+                                    >×</span>
+                                  </span>
+                                ))}
+                              </div>
+                            )}
 
                             {especialidadDropdownOpen && (
                               <div style={{
