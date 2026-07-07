@@ -886,8 +886,11 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
       if (cbuOption === 'cidi') {
         if (!cbuLoaded) errors.push('Debe cargar un CBU válido')
       } else {
+        if (!manualTitular.trim()) errors.push('Titular de la cuenta')
         if (!manualBanco.trim()) errors.push('Nombre del banco')
-        // We can add more required fields if needed, but the image only has * on 'Nombre del banco'
+        if (!manualCbu.trim()) errors.push('CBU')
+        if (!manualAlias.trim()) errors.push('Alias')
+        if (!manualMoneda.trim()) errors.push('Moneda')
       }
     }
 
@@ -3808,7 +3811,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', marginBottom: '16px' }}>
                           <div>
                             <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
-                              Titular de la cuenta
+                              Titular de la cuenta <span style={{ color: '#EF4444' }}>*</span>
                             </label>
                             <input
                               type="text"
@@ -3841,7 +3844,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                         <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '24px', marginBottom: '32px' }}>
                           <div>
                             <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
-                              CBU
+                              CBU <span style={{ color: '#EF4444' }}>*</span>
                             </label>
                             <input
                               type="text"
@@ -3856,7 +3859,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                           </div>
                           <div>
                             <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
-                              Alias
+                              Alias <span style={{ color: '#EF4444' }}>*</span>
                             </label>
                             <input
                               type="text"
@@ -3871,7 +3874,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                           </div>
                           <div style={{ position: 'relative' }}>
                             <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
-                              Moneda
+                              Moneda <span style={{ color: '#EF4444' }}>*</span>
                             </label>
                             <div
                               style={{
