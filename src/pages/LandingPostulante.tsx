@@ -8,6 +8,7 @@ interface LandingPostulanteProps {
     represented?: string
     categoria: string
     profesion?: string
+    especialidades?: string[]
     nivelAtencion?: string
     tipoInstitucionNivel?: string
     tipoInstitucion?: string
@@ -291,10 +292,19 @@ export default function LandingPostulante({ onStart, submittedPostulacion, onSim
 
                     {/* Extra Rows depending on Category */}
                     {isProfessional && (
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-                        <span style={{ fontSize: '14px', color: '#6B7280' }}>
-                          Profesión/Tipo: <strong style={{ color: '#1F2937' }}>{submittedPostulacion.profesion || 'Medico'}</strong>
-                        </span>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+                          <span style={{ fontSize: '14px', color: '#6B7280' }}>
+                            Profesión/Tipo: <strong style={{ color: '#1F2937' }}>{submittedPostulacion.profesion || 'Medico'}</strong>
+                          </span>
+                        </div>
+                        {(submittedPostulacion.profesion === 'Medico' && submittedPostulacion.especialidades && submittedPostulacion.especialidades.length > 0) && (
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+                            <span style={{ fontSize: '14px', color: '#6B7280' }}>
+                              Especialidad: <strong style={{ color: '#1F2937' }}>{submittedPostulacion.especialidades.join(', ')}</strong>
+                            </span>
+                          </div>
+                        )}
                       </div>
                     )}
 

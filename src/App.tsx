@@ -14,6 +14,7 @@ function App() {
     represented: string
     categoria: string
     profesion?: string
+    especialidades?: string[]
     nivelAtencion?: string
     tipoInstitucionNivel?: string
     tipoInstitucion?: string
@@ -77,6 +78,7 @@ function App() {
     represented: string
     categoria: string
     profesion?: string
+    especialidades?: string[]
     nivelAtencion?: string
     tipoInstitucionNivel?: string
     tipoInstitucion?: string
@@ -86,6 +88,7 @@ function App() {
       represented: data.represented,
       categoria: data.categoria,
       profesion: data.profesion,
+      especialidades: data.especialidades,
       nivelAtencion: data.nivelAtencion,
       tipoInstitucionNivel: data.tipoInstitucionNivel,
       tipoInstitucion: data.tipoInstitucion,
