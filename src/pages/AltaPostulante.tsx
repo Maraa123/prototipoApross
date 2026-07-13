@@ -1374,18 +1374,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                       if (isHealthProfessional && isSpecialProfession) {
                         setShowCollegeModal(true)
                       } else {
-                        if (onComplete && cidiData) {
-                          onComplete({
-                            cuit: cuit || cidiData.cuit,
-                            represented: cidiData.represented,
-                            categoria: cidiData.category,
-                            profesion: tipoProfesion,
-                            especialidades: especialidadMedica,
-                            nivelAtencion,
-                            tipoInstitucionNivel,
-                            tipoInstitucion
-                          })
-                        }
+                        setShowSuccessModal(true)
                       }
                     } else {
                       setShowSuccessModal(true)
