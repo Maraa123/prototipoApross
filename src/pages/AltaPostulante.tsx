@@ -50,23 +50,26 @@ function AttachmentRow({
   required = false,
   fileName,
   onAttach,
+  disabled = false,
 }: {
   title: string
   required?: boolean
   fileName?: string | null
   onAttach: () => void
+  disabled?: boolean
 }) {
   return (
     <div>
-      <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
-        {title} {required && <span style={{ color: '#EF4444' }}>*</span>}
+      <label style={{ fontSize: '12px', fontWeight: 600, color: disabled ? '#9CA3AF' : '#374151', display: 'block', marginBottom: '5px' }}>
+        {title} {required && <span style={{ color: disabled ? '#FCA5A5' : '#EF4444' }}>*</span>}
       </label>
       <div style={{
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         border: fileName ? '1px solid #00AC99' : '1px solid #D1D5DB',
         borderRadius: '6px', padding: '8px 16px',
-        backgroundColor: fileName ? '#F0FDF4' : '#fff',
+        backgroundColor: disabled ? '#F3F4F6' : (fileName ? '#F0FDF4' : '#fff'),
         minHeight: '38px', boxSizing: 'border-box',
+        opacity: disabled ? 0.7 : 1,
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span style={{ color: fileName ? '#00AC99' : '#9CA3AF', display: 'flex', alignItems: 'center' }}>
@@ -84,12 +87,14 @@ function AttachmentRow({
         </div>
 
         <button
-          onClick={onAttach}
+          onClick={disabled ? undefined : onAttach}
+          disabled={disabled}
           style={{
             display: 'flex', alignItems: 'center', gap: '4px',
             border: '1px solid #D1D5DB', borderRadius: '6px',
             padding: '4px 10px', fontSize: '12px', fontWeight: 500,
-            color: '#374151', backgroundColor: '#fff', cursor: 'pointer',
+            color: disabled ? '#9CA3AF' : '#374151', backgroundColor: disabled ? '#E5E7EB' : '#fff',
+            cursor: disabled ? 'not-allowed' : 'pointer',
             flexShrink: 0
           }}
         >
@@ -2671,15 +2676,27 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                                 )}
                               </div>
 
-                              {/* Right: File Upload */}
+                              {/* Right: File Upload (Constancia de Matrícula) */}
                               <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start' }}>
                                 <AttachmentRow
-                                  title={noTengoMatricula ? 'Copia de Título' : 'Constancia de Matrícula'}
-                                  fileName={step2AttachedFiles[noTengoMatricula ? 'copia_titulo' : 'constancia_matricula']}
-                                  onAttach={() => handleAttachFileStep2(noTengoMatricula ? 'copia_titulo' : 'constancia_matricula')}
+                                  title="Constancia de Matrícula"
+                                  fileName={noTengoMatricula ? null : step2AttachedFiles['constancia_matricula']}
+                                  onAttach={() => handleAttachFileStep2('constancia_matricula')}
+                                  disabled={noTengoMatricula}
                                 />
                               </div>
                             </div>
+
+                            {/* Copia de Título — aparece debajo cuando NO tengo matrícula */}
+                            {noTengoMatricula && (
+                              <div style={{ gridColumn: '1 / -1' }}>
+                                <AttachmentRow
+                                  title="Copia de Título"
+                                  fileName={step2AttachedFiles['copia_titulo']}
+                                  onAttach={() => handleAttachFileStep2('copia_titulo')}
+                                />
+                              </div>
+                            )}
 
                             {/* Por cada especialidad seleccionada: Matrícula + Constancia */}
                             {especialidadMedica.length > 0 && (
@@ -2774,15 +2791,27 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                                 )}
                               </div>
 
-                              {/* Right: File Upload */}
+                              {/* Right: File Upload (Constancia de Matrícula) */}
                               <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start' }}>
                                 <AttachmentRow
-                                  title={noTengoMatricula ? 'Copia de Título' : 'Constancia de Matrícula'}
-                                  fileName={step2AttachedFiles[noTengoMatricula ? 'copia_titulo' : 'constancia_matricula']}
-                                  onAttach={() => handleAttachFileStep2(noTengoMatricula ? 'copia_titulo' : 'constancia_matricula')}
+                                  title="Constancia de Matrícula"
+                                  fileName={noTengoMatricula ? null : step2AttachedFiles['constancia_matricula']}
+                                  onAttach={() => handleAttachFileStep2('constancia_matricula')}
+                                  disabled={noTengoMatricula}
                                 />
                               </div>
                             </div>
+
+                            {/* Copia de Título — aparece debajo cuando NO tengo matrícula */}
+                            {noTengoMatricula && (
+                              <div style={{ gridColumn: '1 / -1' }}>
+                                <AttachmentRow
+                                  title="Copia de Título"
+                                  fileName={step2AttachedFiles['copia_titulo']}
+                                  onAttach={() => handleAttachFileStep2('copia_titulo')}
+                                />
+                              </div>
+                            )}
                           </>
                         )}
 

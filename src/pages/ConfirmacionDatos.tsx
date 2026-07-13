@@ -53,6 +53,7 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
 export default function ConfirmacionDatos({ onConfirm }: { onConfirm: (represented: string, category: string, cuit: string) => void }) {
   const [confirmed, setConfirmed] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isCidiModalOpen, setIsCidiModalOpen] = useState(false)
   
   // Modal states
   const [represented, setRepresented] = useState<'camila' | 'sanatorio' | null>(null)
@@ -118,22 +119,23 @@ export default function ConfirmacionDatos({ onConfirm }: { onConfirm: (represent
                   Si necesitás realizar modificaciones, realizalo desde el portal de CiDi y luego actualizá la información.
                 </p>
               </div>
-              <a
-                href={CIDI_URL}
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                onClick={() => {
+                  window.open(CIDI_URL, '_blank')
+                  setIsCidiModalOpen(true)
+                }}
                 style={{
                   display: 'inline-flex', alignItems: 'center', gap: '8px',
                   backgroundColor: '#0284C7', color: '#fff',
                   border: 'none', borderRadius: '6px',
                   padding: '9px 16px', fontSize: '13.5px', fontWeight: 600,
-                  cursor: 'pointer', textDecoration: 'none', flexShrink: 0,
+                  cursor: 'pointer', flexShrink: 0,
                   whiteSpace: 'nowrap', justifyContent: 'center',
                 }}
               >
                 Modificar
                 <PencilIcon />
-              </a>
+              </button>
             </div>
 
             {/* ── DATOS PERSONALES GRID ── */}
@@ -530,6 +532,70 @@ export default function ConfirmacionDatos({ onConfirm }: { onConfirm: (represent
               </button>
             </div>
 
+          </div>
+        </div>
+      )}
+      {/* ── CIDI MODAL POPUP (CENTERED) ── */}
+      {isCidiModalOpen && (
+        <div style={{
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.45)', zIndex: 1000,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}>
+          <div style={{
+            backgroundColor: '#fff', borderRadius: '16px',
+            padding: '40px', width: '480px', maxWidth: '95%',
+            boxShadow: '0 8px 30px rgba(0, 0, 0, 0.15)',
+            boxSizing: 'border-box',
+            textAlign: 'center',
+            display: 'flex', flexDirection: 'column', alignItems: 'center'
+          }}>
+            <div style={{
+              width: '64px', height: '64px', borderRadius: '50%',
+              backgroundColor: '#F0FDF4', display: 'flex',
+              alignItems: 'center', justifyContent: 'center',
+              marginBottom: '24px'
+            }}>
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#00AC99" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+            </div>
+            
+            <h2 style={{ fontSize: '20px', fontWeight: 700, color: '#111827', marginBottom: '16px' }}>
+              Actualización de datos de CiDi
+            </h2>
+            <p style={{ fontSize: '15px', color: '#6B7280', marginBottom: '32px', lineHeight: '1.5', maxWidth: '380px' }}>
+              Una vez que hayas modificado tus datos en el portal de CiDi, por favor hacé clic en "Actualizar" para refrescar la información en esta pantalla
+            </p>
+            <div style={{ display: 'flex', gap: '16px', width: '100%' }}>
+              <button
+                onClick={() => setIsCidiModalOpen(false)}
+                style={{
+                  flex: 1, padding: '12px 0', borderRadius: '8px',
+                  border: '1px solid #D1D5DB', backgroundColor: '#fff',
+                  color: '#374151', fontSize: '14px', fontWeight: 600,
+                  cursor: 'pointer',
+                }}
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={() => {
+                  // Simulate refresh by just closing it for now (this would ideally re-fetch data)
+                  setIsCidiModalOpen(false)
+                }}
+                style={{
+                  flex: 1, padding: '12px 0', borderRadius: '8px',
+                  border: 'none', backgroundColor: '#00AC99',
+                  color: '#fff', fontSize: '14px', fontWeight: 600,
+                  cursor: 'pointer',
+                }}
+              >
+                Actualizar
+              </button>
+            </div>
           </div>
         </div>
       )}
