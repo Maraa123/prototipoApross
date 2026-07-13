@@ -102,9 +102,12 @@ export default function ConfirmacionInstitucion({
                   Si necesitás realizar modificaciones, realizalo desde el portal de CiDi y luego actualizá la información.
                 </p>
               </div>
-              <button
-                onClick={() => {
-                  window.open(CIDI_URL, '_blank')
+              <a
+                href={CIDI_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => {
+                  // Permitimos que el enlace navegue a CiDi en otra pestaña normalmente
                   setIsCidiModalOpen(true)
                 }}
                 style={{
@@ -112,13 +115,13 @@ export default function ConfirmacionInstitucion({
                   backgroundColor: '#0284C7', color: '#fff',
                   border: 'none', borderRadius: '6px',
                   padding: '9px 16px', fontSize: '13.5px', fontWeight: 600,
-                  cursor: 'pointer', flexShrink: 0,
+                  cursor: 'pointer', flexShrink: 0, textDecoration: 'none',
                   whiteSpace: 'nowrap', justifyContent: 'center',
                 }}
               >
                 Modificar
                 <PencilIcon />
-              </button>
+              </a>
             </div>
 
             {/* ── IDENTIFICADORES DEL ESTABLECIMIENTO ── */}
