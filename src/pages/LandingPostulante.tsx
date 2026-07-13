@@ -92,6 +92,27 @@ export default function LandingPostulante({ onStart, submittedPostulacion, onSim
                       Simular Aprobación
                     </button>
                   )}
+                  {submittedPostulacion && (
+                    <button
+                      onClick={() => window.location.href = '/backoffice'}
+                      style={{
+                        padding: '8px 16px',
+                        backgroundColor: '#1F2937',
+                        color: 'white',
+                        fontWeight: 600,
+                        fontSize: '13px',
+                        borderRadius: '6px',
+                        border: 'none',
+                        cursor: 'pointer',
+                        boxShadow: '0 2px 4px rgba(31, 41, 55, 0.2)',
+                        transition: 'all 0.2s'
+                      }}
+                      onMouseEnter={e => e.currentTarget.style.backgroundColor = '#111827'}
+                      onMouseLeave={e => e.currentTarget.style.backgroundColor = '#1F2937'}
+                    >
+                      Backoffice
+                    </button>
+                  )}
                 </div>
               )}
             </div>

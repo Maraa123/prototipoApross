@@ -5,6 +5,7 @@ import ConfirmacionDatos from './pages/ConfirmacionDatos'
 import ConfirmacionInstitucion from './pages/ConfirmacionInstitucion'
 import AltaPostulante from './pages/AltaPostulante'
 import FinPrototipo from './pages/FinPrototipo'
+import Backoffice from './pages/Backoffice'
 
 function App() {
   const navigate = useNavigate()
@@ -134,6 +135,7 @@ function App() {
           fase={fase}
         />
       } />
+      <Route path="/backoffice" element={<Backoffice />} />
     </Routes>
   )
 }

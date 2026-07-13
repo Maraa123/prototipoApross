@@ -3825,7 +3825,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                           Por favor, completá la siguiente información obligatoria (*)
                         </p>
                         <SectionTitle>DIRECCION</SectionTitle>
-                        
+
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', marginBottom: '16px' }}>
                           <div>
                             <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
@@ -4912,7 +4912,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
           }}>
 
             <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#111827', margin: '0 0 2px 0' }}>
-              Antecedentes
+              Experiencia Profesional
             </h3>
             <p style={{ fontSize: '12.5px', color: '#6B7280', margin: '0 0 20px 0' }}>
               Registrá tu experiencia profesional y los establecimientos donde ejerciste tu actividad.
