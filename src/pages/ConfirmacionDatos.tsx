@@ -123,7 +123,7 @@ export default function ConfirmacionDatos({ onConfirm }: { onConfirm: (represent
                 href={CIDI_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={(e) => {
+                onClick={() => {
                   // Permitimos que el enlace navegue a CiDi en otra pestaña normalmente
                   setIsCidiModalOpen(true)
                 }}

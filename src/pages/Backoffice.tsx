@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { ChevronDownIcon } from '../components/Icons'
 
 interface BackofficeProps {
@@ -68,7 +67,6 @@ function BackofficeSidebar() {
 }
 
 export default function Backoffice({ submittedPostulacion }: BackofficeProps) {
-  const currentDate = new Date().toLocaleDateString('es-AR')
   const [view, setView] = useState<'list' | 'ficha'>('list')
   const [activeTab, setActiveTab] = useState('Datos del perfil')
 
