@@ -29,6 +29,79 @@ function BackofficeHeader() {
   )
 }
 
+function AdminSidebarTools({ AREAS, currentAdminView, setCurrentAdminView, setView }: any) {
+  const [isOpen, setIsOpen] = useState(false)
+
+  return (
+    <div 
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: '50%',
+        transform: `translate(-50%, ${isOpen ? '0' : '-100%'})`,
+        backgroundColor: '#262F3D', // Color of the image
+        width: 'max-content',
+        borderBottomLeftRadius: '8px',
+        borderBottomRightRadius: '8px',
+        boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
+        transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+        zIndex: 9999,
+        padding: '16px 24px',
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: '16px'
+      }}
+    >
+      {/* Toggler tab */}
+      <div 
+        onClick={() => setIsOpen(!isOpen)}
+        style={{
+          position: 'absolute',
+          bottom: '-16px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '64px',
+          height: '16px',
+          backgroundColor: '#262F3D',
+          borderBottomLeftRadius: '6px',
+          borderBottomRightRadius: '6px',
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxShadow: '0 4px 10px rgba(0,0,0,0.1)'
+        }}
+      >
+        <div style={{ width: '24px', height: '4px', backgroundColor: '#4B5563', borderRadius: '2px' }} />
+      </div>
+
+      <p style={{ margin: 0, fontSize: '11px', fontWeight: 700, color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+        ADMIN TOOLS
+      </p>
+
+      <div style={{ display: 'flex', gap: '8px' }}>
+        {AREAS.map((area: string, idx: number) => (
+          <button 
+            key={area}
+            onClick={() => { setCurrentAdminView(idx); setView('list'); }}
+            style={{ 
+              padding: '8px 12px', borderRadius: '4px', border: '1px solid',
+              borderColor: currentAdminView === idx ? '#00AC99' : '#374151', 
+              backgroundColor: currentAdminView === idx ? '#00AC99' : '#374151', 
+              color: '#fff', cursor: 'pointer', fontSize: '12px',
+              fontWeight: currentAdminView === idx ? 600 : 500,
+              transition: 'all 0.2s',
+              whiteSpace: 'nowrap'
+            }}>
+            Simular {area}
+          </button>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 function BackofficeSidebar() {
   const menuItems = [
     'Usuarios',
@@ -66,9 +139,27 @@ function BackofficeSidebar() {
   )
 }
 
+const AREAS = ['Convenios', 'Investigación y desarrollo', 'Prestaciones Médicas', 'Despacho', 'Administrativa', 'Tesorería']
+
+const AREA_TASKS = [
+  ['Validar datos personales y de contacto', 'Validar especialidad declarada'],
+  ['Validar constancia de DNI', 'Validar constancia de inscripcion vigente'],
+  ['Validar número de matrícula', 'Validar constancia de matrícula'],
+  ['Validar Constancia de CUIT/AFIP', 'Validar Constancia de IIBB'],
+  ['Validar Póliza de Seguros', 'Validar Seguro de Mala Praxis'],
+  ['Validar certificado de CBU', 'Validar titularidad de cuenta']
+]
+
 export default function Backoffice({ submittedPostulacion }: BackofficeProps) {
   const [view, setView] = useState<'list' | 'ficha'>('list')
   const [activeTab, setActiveTab] = useState('Datos del perfil')
+
+  // Simulador Admin
+  const [applicantStage, setApplicantStage] = useState(1) // Inicia en Investigación y desarrollo (índice 1)
+  const [currentAdminView, setCurrentAdminView] = useState(1) // Inicia viendo Investigación y desarrollo
+
+  const isAprobadoFinal = applicantStage > currentAdminView
+  const isVisible = currentAdminView <= applicantStage
 
   const [valDni, setValDni] = useState<'default' | 'rechazado' | 'aprobado'>('default')
   const [valInsc, setValInsc] = useState<'default' | 'rechazado' | 'aprobado'>('default')
@@ -79,16 +170,17 @@ export default function Backoffice({ submittedPostulacion }: BackofficeProps) {
   const [showConfirmModal, setShowConfirmModal] = useState(false)
   const [showAprobarModal, setShowAprobarModal] = useState(false)
   const [isRechazadoFinal, setIsRechazadoFinal] = useState(false)
-  const [isAprobadoFinal, setIsAprobadoFinal] = useState(false)
   const [isRowChecked, setIsRowChecked] = useState(false)
 
+  const canInteract = currentAdminView === applicantStage && !isRechazadoFinal
   const canRechazar = valDni === 'rechazado' || valInsc === 'rechazado'
-  const canAprobar = (valDni === 'aprobado' || valInsc === 'aprobado') && !canRechazar
+  const canAprobar = (valDni === 'aprobado' || valInsc === 'aprobado') && !canRechazar && !isAprobadoFinal
 
   if (view === 'ficha') {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', backgroundColor: '#F3F4F6', fontFamily: 'Inter, sans-serif' }}>
         <BackofficeHeader />
+        <AdminSidebarTools AREAS={AREAS} currentAdminView={currentAdminView} setCurrentAdminView={setCurrentAdminView} setView={setView} />
         <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
           <BackofficeSidebar />
           <main style={{ flex: 1, padding: '32px 40px', overflowY: 'auto', backgroundColor: '#ffffff' }}>
@@ -107,36 +199,26 @@ export default function Backoffice({ submittedPostulacion }: BackofficeProps) {
                 {/* Linea gris de base */}
                 <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '1px', backgroundColor: '#E5E7EB' }}></div>
 
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', paddingBottom: '12px', position: 'relative', flex: 1 }}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#00AC99" stroke="#fff" strokeWidth="2"><circle cx="12" cy="12" r="10" stroke="none" /><path d="m9 12 2 2 4-4" /></svg>
-                  <span style={{ fontSize: '11px', fontWeight: 600, color: '#374151' }}>Convenios</span>
-                </div>
+                {AREAS.map((area, idx) => {
+                  const isPast = idx < applicantStage
+                  const isCurrent = idx === currentAdminView
 
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', paddingBottom: '12px', position: 'relative', flex: 1 }}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#00AC99" stroke="#fff" strokeWidth="2"><circle cx="12" cy="12" r="10" stroke="none" /><path d="m9 12 2 2 4-4" /></svg>
-                  <span style={{ fontSize: '11px', fontWeight: 600, color: '#00AC99' }}>Investigación y desarrollo</span>
-                  <div style={{ position: 'absolute', bottom: 0, left: '10%', right: '10%', height: '2px', backgroundColor: '#00AC99', zIndex: 1 }}></div>
-                </div>
-
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', paddingBottom: '12px', position: 'relative', flex: 1 }}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2"><circle cx="12" cy="12" r="10" /></svg>
-                  <span style={{ fontSize: '11px', fontWeight: 600, color: '#374151' }}>Prestaciones Medicas</span>
-                </div>
-
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', paddingBottom: '12px', position: 'relative', flex: 1 }}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2"><circle cx="12" cy="12" r="10" /></svg>
-                  <span style={{ fontSize: '11px', fontWeight: 600, color: '#374151' }}>Despacho</span>
-                </div>
-
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', paddingBottom: '12px', position: 'relative', flex: 1 }}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2"><circle cx="12" cy="12" r="10" /></svg>
-                  <span style={{ fontSize: '11px', fontWeight: 600, color: '#374151' }}>Administrativa</span>
-                </div>
-
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', paddingBottom: '12px', position: 'relative', flex: 1 }}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2"><circle cx="12" cy="12" r="10" /></svg>
-                  <span style={{ fontSize: '11px', fontWeight: 600, color: '#374151' }}>Tesorería</span>
-                </div>
+                  return (
+                    <div key={area} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', paddingBottom: '12px', position: 'relative', flex: 1 }}>
+                      {isPast || (isCurrent && isAprobadoFinal) ? (
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="#00AC99" stroke="#fff" strokeWidth="2"><circle cx="12" cy="12" r="10" stroke="none" /><path d="m9 12 2 2 4-4" /></svg>
+                      ) : (
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2"><circle cx="12" cy="12" r="10" /></svg>
+                      )}
+                      
+                      <span style={{ fontSize: '11px', fontWeight: 600, color: isCurrent ? '#00AC99' : '#374151' }}>{area}</span>
+                      
+                      {isCurrent && (
+                        <div style={{ position: 'absolute', bottom: 0, left: '10%', right: '10%', height: '2px', backgroundColor: '#00AC99', zIndex: 1 }}></div>
+                      )}
+                    </div>
+                  )
+                })}
               </div>
             </div>
 
@@ -599,20 +681,20 @@ export default function Backoffice({ submittedPostulacion }: BackofficeProps) {
                   <div style={{ backgroundColor: '#EAF8F5', borderRadius: '12px', border: '1px solid #E5E7EB', display: 'flex', flexDirection: 'column' }}>
                     <div style={{ padding: '24px' }}>
                       <p style={{ margin: '0 0 4px 0', fontSize: '12px', color: '#6B7280', fontWeight: 500 }}>Acciones área</p>
-                      <h3 style={{ margin: '0 0 24px 0', fontSize: '18px', fontWeight: 700, color: '#1F2937' }}>Investigación y desarrollo</h3>
-                      
+                      <h3 style={{ margin: '0 0 24px 0', fontSize: '18px', fontWeight: 700, color: '#1F2937' }}>{AREAS[currentAdminView]}</h3>
+
                       <p style={{ margin: '0 0 16px 0', fontSize: '13px', color: '#1F2937', fontWeight: 600, lineHeight: '1.5' }}>
                         Ficha de expediente de Profesional Gonzales, Camila fué Aprobada.
                       </p>
-                      
+
                       <p style={{ margin: '0 0 12px 0', fontSize: '13px', color: '#4B5563', lineHeight: '1.5' }}>
                         Las siguientes observaciones se encuentran aprobadas.
                       </p>
                       <ul style={{ margin: '0 0 24px 0', paddingLeft: '20px', fontSize: '13px', color: '#4B5563', lineHeight: '1.6' }}>
-                        <li>Validar constancia de DNI - Aprobado</li>
-                        <li>Validar constancia de inscripcion vigente - Aprobado</li>
+                        <li>{AREA_TASKS[currentAdminView][0]} - Aprobado</li>
+                        <li>{AREA_TASKS[currentAdminView][1]} - Aprobado</li>
                       </ul>
-                      
+
                       <p style={{ margin: '0 0 8px 0', fontSize: '12px', color: '#374151', fontWeight: 500 }}>
                         Documento de Tabla de revisión y observaciones:
                       </p>
@@ -622,7 +704,7 @@ export default function Backoffice({ submittedPostulacion }: BackofficeProps) {
                     </div>
 
                     <div style={{ padding: '24px', borderTop: '1px solid #E5E7EB', backgroundColor: '#fff', borderBottomLeftRadius: '12px', borderBottomRightRadius: '12px' }}>
-                      <button onClick={() => setIsAprobadoFinal(false)} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #D1D5DB', backgroundColor: '#fff', color: '#374151', fontSize: '12px', fontWeight: 600, cursor: 'pointer' }}>
+                      <button onClick={() => setApplicantStage(currentAdminView)} style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #D1D5DB', backgroundColor: '#fff', color: '#374151', fontSize: '12px', fontWeight: 600, cursor: 'pointer' }}>
                         Solicitar Revisión de Aprobación
                       </button>
                     </div>
@@ -631,7 +713,7 @@ export default function Backoffice({ submittedPostulacion }: BackofficeProps) {
                   <div style={{ backgroundColor: '#fff', borderRadius: '12px', border: '1px solid #E5E7EB', display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
                     <div style={{ padding: '24px 24px 0 24px', flexShrink: 0 }}>
                       <p style={{ margin: '0 0 4px 0', fontSize: '12px', color: '#6B7280', fontWeight: 500 }}>Acciones área</p>
-                      <h3 style={{ margin: '0 0 24px 0', fontSize: '18px', fontWeight: 700, color: '#1F2937' }}>Investigación y desarrollo</h3>
+                      <h3 style={{ margin: '0 0 24px 0', fontSize: '18px', fontWeight: 700, color: '#1F2937' }}>{AREAS[currentAdminView]}</h3>
                       <div style={{ height: '1px', backgroundColor: '#E5E7EB', marginBottom: '24px' }}></div>
                     </div>
 
@@ -639,7 +721,7 @@ export default function Backoffice({ submittedPostulacion }: BackofficeProps) {
 
                       {/* Cargar Documento de Tabla */}
                       <div>
-                        <p style={{ margin: '0 0 12px 0', fontSize: '12px', color: '#374151', fontWeight: 500 }}>Validar constancia de DNI</p>
+                        <p style={{ margin: '0 0 12px 0', fontSize: '12px', color: '#374151', fontWeight: 500 }}>{AREA_TASKS[currentAdminView][0]}</p>
                         <div style={{ display: 'flex', gap: '12px', marginBottom: '8px' }}>
                           <button
                             onClick={() => setValDni(valDni === 'rechazado' ? 'default' : 'rechazado')}
@@ -666,7 +748,7 @@ export default function Backoffice({ submittedPostulacion }: BackofficeProps) {
                         </div>
                         {valDni === 'rechazado' && (
                           <div style={{ position: 'relative' }}>
-                            <select 
+                            <select
                               value={dniReason}
                               onChange={(e) => setDniReason(e.target.value)}
                               style={{ width: '100%', padding: '8px 12px', borderRadius: '6px', border: '1px solid #D1D5DB', backgroundColor: '#fff', fontSize: '13px', color: '#374151', appearance: 'none', outline: 'none' }}
@@ -682,7 +764,7 @@ export default function Backoffice({ submittedPostulacion }: BackofficeProps) {
 
                       {/* Validar constancia de inscripcion vigente */}
                       <div>
-                        <p style={{ margin: '0 0 12px 0', fontSize: '12px', color: '#374151', fontWeight: 500 }}>Validar constancia de inscripcion vigente</p>
+                        <p style={{ margin: '0 0 12px 0', fontSize: '12px', color: '#374151', fontWeight: 500 }}>{AREA_TASKS[currentAdminView][1]}</p>
                         <div style={{ display: 'flex', gap: '12px', marginBottom: '8px' }}>
                           <button
                             onClick={() => setValInsc(valInsc === 'rechazado' ? 'default' : 'rechazado')}
@@ -709,7 +791,7 @@ export default function Backoffice({ submittedPostulacion }: BackofficeProps) {
                         </div>
                         {valInsc === 'rechazado' && (
                           <div style={{ position: 'relative' }}>
-                            <select 
+                            <select
                               value={inscReason}
                               onChange={(e) => setInscReason(e.target.value)}
                               style={{ width: '100%', padding: '8px 12px', borderRadius: '6px', border: '1px solid #D1D5DB', backgroundColor: '#fff', fontSize: '13px', color: '#374151', appearance: 'none', outline: 'none' }}
@@ -850,7 +932,9 @@ export default function Backoffice({ submittedPostulacion }: BackofficeProps) {
                 <button
                   onClick={() => {
                     setShowAprobarModal(false);
-                    setIsAprobadoFinal(true);
+                    if (applicantStage < AREAS.length - 1) {
+                      setApplicantStage(applicantStage + 1);
+                    }
                   }}
                   style={{ width: '160px', padding: '10px', borderRadius: '6px', border: 'none', backgroundColor: '#00AC99', color: '#fff', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}>
                   Confirmar aprobación
@@ -866,6 +950,7 @@ export default function Backoffice({ submittedPostulacion }: BackofficeProps) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', backgroundColor: '#F3F4F6', fontFamily: 'Inter, sans-serif' }}>
       <BackofficeHeader />
+      <AdminSidebarTools AREAS={AREAS} currentAdminView={currentAdminView} setCurrentAdminView={setCurrentAdminView} setView={setView} />
       <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
         <BackofficeSidebar />
 
@@ -934,16 +1019,16 @@ export default function Backoffice({ submittedPostulacion }: BackofficeProps) {
               <span style={{ fontSize: '16px', fontWeight: 700, color: '#374151', minWidth: '120px' }}>1 resultado</span>
               <div style={{ display: 'flex', gap: '12px', flex: 1 }}>
                 {['Rechazados', 'Pre-Inscriptos', 'Postulados', 'Prestadores Activos'].map(tab => (
-                  <button key={tab} style={{ 
-                    flex: 1, 
-                    padding: '10px 16px', 
-                    borderRadius: '4px', 
-                    border: tab === 'Postulados' ? 'none' : '1px solid #D1D5DB', 
-                    backgroundColor: tab === 'Postulados' ? '#00AC99' : '#fff', 
-                    color: tab === 'Postulados' ? '#fff' : '#4B5563', 
-                    fontSize: '13px', 
+                  <button key={tab} style={{
+                    flex: 1,
+                    padding: '10px 16px',
+                    borderRadius: '4px',
+                    border: tab === 'Postulados' ? 'none' : '1px solid #D1D5DB',
+                    backgroundColor: tab === 'Postulados' ? '#00AC99' : '#fff',
+                    color: tab === 'Postulados' ? '#fff' : '#4B5563',
+                    fontSize: '13px',
                     fontWeight: tab === 'Postulados' ? 600 : 500,
-                    cursor: 'pointer' 
+                    cursor: 'pointer'
                   }}>
                     {tab}
                   </button>
@@ -954,27 +1039,27 @@ export default function Backoffice({ submittedPostulacion }: BackofficeProps) {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 20px', borderBottom: '1px solid #E5E7EB', backgroundColor: '#F9FAFB' }}>
               <div style={{ display: 'flex', gap: '12px' }}>
                 <button style={{ padding: '8px 16px', borderRadius: '16px', border: '1px solid #D1D5DB', backgroundColor: '#fff', color: '#4B5563', fontSize: '12px', fontWeight: 500, cursor: 'pointer' }}>Seleccionar todos</button>
-                <button 
-                  disabled={!isRowChecked}
+                <button
+                  disabled={!isRowChecked || !canInteract}
                   onClick={() => setShowAprobarModal(true)}
-                  style={{ 
-                    padding: '8px 16px', borderRadius: '4px', border: 'none', 
-                    backgroundColor: isRowChecked ? '#00AC99' : '#BCC1C6', 
-                    color: '#fff', fontSize: '12px', fontWeight: 600, 
-                    cursor: isRowChecked ? 'pointer' : 'not-allowed' 
+                  style={{
+                    padding: '8px 16px', borderRadius: '4px', border: 'none',
+                    backgroundColor: (isRowChecked && canInteract) ? '#00AC99' : '#BCC1C6',
+                    color: '#fff', fontSize: '12px', fontWeight: 600,
+                    cursor: (isRowChecked && canInteract) ? 'pointer' : 'not-allowed'
                   }}>
                   Aprobar
                 </button>
-                <button 
-                  disabled={!isRowChecked}
+                <button
+                  disabled={!isRowChecked || !canInteract}
                   onClick={() => setShowConfirmModal(true)}
-                  style={{ 
-                    display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 16px', borderRadius: '4px', border: 'none', 
-                    backgroundColor: isRowChecked ? '#EF4444' : '#BCC1C6', 
-                    color: '#fff', fontSize: '12px', fontWeight: 600, 
-                    cursor: isRowChecked ? 'pointer' : 'not-allowed' 
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 16px', borderRadius: '4px', border: 'none',
+                    backgroundColor: (isRowChecked && canInteract) ? '#EF4444' : '#BCC1C6',
+                    color: '#fff', fontSize: '12px', fontWeight: 600,
+                    cursor: (isRowChecked && canInteract) ? 'pointer' : 'not-allowed'
                   }}>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" /><line x1="4.93" y1="4.93" x2="19.07" y2="19.07" /></svg>
                   Rechazar postulante
                 </button>
               </div>
@@ -996,110 +1081,120 @@ export default function Backoffice({ submittedPostulacion }: BackofficeProps) {
                 </tr>
               </thead>
               <tbody>
-                <tr style={{ borderBottom: '1px solid #E5E7EB', backgroundColor: '#fff' }}>
-                  <td style={{ padding: '16px 20px', textAlign: 'center', borderRight: '1px solid #E5E7EB' }}>
-                    <input type="checkbox" checked={isRowChecked} onChange={(e) => setIsRowChecked(e.target.checked)} style={{ width: '16px', height: '16px', borderRadius: '4px', border: '1px solid #D1D5DB', cursor: 'pointer' }} />
-                  </td>
-                  <td style={{ padding: '16px 20px', borderRight: '1px solid #E5E7EB' }}>
-                    <span style={{ 
-                      display: 'inline-block', padding: '4px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: 600, 
-                      backgroundColor: isAprobadoFinal ? '#E6F6F4' : isRechazadoFinal ? '#FEE2E2' : '#fff', 
-                      color: isAprobadoFinal ? '#00AC99' : isRechazadoFinal ? '#FF3300' : '#4B5563',
-                      border: isAprobadoFinal ? '1px solid #00AC99' : isRechazadoFinal ? '1px solid #FF3300' : '1px solid #D1D5DB'
-                    }}>
-                      {isAprobadoFinal ? 'Aprobado' : isRechazadoFinal ? 'Rechazado' : 'Nuevo'}
-                    </span>
-                  </td>
-                  <td style={{ padding: '16px 20px', fontSize: '13px', color: '#6B7280', borderRight: '1px solid #E5E7EB' }}>
-                    Pre-inscriptor
-                  </td>
-                  <td style={{ padding: '16px 20px', fontSize: '13px', color: '#6B7280', borderRight: '1px solid #E5E7EB' }}>
-                    Fernando Javie Hidalgo<br />
-                    201234567
-                  </td>
-                  <td style={{ padding: '16px 20px', fontSize: '13px', color: '#6B7280', borderRight: '1px solid #E5E7EB' }}>
-                    2026661523
-                  </td>
-                  <td style={{ padding: '16px 20px', fontSize: '13px', color: '#374151', fontWeight: 500, borderRight: '1px solid #E5E7EB' }}>
-                    Maria Marta Gomez
-                  </td>
-                  <td style={{ padding: '16px 20px', fontSize: '13px', color: '#6B7280', borderRight: '1px solid #E5E7EB' }}>25/05/2021</td>
-                  <td style={{ padding: '16px 20px', borderRight: '1px solid #E5E7EB' }}>
-                    <span style={{ padding: '6px 12px', border: '1px solid #D1D5DB', borderRadius: '4px', fontSize: '11px', color: '#4B5563', whiteSpace: 'nowrap' }}>
-                      Investigación y desarrollo
-                    </span>
-                  </td>
-                  <td style={{ padding: '12px' }}>
-                    <button onClick={() => setView('ficha')} style={{ width: '100%', padding: '10px 16px', borderRadius: '4px', border: '1px solid #374151', backgroundColor: '#fff', color: '#374151', fontSize: '13px', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap', display: 'flex', justifyContent: 'center' }}>
-                      Ver Ficha de postulante
-                    </button>
-                  </td>
-                </tr>
+                {isVisible ? (
+                  <tr style={{ borderBottom: '1px solid #E5E7EB', backgroundColor: '#fff' }}>
+                    <td style={{ padding: '16px 20px', textAlign: 'center', borderRight: '1px solid #E5E7EB' }}>
+                      <input type="checkbox" disabled={!canInteract} checked={isRowChecked} onChange={(e) => setIsRowChecked(e.target.checked)} style={{ width: '16px', height: '16px', borderRadius: '4px', border: '1px solid #D1D5DB', cursor: canInteract ? 'pointer' : 'not-allowed' }} />
+                    </td>
+                    <td style={{ padding: '16px 20px', borderRight: '1px solid #E5E7EB' }}>
+                      <span style={{
+                        display: 'inline-block', padding: '4px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: 600,
+                        backgroundColor: isAprobadoFinal ? '#E6F6F4' : isRechazadoFinal ? '#FEE2E2' : '#fff',
+                        color: isAprobadoFinal ? '#00AC99' : isRechazadoFinal ? '#FF3300' : '#4B5563',
+                        border: isAprobadoFinal ? '1px solid #00AC99' : isRechazadoFinal ? '1px solid #FF3300' : '1px solid #D1D5DB'
+                      }}>
+                        {isAprobadoFinal ? 'Aprobado' : isRechazadoFinal ? 'Rechazado' : 'Nuevo'}
+                      </span>
+                    </td>
+                    <td style={{ padding: '16px 20px', fontSize: '13px', color: '#6B7280', borderRight: '1px solid #E5E7EB' }}>
+                      Pre-inscripcion
+                    </td>
+                    <td style={{ padding: '16px 20px', fontSize: '13px', color: '#6B7280', borderRight: '1px solid #E5E7EB' }}>
+                      Fernando Javie Hidalgo<br />
+                      201234567
+                    </td>
+                    <td style={{ padding: '16px 20px', fontSize: '13px', color: '#6B7280', borderRight: '1px solid #E5E7EB' }}>
+                      2026661523
+                    </td>
+                    <td style={{ padding: '16px 20px', fontSize: '13px', color: '#374151', fontWeight: 500, borderRight: '1px solid #E5E7EB' }}>
+                      Maria Marta Gomez
+                    </td>
+                    <td style={{ padding: '16px 20px', fontSize: '13px', color: '#6B7280', borderRight: '1px solid #E5E7EB' }}>25/05/2021</td>
+                    <td style={{ padding: '16px 20px', borderRight: '1px solid #E5E7EB' }}>
+                      <span style={{ padding: '6px 12px', border: '1px solid #D1D5DB', borderRadius: '4px', fontSize: '11px', color: '#4B5563', whiteSpace: 'nowrap' }}>
+                        {AREAS[applicantStage]}
+                      </span>
+                    </td>
+                    <td style={{ padding: '12px' }}>
+                      <button onClick={() => setView('ficha')} style={{ width: '100%', padding: '10px 16px', borderRadius: '4px', border: '1px solid #374151', backgroundColor: '#fff', color: '#374151', fontSize: '13px', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap', display: 'flex', justifyContent: 'center' }}>
+                        Ver Ficha de postulante
+                      </button>
+                    </td>
+                  </tr>
+                ) : (
+                  <tr>
+                    <td colSpan={9} style={{ padding: '40px 20px', textAlign: 'center', color: '#6B7280', fontSize: '14px' }}>
+                      No hay postulantes pendientes en esta área.
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
-        {/* Modal de Confirmación de Rechazo */}
-        {showConfirmModal && (
-          <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999 }}>
-            <div style={{ backgroundColor: '#fff', borderRadius: '12px', padding: '48px 32px', width: '560px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '24px' }}>
-              <div style={{ width: '64px', height: '64px', backgroundColor: '#FF3300', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2"><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></svg>
-              </div>
-              <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 700, color: '#1F2937', lineHeight: '1.4' }}>
-                ¿Estás seguro de rechazar la postulación de<br />la Profesional Gonzales, Camila?
-              </h3>
-              <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', marginTop: '8px' }}>
-                <button
-                  onClick={() => setShowConfirmModal(false)}
-                  style={{ width: '160px', padding: '10px', borderRadius: '6px', border: '1px solid #D1D5DB', backgroundColor: '#fff', color: '#374151', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}>
-                  No, volver
-                </button>
-                <button
-                  onClick={() => {
-                    setShowConfirmModal(false);
-                    setIsRechazadoFinal(true);
-                    setIsRowChecked(false);
-                  }}
-                  style={{ width: '160px', padding: '10px', borderRadius: '6px', border: 'none', backgroundColor: '#FF3300', color: '#fff', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}>
-                  Confirmar rechazo
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Modal de Confirmación de Aprobación */}
-        {showAprobarModal && (
-          <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999 }}>
-            <div style={{ backgroundColor: '#fff', borderRadius: '12px', padding: '48px 32px', width: '560px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '24px' }}>
-              <div style={{ width: '64px', height: '64px', backgroundColor: '#00AC99', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><path d="M9 15h6" /><path d="M12 12l3 3-3 3" /></svg>
-              </div>
-              <div>
-                <h3 style={{ margin: '0 0 8px 0', fontSize: '18px', fontWeight: 700, color: '#1F2937', lineHeight: '1.4' }}>
-                  ¿Confirmas la aprobación de la Profesional<br />Gonzales, Camila?
+          {/* Modal de Confirmación de Rechazo */}
+          {showConfirmModal && (
+            <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999 }}>
+              <div style={{ backgroundColor: '#fff', borderRadius: '12px', padding: '48px 32px', width: '560px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '24px' }}>
+                <div style={{ width: '64px', height: '64px', backgroundColor: '#FF3300', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2"><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></svg>
+                </div>
+                <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 700, color: '#1F2937', lineHeight: '1.4' }}>
+                  ¿Estás seguro de rechazar la postulación de<br />la Profesional Gonzales, Camila?
                 </h3>
-                <p style={{ margin: 0, fontSize: '12px', color: '#6B7280' }}>Si es correcto, el expediente avanzará al área de Prestaciones Médicas.</p>
-              </div>
-              <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', marginTop: '8px' }}>
-                <button
-                  onClick={() => setShowAprobarModal(false)}
-                  style={{ width: '160px', padding: '10px', borderRadius: '6px', border: '1px solid #D1D5DB', backgroundColor: '#fff', color: '#374151', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}>
-                  No, volver
-                </button>
-                <button
-                  onClick={() => {
-                    setShowAprobarModal(false);
-                    setIsAprobadoFinal(true);
-                    setIsRowChecked(false);
-                  }}
-                  style={{ width: '160px', padding: '10px', borderRadius: '6px', border: 'none', backgroundColor: '#00AC99', color: '#fff', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}>
-                  Confirmar aprobación
-                </button>
+                <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', marginTop: '8px' }}>
+                  <button
+                    onClick={() => setShowConfirmModal(false)}
+                    style={{ width: '160px', padding: '10px', borderRadius: '6px', border: '1px solid #D1D5DB', backgroundColor: '#fff', color: '#374151', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}>
+                    No, volver
+                  </button>
+                  <button
+                    onClick={() => {
+                      setShowConfirmModal(false);
+                      setIsRechazadoFinal(true);
+                      setIsRowChecked(false);
+                    }}
+                    style={{ width: '160px', padding: '10px', borderRadius: '6px', border: 'none', backgroundColor: '#FF3300', color: '#fff', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}>
+                    Confirmar rechazo
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
+
+          {/* Modal de Confirmación de Aprobación */}
+          {showAprobarModal && (
+            <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999 }}>
+              <div style={{ backgroundColor: '#fff', borderRadius: '12px', padding: '48px 32px', width: '560px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '24px' }}>
+                <div style={{ width: '64px', height: '64px', backgroundColor: '#00AC99', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><path d="M9 15h6" /><path d="M12 12l3 3-3 3" /></svg>
+                </div>
+                <div>
+                  <h3 style={{ margin: '0 0 8px 0', fontSize: '18px', fontWeight: 700, color: '#1F2937', lineHeight: '1.4' }}>
+                    ¿Confirmas la aprobación de la Profesional<br />Gonzales, Camila?
+                  </h3>
+                  <p style={{ margin: 0, fontSize: '12px', color: '#6B7280' }}>Si es correcto, el expediente avanzará al área de Prestaciones Médicas.</p>
+                </div>
+                <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', marginTop: '8px' }}>
+                  <button
+                    onClick={() => setShowAprobarModal(false)}
+                    style={{ width: '160px', padding: '10px', borderRadius: '6px', border: '1px solid #D1D5DB', backgroundColor: '#fff', color: '#374151', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}>
+                    No, volver
+                  </button>
+                  <button
+                    onClick={() => {
+                      setShowAprobarModal(false);
+                      if (applicantStage < AREAS.length - 1) {
+                        setApplicantStage(applicantStage + 1);
+                      }
+                      setIsRowChecked(false);
+                    }}
+                    style={{ width: '160px', padding: '10px', borderRadius: '6px', border: 'none', backgroundColor: '#00AC99', color: '#fff', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}>
+                    Confirmar aprobación
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </main>
       </div>
     </div>
