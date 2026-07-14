@@ -48,73 +48,7 @@ export default function LandingPostulante({ onStart, submittedPostulacion, onSim
                 </span>
               </div>
 
-              {/* Simulation Buttons in Header */}
-              {submittedPostulacion && (
-                <div style={{ display: 'flex', gap: '12px' }}>
-                  {onSimularNuevo && (
-                    <button
-                      onClick={onSimularNuevo}
-                      style={{
-                        padding: '8px 16px',
-                        backgroundColor: '#F3F4F6',
-                        color: '#4B5563',
-                        fontWeight: 600,
-                        fontSize: '13px',
-                        borderRadius: '6px',
-                        border: '1px solid #D1D5DB',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s'
-                      }}
-                      onMouseEnter={e => e.currentTarget.style.backgroundColor = '#E5E7EB'}
-                      onMouseLeave={e => e.currentTarget.style.backgroundColor = '#F3F4F6'}
-                    >
-                      Simular Nuevo
-                    </button>
-                  )}
-                  {submittedPostulacion.estado === 'En revisión' && onSimularAprobacion && (
-                    <button
-                      onClick={onSimularAprobacion}
-                      style={{
-                        padding: '8px 16px',
-                        backgroundColor: '#F59E0B',
-                        color: 'white',
-                        fontWeight: 600,
-                        fontSize: '13px',
-                        borderRadius: '6px',
-                        border: 'none',
-                        cursor: 'pointer',
-                        boxShadow: '0 2px 4px rgba(245, 158, 11, 0.2)',
-                        transition: 'all 0.2s'
-                      }}
-                      onMouseEnter={e => e.currentTarget.style.backgroundColor = '#D97706'}
-                      onMouseLeave={e => e.currentTarget.style.backgroundColor = '#F59E0B'}
-                    >
-                      Simular Aprobación
-                    </button>
-                  )}
-                  {submittedPostulacion && (
-                    <button
-                      onClick={() => window.location.href = '/backoffice'}
-                      style={{
-                        padding: '8px 16px',
-                        backgroundColor: '#1F2937',
-                        color: 'white',
-                        fontWeight: 600,
-                        fontSize: '13px',
-                        borderRadius: '6px',
-                        border: 'none',
-                        cursor: 'pointer',
-                        boxShadow: '0 2px 4px rgba(31, 41, 55, 0.2)',
-                        transition: 'all 0.2s'
-                      }}
-                      onMouseEnter={e => e.currentTarget.style.backgroundColor = '#111827'}
-                      onMouseLeave={e => e.currentTarget.style.backgroundColor = '#1F2937'}
-                    >
-                      Backoffice
-                    </button>
-                  )}
-                </div>
-              )}
+
             </div>
 
             {/* ── HERO BANNER (Only when no submittedPostulacion exists) ── */}
@@ -511,6 +445,59 @@ export default function LandingPostulante({ onStart, submittedPostulacion, onSim
 
           </div>
         </main>
+      </div>
+
+      {/* Secret Admin Menu */}
+      <div 
+        style={{
+          position: 'fixed',
+          top: '50%',
+          right: 0,
+          transform: 'translateY(-50%) translateX(calc(100% - 16px))',
+          width: '200px',
+          backgroundColor: '#1F2937',
+          padding: '24px 16px',
+          borderTopLeftRadius: '12px',
+          borderBottomLeftRadius: '12px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '12px',
+          transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          zIndex: 9999,
+          boxShadow: '-4px 0 15px rgba(0,0,0,0.2)'
+        }}
+        onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-50%) translateX(0)'}
+        onMouseLeave={e => e.currentTarget.style.transform = 'translateY(-50%) translateX(calc(100% - 16px))'}
+      >
+        <div style={{ position: 'absolute', left: '-20px', top: 0, bottom: 0, width: '20px', cursor: 'pointer' }} />
+        <div style={{ position: 'absolute', left: '6px', top: '50%', transform: 'translateY(-50%)', width: '4px', height: '40px', backgroundColor: '#4B5563', borderRadius: '4px' }} />
+        
+        <p style={{ margin: '0 0 4px 0', fontSize: '11px', color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 700 }}>Admin Tools</p>
+        
+        {onSimularNuevo && (
+          <button
+            onClick={onSimularNuevo}
+            style={{ padding: '8px 12px', backgroundColor: '#374151', color: 'white', border: '1px solid #4B5563', borderRadius: '6px', fontSize: '12px', fontWeight: 600, cursor: 'pointer', textAlign: 'left' }}
+          >
+            Simular Nuevo
+          </button>
+        )}
+        
+        {onSimularAprobacion && submittedPostulacion?.estado === 'En revisión' && (
+          <button
+            onClick={onSimularAprobacion}
+            style={{ padding: '8px 12px', backgroundColor: '#F59E0B', color: 'white', border: 'none', borderRadius: '6px', fontSize: '12px', fontWeight: 600, cursor: 'pointer', textAlign: 'left' }}
+          >
+            Simular Aprobación
+          </button>
+        )}
+        
+        <button
+          onClick={() => window.location.href = '/backoffice'}
+          style={{ padding: '8px 12px', backgroundColor: '#00AC99', color: 'white', border: 'none', borderRadius: '6px', fontSize: '12px', fontWeight: 600, cursor: 'pointer', textAlign: 'left' }}
+        >
+          Ir al Backoffice
+        </button>
       </div>
     </div>
   )

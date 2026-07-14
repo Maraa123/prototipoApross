@@ -135,7 +135,7 @@ function App() {
           fase={fase}
         />
       } />
-      <Route path="/backoffice" element={<Backoffice />} />
+      <Route path="/backoffice" element={<Backoffice submittedPostulacion={submittedPostulacion} />} />
     </Routes>
   )
 }
