@@ -3,7 +3,7 @@ import Sidebar2 from '../components/Sidebar2'
 
 interface LandingPostulanteProps {
   onStart: () => void
-  submittedPostulacion?: {
+  submittedPostulaciones?: Array<{
     cuit?: string
     represented?: string
     categoria: string
@@ -13,489 +13,266 @@ interface LandingPostulanteProps {
     tipoInstitucionNivel?: string
     tipoInstitucion?: string
     estado: string
-  } | null
-  onSimularAprobacion?: () => void
+  }>
+  onSimularAprobacion?: (index?: number) => void
   onSimularNuevo?: () => void
-  onStartInscripcion?: () => void
+  onStartInscripcion?: (index?: number) => void
 }
 
-export default function LandingPostulante({ onStart, submittedPostulacion, onSimularAprobacion, onSimularNuevo, onStartInscripcion }: LandingPostulanteProps) {
-  const isProfessional = submittedPostulacion?.categoria === 'Profesional de la salud'
-  const isInstitution = submittedPostulacion?.categoria === 'Institución'
-  const isDisability = submittedPostulacion?.categoria === 'Prestador de discapacidad'
+export default function LandingPostulante({ onStart, submittedPostulaciones = [], onSimularAprobacion, onSimularNuevo, onStartInscripcion }: LandingPostulanteProps) {
+  const lastPostulacion = submittedPostulaciones[submittedPostulaciones.length - 1] || null
+  const isBioquimico = lastPostulacion?.profesion === 'Bioquímico' || lastPostulacion?.profesion === 'Bioquimico'
+  const first = submittedPostulaciones[0] || null
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', backgroundColor: '#f4f4f4' }}>
       <Header />
-
       <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
         <Sidebar2 />
-
         <main style={{ flex: 1, overflowY: 'auto', padding: '28px 32px' }}>
           <div style={{ maxWidth: '1100px', width: '100%', margin: '0 auto' }}>
 
-
-
             {/* Title Row */}
-            <div style={{ marginBottom: '20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', flexWrap: 'wrap' }}>
-                <h1 style={{ fontSize: '24px', fontWeight: 400, color: '#333', margin: 0, fontFamily: 'Arial, sans-serif' }}>
-                  Registro Postulantes
-                </h1>
-
-                <span style={{ fontSize: '15px', color: '#6B7280', fontWeight: 400 }}>
-                  Iniciá tu postulación para formar parte de la red de prestadores
-                </span>
-              </div>
-
-
+            <div style={{ marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+              <h1 style={{ fontSize: '24px', fontWeight: 400, color: '#333', margin: 0, fontFamily: 'Arial, sans-serif' }}>
+                Registro Postulantes
+              </h1>
+              <span style={{ fontSize: '15px', color: '#6B7280', fontWeight: 400 }}>
+                Iniciá tu postulación para formar parte de la red de prestadores
+              </span>
             </div>
 
-            {/* ── HERO BANNER (Only when no submittedPostulacion exists) ── */}
-            {!submittedPostulacion && (
-              <div className="responsive-hero" style={{
+            {/* ── HERO BANNER (empty state) ── */}
+            {submittedPostulaciones.length === 0 && (
+              <div style={{
                 background: 'linear-gradient(135deg, #00AC99 0%, #007B8A 100%)',
-                borderRadius: '16px',
-                overflow: 'hidden',
-                display: 'flex',
-                alignItems: 'stretch',
-                minHeight: '220px',
-                boxShadow: '0 6px 20px rgba(0, 172, 153, 0.20)',
-                position: 'relative',
+                borderRadius: '16px', overflow: 'hidden', display: 'flex',
+                alignItems: 'stretch', minHeight: '220px',
+                boxShadow: '0 6px 20px rgba(0, 172, 153, 0.20)', position: 'relative',
               }}>
-
-                {/* Decorative circles */}
-                <div style={{
-                  position: 'absolute', top: '-50px', left: '-50px',
-                  width: '180px', height: '180px', borderRadius: '50%',
-                  backgroundColor: 'rgba(255,255,255,0.06)',
-                  pointerEvents: 'none',
-                }} />
-                <div style={{
-                  position: 'absolute', bottom: '-40px', left: '280px',
-                  width: '200px', height: '200px', borderRadius: '50%',
-                  backgroundColor: 'rgba(255,255,255,0.05)',
-                  pointerEvents: 'none',
-                }} />
-
-                {/* ── LEFT: Text content ── */}
-                <div style={{
-                  flex: 1,
-                  padding: '28px 36px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  position: 'relative',
-                  zIndex: 1,
-                }}>
-
-                  {/* Title */}
-                  <h2 style={{
-                    fontSize: '22px', fontWeight: 800, color: '#fff',
-                    margin: '0 0 8px 0', lineHeight: 1.2,
-                  }}>
-                    Iniciá tu postulación
-                  </h2>
-
-                  {/* Subtitle */}
-                  <p style={{
-                    fontSize: '14px', color: 'rgba(255,255,255,0.92)',
-                    lineHeight: 1.5, margin: '0 0 16px 0', maxWidth: '540px',
-                    fontWeight: 500,
-                  }}>
+                <div style={{ position: 'absolute', top: '-50px', left: '-50px', width: '180px', height: '180px', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.06)', pointerEvents: 'none' }} />
+                <div style={{ position: 'absolute', bottom: '-40px', left: '280px', width: '200px', height: '200px', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.05)', pointerEvents: 'none' }} />
+                <div style={{ flex: 1, padding: '28px 36px', display: 'flex', flexDirection: 'column', justifyContent: 'center', position: 'relative', zIndex: 1 }}>
+                  <h2 style={{ fontSize: '22px', fontWeight: 800, color: '#fff', margin: '0 0 8px 0', lineHeight: 1.2 }}>Iniciá tu postulación</h2>
+                  <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.92)', lineHeight: 1.5, margin: '0 0 16px 0', maxWidth: '540px', fontWeight: 500 }}>
                     Ahora podés postularte como prestador/a de Apross a través de un formulario online.
                   </p>
-
-                  {/* Disclaimer */}
-                  <div style={{
-                    backgroundColor: 'rgba(0,0,0,0.18)',
-                    borderLeft: '3px solid rgba(255,255,255,0.5)',
-                    borderRadius: '0 6px 6px 0',
-                    padding: '10px 14px',
-                    marginBottom: '20px',
-                    maxWidth: '560px',
-                  }}>
-                    <p style={{
-                      fontSize: '12px', color: 'rgba(255,255,255,0.85)',
-                      lineHeight: 1.5, margin: 0,
-                    }}>
+                  <div style={{ backgroundColor: 'rgba(0,0,0,0.18)', borderLeft: '3px solid rgba(255,255,255,0.5)', borderRadius: '0 6px 6px 0', padding: '10px 14px', marginBottom: '20px', maxWidth: '560px' }}>
+                    <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.85)', lineHeight: 1.5, margin: 0 }}>
                       <strong style={{ color: 'rgba(255,255,255,0.95)' }}>Importante:</strong>{' '}
-                      Este formulario es solo una postulación de interés. No implica alta ni vinculación contractual con APROSS. Su admisión definitiva queda sujeta a evaluación técnica, disponibilidad de cupos y validación documental.
+                      Este formulario es solo una postulación de interés. No implica alta ni vinculación contractual con APROSS.
                     </p>
                   </div>
-
-                  {/* CTA Button */}
                   <div>
                     <button
                       onClick={onStart}
-                      style={{
-                        display: 'inline-flex', alignItems: 'center', gap: '8px',
-                        backgroundColor: '#fff', color: '#007B8A',
-                        border: 'none', borderRadius: '8px',
-                        padding: '10px 24px', fontSize: '14px', fontWeight: 700,
-                        cursor: 'pointer',
-                        boxShadow: '0 2px 10px rgba(0,0,0,0.15)',
-                        transition: 'transform 0.15s ease, box-shadow 0.15s ease',
-                      }}
-                      onMouseEnter={e => {
-                        (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-2px)'
-                          ; (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 6px 16px rgba(0,0,0,0.20)'
-                      }}
-                      onMouseLeave={e => {
-                        (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(0)'
-                          ; (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 2px 10px rgba(0,0,0,0.15)'
-                      }}
+                      style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', backgroundColor: '#fff', color: '#007B8A', border: 'none', borderRadius: '8px', padding: '10px 24px', fontSize: '14px', fontWeight: 700, cursor: 'pointer', boxShadow: '0 2px 10px rgba(0,0,0,0.15)', transition: 'transform 0.15s ease, box-shadow 0.15s ease' }}
+                      onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-2px)'; (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 6px 16px rgba(0,0,0,0.20)' }}
+                      onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(0)'; (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 2px 10px rgba(0,0,0,0.15)' }}
                     >
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M5 12h14M12 5l7 7-7 7" />
-                      </svg>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
                       Iniciar postulación
                     </button>
                   </div>
                 </div>
-
               </div>
             )}
 
-            {/* ── STATUS REVIEW BANNER (Only when submittedPostulacion exists) ── */}
-            {submittedPostulacion && (
-              <div style={{
-                marginTop: '10px',
-                display: 'grid',
-                gridTemplateColumns: 'minmax(0, 2fr) minmax(0, 1.2fr)',
-                gap: '24px',
-                marginBottom: '24px',
-                alignItems: 'start',
-              }}>
+            {/* ── LIST VIEW ── */}
+            {submittedPostulaciones.length > 0 && first && (
+              <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 2fr) minmax(0, 1.2fr)', gap: '24px', alignItems: 'start' }}>
 
-                {/* Main Card */}
-                <div style={{
-                  backgroundColor: '#fff',
-                  borderRadius: '16px',
-                  border: '1px solid #E5E7EB',
-                  padding: '28px 32px',
-                  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.05)',
-                }}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px', borderBottom: '1px solid #F3F4F6', paddingBottom: '16px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                {/* LEFT col */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+
+                  {/* Single unified card */}
+                  <div style={{ backgroundColor: '#fff', borderRadius: '16px', border: '1px solid #E5E7EB', padding: '24px 28px', boxShadow: '0 4px 20px rgba(0,0,0,0.05)' }}>
+
+                    {/* Header — once */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '20px', paddingBottom: '16px', borderBottom: '1px solid #F3F4F6' }}>
                       <div style={{
-                        width: '44px', height: '44px', borderRadius: '50%',
-                        backgroundColor: submittedPostulacion.estado === 'Aceptado' ? '#D1FAE5' : '#FEF3C7', display: 'flex',
-                        alignItems: 'center', justifyContent: 'center',
-                        color: submittedPostulacion.estado === 'Aceptado' ? '#10B981' : '#D97706',
+                        width: '40px', height: '40px', borderRadius: '50%', flexShrink: 0,
+                        backgroundColor: first.estado === 'Inscripto' ? '#D1FAE5' : first.estado === 'Aceptado' ? '#D1FAE5' : '#FEF3C7',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        color: first.estado === 'Inscripto' ? '#10B981' : first.estado === 'Aceptado' ? '#10B981' : '#D97706',
                       }}>
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                          {submittedPostulacion.estado === 'Aceptado' ? (
-                            <>
-                              <path d="M20 6L9 17l-5-5" />
-                            </>
-                          ) : (
-                            <>
-                              <circle cx="12" cy="12" r="10" />
-                              <line x1="12" y1="8" x2="12" y2="12" />
-                              <line x1="12" y1="16" x2="12.01" y2="16" />
-                            </>
-                          )}
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                          {(first.estado === 'Aceptado' || first.estado === 'Inscripto')
+                            ? <path d="M20 6L9 17l-5-5" />
+                            : <><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></>}
                         </svg>
                       </div>
                       <div>
-                        <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#1F2937', margin: '0 0 4px 0' }}>
-                          Tu postulación está {submittedPostulacion.estado.toLowerCase()}
+                        <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#1F2937', margin: '0 0 2px 0' }}>
+                          {first.estado === 'Inscripto' ? 'Pre-inscripción completada' : `Tu postulación está ${first.estado.toLowerCase()}`}
                         </h3>
-                        <p style={{ margin: 0, fontSize: '13px', color: '#6B7280' }}>
-                          {submittedPostulacion.estado === 'Aceptado'
-                            ? (submittedPostulacion.profesion === 'Bioquímico' || submittedPostulacion.profesion === 'Bioquimico')
-                              ? 'Felicidades, tu trámite continuará mediante validación de tu Colegio.'
-                              : 'Felicidades, puedes continuar con la inscripción.'
+                        <p style={{ margin: 0, fontSize: '12px', color: '#6B7280' }}>
+                          {first.estado === 'Inscripto'
+                            ? 'Has completado el flujo de postulación e inscripción.'
+                            : first.estado === 'Aceptado'
+                            ? 'Podés continuar con la inscripción.'
                             : 'Nuestro equipo está evaluando tus datos iniciales.'}
                         </p>
                       </div>
                     </div>
+
+                    {/* Rows — one per postulacion */}
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      {submittedPostulaciones.map((p, index) => {
+                        const isProfessional = p.categoria === 'Profesional de la salud'
+                        const isInstitution = p.categoria === 'Institución'
+                        const isDisability = p.categoria === 'Prestador de discapacidad'
+                        return (
+                          <div key={index}>
+                            {index > 0 && <div style={{ height: '1px', backgroundColor: '#F3F4F6', margin: '14px 0' }} />}
+                            <div style={{ backgroundColor: '#F9FAFB', borderRadius: '10px', border: '1px solid #F3F4F6', padding: '14px 18px', position: 'relative', display: 'flex', flexDirection: 'column', gap: '7px' }}>
+                              <div style={{ paddingRight: '135px' }}>
+                                <span style={{ fontSize: '14px', color: '#374151', fontWeight: 600 }}>{p.represented || 'Camila Gonzales'}</span>
+                              </div>
+                              <span style={{ fontSize: '13px', color: '#6B7280' }}>CUIT/CUIL: <strong style={{ color: '#1F2937' }}>{p.cuit || '27-457475-9'}</strong></span>
+                              <span style={{ fontSize: '13px', color: '#6B7280' }}>Categoría: <strong style={{ color: '#1F2937' }}>{p.categoria}</strong></span>
+                              {isProfessional && p.profesion && (
+                                <span style={{ fontSize: '13px', color: '#6B7280' }}>Profesión/Tipo: <strong style={{ color: '#1F2937' }}>{p.profesion}</strong></span>
+                              )}
+                              {isProfessional && p.profesion === 'Medico' && p.especialidades && p.especialidades.length > 0 && (
+                                <span style={{ fontSize: '13px', color: '#6B7280' }}>Especialidad: <strong style={{ color: '#1F2937' }}>{p.especialidades.join(', ')}</strong></span>
+                              )}
+                              {isInstitution && p.nivelAtencion && (
+                                <span style={{ fontSize: '13px', color: '#6B7280' }}>Clasificación: <strong style={{ color: '#1F2937' }}>{p.nivelAtencion}</strong></span>
+                              )}
+                              {isDisability && (
+                                <span style={{ fontSize: '13px', color: '#6B7280' }}>Tipo: <strong style={{ color: '#1F2937' }}>{p.tipoInstitucion || 'Centro de Rehabilitación'}</strong></span>
+                              )}
+
+                              {/* Status pill */}
+                              <div style={{ position: 'absolute', right: '18px', top: '14px' }}>
+                                {p.estado === 'Inscripto' ? (
+                                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', backgroundColor: '#D1FAE5', border: '1px solid #A7F3D0', borderRadius: '24px', padding: '5px 12px' }}>
+                                    <span style={{ width: '7px', height: '7px', borderRadius: '50%', backgroundColor: '#10B981' }} />
+                                    <span style={{ fontSize: '11px', fontWeight: 700, color: '#065F46', textTransform: 'uppercase', letterSpacing: '0.04em' }}>INSCRIPTO</span>
+                                  </div>
+                                ) : (
+                                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', backgroundColor: p.estado === 'Aceptado' ? '#D1FAE5' : '#FFFBEB', border: `1px solid ${p.estado === 'Aceptado' ? '#A7F3D0' : '#FDE68A'}`, borderRadius: '24px', padding: '5px 12px' }}>
+                                    <span style={{ width: '7px', height: '7px', borderRadius: '50%', backgroundColor: p.estado === 'Aceptado' ? '#10B981' : '#F59E0B' }} />
+                                    <span style={{ fontSize: '11px', fontWeight: 700, color: p.estado === 'Aceptado' ? '#065F46' : '#B45309', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{p.estado}</span>
+                                  </div>
+                                )}
+                              </div>
+
+                              {/* Inscripcion button OR completion banner */}
+                              {p.estado === 'Inscripto' ? (
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '10px', padding: '10px 14px', backgroundColor: '#ECFDF5', border: '1px solid #A7F3D0', borderRadius: '8px' }}>
+                                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+                                  <span style={{ fontSize: '13px', color: '#065F46', fontWeight: 600 }}>Fin del flujo — Pre-inscripción enviada correctamente.</span>
+                                </div>
+                              ) : p.estado === 'Aceptado' && onStartInscripcion && !(p.profesion === 'Bioquímico' || p.profesion === 'Bioquimico') ? (
+                                <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '6px' }}>
+                                  <button
+                                    onClick={() => onStartInscripcion(index)}
+                                    style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '9px 18px', backgroundColor: '#00AC99', color: 'white', fontWeight: 600, fontSize: '13px', borderRadius: '8px', border: 'none', cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,172,153,0.25)', transition: 'all 0.2s' }}
+                                    onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#009584'; e.currentTarget.style.transform = 'translateY(-1px)' }}
+                                    onMouseLeave={e => { e.currentTarget.style.backgroundColor = '#00AC99'; e.currentTarget.style.transform = 'translateY(0)' }}
+                                  >
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+                                    Iniciar Pre-inscripción
+                                  </button>
+                                </div>
+                              ) : null}
+                            </div>
+                          </div>
+                        )
+                      })}
+                    </div>
                   </div>
 
-                  <div style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '12px',
-                    backgroundColor: '#F9FAFB',
-                    padding: '20px 24px',
-                    borderRadius: '12px',
-                    border: '1px solid #F3F4F6',
-                    position: 'relative',
-                    marginBottom: '16px'
-                  }}>
-                    {/* Row 1: Name */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap', paddingRight: '140px' }}>
-                      <span style={{ fontSize: '15px', color: '#374151', fontWeight: 600 }}>
-                        {submittedPostulacion.represented || 'Camila Gonzales'}
-                      </span>
-                    </div>
+                  {/* Thin "nueva postulacion" banner */}
+                  <button
+                    onClick={onStart}
+                    style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', width: '100%', padding: '14px 20px', backgroundColor: '#fff', border: '2px dashed #D1D5DB', borderRadius: '12px', cursor: 'pointer', transition: 'all 0.2s ease', color: '#6B7280' }}
+                    onMouseEnter={e => { e.currentTarget.style.borderColor = '#00AC99'; e.currentTarget.style.backgroundColor = '#F0FDF9'; e.currentTarget.style.color = '#00AC99' }}
+                    onMouseLeave={e => { e.currentTarget.style.borderColor = '#D1D5DB'; e.currentTarget.style.backgroundColor = '#fff'; e.currentTarget.style.color = '#6B7280' }}
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
+                    <span style={{ fontSize: '14px', fontWeight: 600 }}>Agregar otra postulación</span>
+                  </button>
+                </div>
 
-                    {/* Row 2: CUIT/CUIL */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-                      <span style={{ fontSize: '14px', color: '#6B7280' }}>
-                        CUIT/CUIL: <strong style={{ color: '#1F2937' }}>{submittedPostulacion.cuit || '27-457475-9'}</strong>
-                      </span>
-                    </div>
-
-                    {/* Row 3: Categoria */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-                      <span style={{ fontSize: '14px', color: '#6B7280' }}>
-                        Categoría: <strong style={{ color: '#1F2937' }}>{submittedPostulacion.categoria}</strong>
-                      </span>
-                    </div>
-
-                    {/* Extra Rows depending on Category */}
-                    {isProfessional && (
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-                          <span style={{ fontSize: '14px', color: '#6B7280' }}>
-                            Profesión/Tipo: <strong style={{ color: '#1F2937' }}>{submittedPostulacion.profesion || 'Medico'}</strong>
-                          </span>
+                {/* RIGHT: single side panel */}
+                <div style={{ position: 'sticky', top: '24px' }}>
+                  {isBioquimico ? (
+                    <div style={{ backgroundColor: '#F8FAFC', borderRadius: '16px', border: '1px solid #E2E8F0', padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <div style={{ width: '36px', height: '36px', borderRadius: '10px', backgroundColor: '#E0F2FE', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#0284C7' }}>
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" /></svg>
                         </div>
-                        {(submittedPostulacion.profesion === 'Medico' && submittedPostulacion.especialidades && submittedPostulacion.especialidades.length > 0) && (
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-                            <span style={{ fontSize: '14px', color: '#6B7280' }}>
-                              Especialidad: <strong style={{ color: '#1F2937' }}>{submittedPostulacion.especialidades.join(', ')}</strong>
-                            </span>
-                          </div>
-                        )}
+                        <h4 style={{ margin: 0, fontSize: '16px', fontWeight: 700, color: '#0F172A' }}>Trámite Excepcional</h4>
                       </div>
-                    )}
-
-                    {isInstitution && (
-                      <>
-                        {submittedPostulacion.nivelAtencion && (
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-                            <span style={{ fontSize: '14px', color: '#6B7280' }}>
-                              Clasificación: <strong style={{ color: '#1F2937' }}>{submittedPostulacion.nivelAtencion}</strong>
-                            </span>
-                          </div>
-                        )}
-                        {submittedPostulacion.tipoInstitucionNivel && (
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', marginLeft: '4px' }}>
-                            <span style={{ width: '4px', height: '4px', borderRadius: '50%', backgroundColor: '#D1D5DB' }} />
-                            <span style={{ fontSize: '14px', color: '#6B7280' }}>
-                              Tipo: <strong style={{ color: '#1F2937' }}>{submittedPostulacion.tipoInstitucionNivel}</strong>
-                            </span>
-                          </div>
-                        )}
-                      </>
-                    )}
-
-                    {isDisability && (
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-                        <span style={{ fontSize: '14px', color: '#6B7280' }}>
-                          Tipo: <strong style={{ color: '#1F2937' }}>{submittedPostulacion.tipoInstitucion || 'Centro de Rehabilitación'}</strong>
-                        </span>
-                      </div>
-                    )}
-
-                    {/* Status pill on the top right */}
-                    <div style={{
-                      position: 'absolute',
-                      right: '24px',
-                      top: '20px',
-                      display: 'flex',
-                      alignItems: 'center',
-                    }}>
-                      <div style={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '6px',
-                        backgroundColor: submittedPostulacion.estado === 'Aceptado' ? '#D1FAE5' : '#FFFBEB',
-                        border: `1px solid ${submittedPostulacion.estado === 'Aceptado' ? '#A7F3D0' : '#FDE68A'}`,
-                        borderRadius: '24px',
-                        padding: '6px 14px',
-                      }}>
-                        <span style={{
-                          width: '8px',
-                          height: '8px',
-                          borderRadius: '50%',
-                          backgroundColor: submittedPostulacion.estado === 'Aceptado' ? '#10B981' : '#F59E0B',
-                          boxShadow: `0 0 0 2px ${submittedPostulacion.estado === 'Aceptado' ? 'rgba(16,185,129,0.2)' : 'rgba(245,158,11,0.2)'}`
-                        }} />
-                        <span style={{ fontSize: '12px', fontWeight: 700, color: submittedPostulacion.estado === 'Aceptado' ? '#065F46' : '#B45309', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                          {submittedPostulacion.estado}
-                        </span>
-                      </div>
+                      <p style={{ margin: 0, fontSize: '13.5px', color: '#475569', lineHeight: 1.5 }}>
+                        Por tu profesión, no necesitas realizar la etapa de inscripción en este portal. La validación y alta final se gestionará directamente a través de tu Colegio Profesional.
+                      </p>
                     </div>
-                  </div>
-
-                  {/* Action Button Below Grey Card */}
-                  {submittedPostulacion.estado === 'Aceptado' && onStartInscripcion && !(submittedPostulacion.profesion === 'Bioquímico' || submittedPostulacion.profesion === 'Bioquimico') && (
-                    <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                      <button
-                        onClick={onStartInscripcion}
-                        style={{
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: '8px',
-                          padding: '10px 20px',
-                          backgroundColor: '#00AC99',
-                          color: 'white',
-                          fontWeight: 600,
-                          fontSize: '14px',
-                          borderRadius: '8px',
-                          border: 'none',
-                          cursor: 'pointer',
-                          boxShadow: '0 2px 8px rgba(0, 172, 153, 0.25)',
-                          transition: 'all 0.2s',
-                        }}
-                        onMouseEnter={e => {
-                          e.currentTarget.style.backgroundColor = '#009584'
-                          e.currentTarget.style.transform = 'translateY(-1px)'
-                        }}
-                        onMouseLeave={e => {
-                          e.currentTarget.style.backgroundColor = '#00AC99'
-                          e.currentTarget.style.transform = 'translateY(0)'
-                        }}
-                      >
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M5 12h14M12 5l7 7-7 7" />
-                        </svg>
-                        Iniciar Pre-inscripción
-                      </button>
+                  ) : (
+                    <div style={{ backgroundColor: '#F8FAFC', borderRadius: '16px', border: '1px solid #E2E8F0', padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <div style={{ width: '36px', height: '36px', borderRadius: '10px', backgroundColor: '#E0F2FE', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#0284C7' }}>
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path d="M12 8h.01" /></svg>
+                        </div>
+                        <h4 style={{ margin: 0, fontSize: '16px', fontWeight: 700, color: '#0F172A' }}>Próximos Pasos</h4>
+                      </div>
+                      <p style={{ margin: 0, fontSize: '13.5px', color: '#475569', lineHeight: 1.5 }}>
+                        Una vez que tu postulación sea aprobada, deberás completar la etapa de inscripción. Ten a mano la siguiente información:
+                      </p>
+                      <ul style={{ margin: 0, paddingLeft: '0', listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                        {[
+                          { label: 'Datos Fiscales:', desc: 'CUIT, Condición de AFIP e Ingresos Brutos.' },
+                          { label: 'Seguros y Habilitaciones:', desc: 'Póliza de mala praxis y certificado de habilitación correspondiente.' },
+                          { label: 'Documentación Legal:', desc: 'Archivos y permisos vigentes según tu categoría.' },
+                          { label: 'Datos Bancarios:', desc: 'CBU para la gestión de pagos.' },
+                        ].map(item => (
+                          <li key={item.label} style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0284C7" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: '2px' }}><polyline points="20 6 9 17 4 12" /></svg>
+                            <span style={{ fontSize: '13px', color: '#334155', lineHeight: 1.4 }}>
+                              <strong style={{ color: '#0F172A' }}>{item.label}</strong> {item.desc}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
                     </div>
                   )}
                 </div>
-
-                {/* Side Info Card */}
-                {(submittedPostulacion.profesion === 'Bioquímico' || submittedPostulacion.profesion === 'Bioquimico') ? (
-                  <div style={{
-                    backgroundColor: '#F8FAFC',
-                    borderRadius: '16px',
-                    border: '1px solid #E2E8F0',
-                    padding: '24px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '16px',
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.02)',
-                  }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                      <div style={{ width: '36px', height: '36px', borderRadius: '10px', backgroundColor: '#E0F2FE', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#0284C7' }}>
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" /></svg>
-                      </div>
-                      <h4 style={{ margin: 0, fontSize: '16px', fontWeight: 700, color: '#0F172A' }}>Trámite Excepcional</h4>
-                    </div>
-                    <p style={{ margin: 0, fontSize: '13.5px', color: '#475569', lineHeight: 1.5 }}>
-                      Por tu profesión, no necesitas realizar la etapa de inscripción en este portal. La validación y alta final se gestionará directamente a través de tu Colegio Profesional.
-                    </p>
-                  </div>
-                ) : (
-                  <div style={{
-                    backgroundColor: '#F8FAFC',
-                    borderRadius: '16px',
-                    border: '1px solid #E2E8F0',
-                    padding: '24px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '16px',
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.02)',
-                  }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                      <div style={{ width: '36px', height: '36px', borderRadius: '10px', backgroundColor: '#E0F2FE', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#0284C7' }}>
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path d="M12 8h.01" /></svg>
-                      </div>
-                      <h4 style={{ margin: 0, fontSize: '16px', fontWeight: 700, color: '#0F172A' }}>Próximos Pasos</h4>
-                    </div>
-
-                    <p style={{ margin: 0, fontSize: '13.5px', color: '#475569', lineHeight: 1.5 }}>
-                      Una vez que tu postulación sea aprobada, deberás completar la etapa de inscripción. Ten a mano la siguiente información:
-                    </p>
-
-                    <ul style={{
-                      margin: 0,
-                      paddingLeft: '0',
-                      listStyle: 'none',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: '12px'
-                    }}>
-                      <li style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0284C7" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: '2px' }}><polyline points="20 6 9 17 4 12" /></svg>
-                        <span style={{ fontSize: '13px', color: '#334155', lineHeight: 1.4 }}>
-                          <strong style={{ color: '#0F172A' }}>Datos Fiscales:</strong> CUIT, Condición de AFIP e Ingresos Brutos.
-                        </span>
-                      </li>
-                      <li style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0284C7" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: '2px' }}><polyline points="20 6 9 17 4 12" /></svg>
-                        <span style={{ fontSize: '13px', color: '#334155', lineHeight: 1.4 }}>
-                          <strong style={{ color: '#0F172A' }}>Seguros y Habilitaciones:</strong> Póliza de mala praxis y certificado de habilitación correspondiente.
-                        </span>
-                      </li>
-                      <li style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0284C7" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: '2px' }}><polyline points="20 6 9 17 4 12" /></svg>
-                        <span style={{ fontSize: '13px', color: '#334155', lineHeight: 1.4 }}>
-                          <strong style={{ color: '#0F172A' }}>Documentación Legal:</strong> Archivos y permisos vigentes según tu categoría.
-                        </span>
-                      </li>
-                      <li style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0284C7" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: '2px' }}><polyline points="20 6 9 17 4 12" /></svg>
-                        <span style={{ fontSize: '13px', color: '#334155', lineHeight: 1.4 }}>
-                          <strong style={{ color: '#0F172A' }}>Datos Bancarios:</strong> CBU para la gestión de pagos.
-                        </span>
-                      </li>
-                    </ul>
-                  </div>
-                )}
               </div>
             )}
-
 
           </div>
         </main>
       </div>
 
       {/* Secret Admin Menu */}
-      <div 
-        style={{
-          position: 'fixed',
-          top: '50%',
-          right: 0,
-          transform: 'translateY(-50%) translateX(calc(100% - 16px))',
-          width: '200px',
-          backgroundColor: '#1F2937',
-          padding: '24px 16px',
-          borderTopLeftRadius: '12px',
-          borderBottomLeftRadius: '12px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '12px',
-          transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-          zIndex: 9999,
-          boxShadow: '-4px 0 15px rgba(0,0,0,0.2)'
-        }}
+      <div
+        style={{ position: 'fixed', top: '50%', right: 0, transform: 'translateY(-50%) translateX(calc(100% - 16px))', width: '200px', backgroundColor: '#1F2937', padding: '24px 16px', borderTopLeftRadius: '12px', borderBottomLeftRadius: '12px', display: 'flex', flexDirection: 'column', gap: '12px', transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)', zIndex: 9999, boxShadow: '-4px 0 15px rgba(0,0,0,0.2)' }}
         onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-50%) translateX(0)'}
         onMouseLeave={e => e.currentTarget.style.transform = 'translateY(-50%) translateX(calc(100% - 16px))'}
       >
         <div style={{ position: 'absolute', left: '-20px', top: 0, bottom: 0, width: '20px', cursor: 'pointer' }} />
         <div style={{ position: 'absolute', left: '6px', top: '50%', transform: 'translateY(-50%)', width: '4px', height: '40px', backgroundColor: '#4B5563', borderRadius: '4px' }} />
-        
         <p style={{ margin: '0 0 4px 0', fontSize: '11px', color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 700 }}>Admin Tools</p>
-        
         {onSimularNuevo && (
-          <button
-            onClick={onSimularNuevo}
-            style={{ padding: '8px 12px', backgroundColor: '#374151', color: 'white', border: '1px solid #4B5563', borderRadius: '6px', fontSize: '12px', fontWeight: 600, cursor: 'pointer', textAlign: 'left' }}
-          >
+          <button onClick={onSimularNuevo} style={{ padding: '8px 12px', backgroundColor: '#374151', color: 'white', border: '1px solid #4B5563', borderRadius: '6px', fontSize: '12px', fontWeight: 600, cursor: 'pointer', textAlign: 'left' }}>
             Simular Nuevo
           </button>
         )}
-        
-        {onSimularAprobacion && submittedPostulacion?.estado === 'En revisión' && (
-          <button
-            onClick={onSimularAprobacion}
-            style={{ padding: '8px 12px', backgroundColor: '#F59E0B', color: 'white', border: 'none', borderRadius: '6px', fontSize: '12px', fontWeight: 600, cursor: 'pointer', textAlign: 'left' }}
-          >
-            Simular Aprobación
-          </button>
+        {onSimularAprobacion && submittedPostulaciones.map((p, i) =>
+          p.estado === 'En revisión' ? (
+            <button
+              key={i}
+              onClick={() => onSimularAprobacion(i)}
+              style={{ padding: '8px 12px', backgroundColor: '#F59E0B', color: 'white', border: 'none', borderRadius: '6px', fontSize: '12px', fontWeight: 600, cursor: 'pointer', textAlign: 'left' }}
+            >
+              Aprobar #{i + 1} ({p.profesion || p.categoria})
+            </button>
+          ) : null
         )}
-        
-        <button
-          onClick={() => window.location.href = '/backoffice'}
-          style={{ padding: '8px 12px', backgroundColor: '#00AC99', color: 'white', border: 'none', borderRadius: '6px', fontSize: '12px', fontWeight: 600, cursor: 'pointer', textAlign: 'left' }}
-        >
+        <button onClick={() => window.location.href = '/backoffice'} style={{ padding: '8px 12px', backgroundColor: '#00AC99', color: 'white', border: 'none', borderRadius: '6px', fontSize: '12px', fontWeight: 600, cursor: 'pointer', textAlign: 'left' }}>
           Ir al Backoffice
         </button>
       </div>

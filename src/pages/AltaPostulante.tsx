@@ -637,7 +637,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
     'Psicomotricidad',
     'Psicopedagogía',
     'Terapista Ocupacional'
-  ]
+  ].sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' }))
 
   const tipoProfesionDisabilityOptions = [
     'DAI (docente de apoyo a la integración)',
@@ -652,7 +652,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
     'Psicomotricidad',
     'Psicopedagogía',
     'Terapista Ocupacional'
-  ]
+  ].sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' }))
 
   const tipoInstitucionOptions = [
     'Centro de Rehabilitación',
@@ -814,7 +814,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
     'Corrientes',
     'Jujuy',
     'Santa Cruz'
-  ]
+  ].sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' }))
 
   const locDiaOptions = [
     'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'
@@ -2002,77 +2002,6 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                         )}
                       </div>
 
-                      {/* Transporte-specific section */}
-                      {tipoInstitucion === 'Transporte' && (
-                        <div style={{ marginBottom: '20px' }}>
-                          {/* Documentación del transporte */}
-                          <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '8px' }}>
-                            Documentación del transporte <span style={{ color: '#EF4444' }}>*</span>
-                          </label>
-                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '20px' }}>
-                            {['Cédula Verde / Título del vehículo', 'Licencia de conducir'].map((docName) => (
-                              <AttachmentRow
-                                key={docName}
-                                title={docName}
-                                fileName="Matricula5.pdf"
-                                onAttach={() => { }}
-                              />
-                            ))}
-                          </div>
-
-                          {/* Listado de conductores */}
-                          <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '8px' }}>
-                            Listado de conductores autorizados
-                          </label>
-                          <div style={{ border: '1px solid #E5E7EB', borderRadius: '8px', overflow: 'hidden', marginBottom: '4px' }}>
-                            {conductoresList.map((c, idx) => (
-                              <div key={idx} style={{
-                                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                                padding: '12px 16px', borderBottom: idx < conductoresList.length - 1 ? '1px solid #F3F4F6' : 'none',
-                                backgroundColor: '#fff',
-                              }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                  <div style={{ width: '34px', height: '34px', borderRadius: '50%', backgroundColor: '#E6F6F4', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                    <PersonIcon />
-                                  </div>
-                                  <div>
-                                    <p style={{ fontSize: '13px', fontWeight: 700, color: '#111827', margin: 0 }}>{c.nombre}</p>
-                                    <p style={{ fontSize: '12px', color: '#6B7280', margin: '2px 0 0 0' }}>
-                                      CUIT/CUIL: {c.cuit} &nbsp; Licencia de conducir: {c.licenciaConducir ? 'Si' : 'No'} &nbsp; Autorizacion de manejo: {c.autorizacionManejo ? 'Si' : 'No'}
-                                    </p>
-                                  </div>
-                                </div>
-                                <div style={{ display: 'flex', gap: '8px' }}>
-                                  <button style={{ padding: '6px 8px', border: '1px solid #D1D5DB', borderRadius: '6px', backgroundColor: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
-                                    <PencilEditIcon />
-                                  </button>
-                                  <button
-                                    onClick={() => setConductoresList(conductoresList.filter((_, i) => i !== idx))}
-                                    style={{ padding: '6px 8px', border: '1px solid #FCA5A5', borderRadius: '6px', backgroundColor: '#FFF5F5', cursor: 'pointer', display: 'flex', alignItems: 'center', color: '#EF4444' }}
-                                  >
-                                    <TrashIcon />
-                                  </button>
-                                </div>
-                              </div>
-                            ))}
-                            {/* Agregar conductor */}
-                            <div
-                              onClick={() => { setConductorNombre('Juan'); setConductorApellido('Pérez'); setConductorCuit('20-30405060-7'); setConductorCargo('Chofer principal'); setShowConductorModal(true) }}
-                              style={{
-                                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                                padding: '12px 16px', cursor: 'pointer', color: '#00AC99',
-                                borderTop: conductoresList.length > 0 ? '1px solid #F3F4F6' : 'none',
-                              }}
-                            >
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <span style={{ fontSize: '18px', fontWeight: 300 }}>+</span>
-                                <span style={{ fontSize: '13px', fontWeight: 600 }}>Agregar conductor autorizado</span>
-                              </div>
-                              <ChevronDownIcon />
-                            </div>
-                          </div>
-                        </div>
-                      )}
 
                       {/* Disposición ANDIS */}
                       <div style={{ marginBottom: '20px' }}>
@@ -2314,7 +2243,6 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                         Datos del perfil
                       </h3>
 
-                      <SectionTitle>Matricula</SectionTitle>
 
                       {/* Symmetrical Grid Layout */}
                       <div style={{
@@ -2377,47 +2305,223 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                           )}
                         </div>
 
-                        {/* Field 2: Condicional Especialidad Médica if 'Medico' OR Ámbito de la Matrícula */}
-                        {tipoProfesion === 'Medico' ? (
-                          <div style={{ position: 'relative' }}>
+                        {/* Field 2: Ámbito de la Matrícula */}
+                        <div style={{ position: 'relative' }}>
+                          <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
+                            Ámbito de la Matrícula <span style={{ color: '#EF4444' }}>*</span>
+                          </label>
+                          <div
+                            onClick={() => {
+                              setAmbitoMatriculaDropdownOpen(!ambitoMatriculaDropdownOpen)
+                              setTipoProfesionDropdownOpen(false)
+                              setEspecialidadDropdownOpen(false)
+                            }}
+                            style={{
+                              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                              border: '1px solid #D1D5DB', borderRadius: '6px',
+                              padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
+                              backgroundColor: '#fff', cursor: 'pointer', userSelect: 'none', boxSizing: 'border-box',
+                            }}
+                          >
+                            <span>{ambitoMatricula}</span>
+                            <ChevronDownIcon />
+                          </div>
+
+                          {ambitoMatriculaDropdownOpen && (
+                            <div style={{
+                              position: 'absolute', top: '100%', left: 0, right: 0,
+                              marginTop: '4px', backgroundColor: '#fff', border: '1px solid #D1D5DB',
+                              borderRadius: '6px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
+                              zIndex: 1010, maxHeight: '200px', overflowY: 'auto',
+                            }}>
+                              {ambitoMatriculaOptions.map((opt) => (
+                                <div
+                                  key={opt}
+                                  onClick={() => {
+                                    setAmbitoMatricula(opt)
+                                    setAmbitoMatriculaDropdownOpen(false)
+                                  }}
+                                  style={{
+                                    padding: '8px 12px', fontSize: '13px', cursor: 'pointer',
+                                    backgroundColor: ambitoMatricula === opt ? '#00AC99' : '#fff',
+                                    color: ambitoMatricula === opt ? '#fff' : '#1F2937',
+                                  }}
+                                >
+                                  {opt}
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Número de Matrícula (Full Width Row) */}
+                        <div style={{ gridColumn: '1 / -1', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '28px' }}>
+                          {/* Left: Input & Checkbox */}
+                          <div>
+                            <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
+                              Número de Matrícula Profesional o Registro Provincial <span style={{ color: '#EF4444' }}>*</span>
+                            </label>
+                            <input
+                              type="text"
+                              value={numMatricula}
+                              disabled={noTengoMatricula}
+                              onChange={(e) => setNumMatricula(e.target.value)}
+                              style={{
+                                width: '100%', border: (!noTengoMatricula && validationErrors.includes('Número de Matrícula')) ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px',
+                                padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
+                                outline: 'none', boxSizing: 'border-box',
+                                backgroundColor: noTengoMatricula ? '#F3F4F6' : '#fff'
+                              }}
+                            />
+                            <div style={{ display: 'flex', alignItems: 'center', marginTop: '8px', gap: '8px' }}>
+                              <input
+                                type="checkbox"
+                                id="noTengoMatricula1"
+                                checked={noTengoMatricula}
+                                onChange={(e) => {
+                                  setNoTengoMatricula(e.target.checked);
+                                  if (e.target.checked) setNumMatricula('');
+                                }}
+                                style={{ width: '16px', height: '16px', cursor: 'pointer' }}
+                              />
+                              <label htmlFor="noTengoMatricula1" style={{ fontSize: '13px', color: '#374151', cursor: 'pointer' }}>
+                                No tengo Número de Matrícula
+                              </label>
+                            </div>
+                            {!noTengoMatricula && validationErrors.includes('Número de Matrícula') && (
+                              <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>El número de matrícula es requerido</p>
+                            )}
+                          </div>
+
+                          {/* Right: File Upload (Constancia de Matrícula) */}
+                          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start' }}>
+                            <AttachmentRow
+                              title="Constancia de Matrícula"
+                              fileName={noTengoMatricula ? null : step2AttachedFiles['constancia_matricula']}
+                              onAttach={() => handleAttachFileStep2('constancia_matricula')}
+                              disabled={noTengoMatricula}
+                            />
+                          </div>
+                        </div>
+
+                        {/* Copia de Título — aparece debajo cuando NO tengo matrícula */}
+                        {noTengoMatricula && (
+                          <div style={{ gridColumn: '1 / -1' }}>
+                            <AttachmentRow
+                              title="Copia de Título"
+                              fileName={step2AttachedFiles['copia_titulo']}
+                              onAttach={() => handleAttachFileStep2('copia_titulo')}
+                            />
+                          </div>
+                        )}
+
+                        {/* Especialidad Médica (Solo si es Medico) */}
+                        {tipoProfesion === 'Medico' && (
+                          <div style={{ gridColumn: '1 / -1', marginTop: '12px' }}>
                             <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
                               Seleccioná tu especialidad médica <span style={{ color: '#EF4444' }}>*</span>
                             </label>
-
-                            <div
-                              onClick={() => {
-                                setEspecialidadDropdownOpen(true)
-                                setTipoProfesionDropdownOpen(false)
-                                setAmbitoMatriculaDropdownOpen(false)
-                              }}
-                              style={{
-                                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                                border: '1px solid #D1D5DB', borderRadius: '6px',
-                                padding: '7px 12px', fontSize: '13.5px',
-                                backgroundColor: '#fff', cursor: 'text', boxSizing: 'border-box',
-                              }}
-                            >
-                              <input
-                                type="text"
-                                value={especialidadSearch}
-                                onChange={e => {
-                                  setEspecialidadSearch(e.target.value)
-                                  if (!especialidadDropdownOpen) setEspecialidadDropdownOpen(true)
+                            
+                            <div style={{ position: 'relative' }}>
+                              <div
+                                onClick={() => {
+                                  setEspecialidadDropdownOpen(true)
+                                  setTipoProfesionDropdownOpen(false)
+                                  setAmbitoMatriculaDropdownOpen(false)
                                 }}
-                                onFocus={() => setEspecialidadDropdownOpen(true)}
-                                placeholder={especialidadMedica.length > 0 ? "Buscar más especialidades..." : "Buscar y seleccionar..."}
                                 style={{
-                                  width: '100%', border: 'none', outline: 'none',
-                                  fontSize: '13.5px', color: '#1F2937', backgroundColor: 'transparent',
+                                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                                  border: '1px solid #D1D5DB', borderRadius: '6px',
+                                  padding: '7px 12px', fontSize: '13.5px',
+                                  backgroundColor: '#fff', cursor: 'text', boxSizing: 'border-box',
                                 }}
-                              />
-                              <span onClick={(e) => {
-                                e.stopPropagation();
-                                setEspecialidadDropdownOpen(!especialidadDropdownOpen);
-                                if (especialidadDropdownOpen) setEspecialidadSearch('');
-                              }} style={{ cursor: 'pointer', display: 'flex' }}>
-                                <ChevronDownIcon />
-                              </span>
+                              >
+                                <input
+                                  type="text"
+                                  value={especialidadSearch}
+                                  onChange={e => {
+                                    setEspecialidadSearch(e.target.value)
+                                    if (!especialidadDropdownOpen) setEspecialidadDropdownOpen(true)
+                                  }}
+                                  onFocus={() => setEspecialidadDropdownOpen(true)}
+                                  placeholder={especialidadMedica.length > 0 ? "Buscar más especialidades..." : "Buscar y seleccionar..."}
+                                  style={{
+                                    width: '100%', border: 'none', outline: 'none',
+                                    fontSize: '13.5px', color: '#1F2937', backgroundColor: 'transparent',
+                                  }}
+                                />
+                                <span onClick={(e) => {
+                                  e.stopPropagation();
+                                  setEspecialidadDropdownOpen(!especialidadDropdownOpen);
+                                  if (especialidadDropdownOpen) setEspecialidadSearch('');
+                                }} style={{ cursor: 'pointer', display: 'flex' }}>
+                                  <ChevronDownIcon />
+                                </span>
+                              </div>
+
+                              {especialidadDropdownOpen && (
+                                <div style={{
+                                  position: 'absolute', top: '100%', left: 0, right: 0,
+                                  marginTop: '4px', backgroundColor: '#fff', border: '1px solid #D1D5DB',
+                                  borderRadius: '6px', boxShadow: '0 8px 24px rgba(0, 0, 0, 0.12)',
+                                  zIndex: 1010,
+                                }}>
+                                  <div style={{ maxHeight: '200px', overflowY: 'auto' }}>
+                                    {especialidadesMedicas
+                                      .filter(opt => {
+                                        if (especialidadSearch.trim() === '') return true
+                                        if (opt.isHeader) return false
+                                        return opt.label.toLowerCase().includes(especialidadSearch.toLowerCase())
+                                      })
+                                      .map((opt, index) => {
+                                        if (opt.isHeader) {
+                                          return (
+                                            <div
+                                              key={index}
+                                              style={{
+                                                padding: '6px 12px', fontSize: '11px', fontWeight: 'bold',
+                                                color: '#9CA3AF', backgroundColor: '#F3F4F6', cursor: 'default',
+                                                borderTop: index > 0 ? '1px solid #E5E7EB' : 'none',
+                                                borderBottom: '1px solid #E5E7EB',
+                                                userSelect: 'none',
+                                              }}
+                                            >
+                                              {opt.label}
+                                            </div>
+                                          )
+                                        }
+                                        return (
+                                          <div
+                                            key={index}
+                                            onClick={(e) => {
+                                              e.stopPropagation()
+                                              if (especialidadMedica.includes(opt.label)) {
+                                                setEspecialidadMedica(especialidadMedica.filter(d => d !== opt.label))
+                                              } else {
+                                                setEspecialidadMedica([...especialidadMedica, opt.label])
+                                              }
+                                            }}
+                                            style={{
+                                              padding: '8px 12px 8px 20px', fontSize: '13px', cursor: 'pointer',
+                                              backgroundColor: especialidadMedica.includes(opt.label) ? '#E6F6F4' : '#fff',
+                                              color: especialidadMedica.includes(opt.label) ? '#00AC99' : '#1F2937',
+                                              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                                              fontWeight: especialidadMedica.includes(opt.label) ? 600 : 400
+                                            }}
+                                          >
+                                            {opt.label}
+                                            {especialidadMedica.includes(opt.label) && (
+                                              <CheckIcon />
+                                            )}
+                                          </div>
+                                        )
+                                      })}
+                                    {especialidadesMedicas.filter(o => !o.isHeader && o.label.toLowerCase().includes(especialidadSearch.toLowerCase())).length === 0 && especialidadSearch.trim() !== '' && (
+                                      <div style={{ padding: '12px', fontSize: '13px', color: '#9CA3AF', textAlign: 'center' }}>Sin resultados para "{especialidadSearch}"</div>
+                                    )}
+                                  </div>
+                                </div>
+                              )}
                             </div>
 
                             {/* Tags of selected specialties moved BELOW input */}
@@ -2451,245 +2555,9 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                               </div>
                             )}
 
-                            {especialidadDropdownOpen && (
-                              <div style={{
-                                position: 'absolute', top: '100%', left: 0, right: 0,
-                                marginTop: '4px', backgroundColor: '#fff', border: '1px solid #D1D5DB',
-                                borderRadius: '6px', boxShadow: '0 8px 24px rgba(0, 0, 0, 0.12)',
-                                zIndex: 1010,
-                              }}>
-                                {/* Search box removed - now using the main input */}
-                                <div style={{ maxHeight: '200px', overflowY: 'auto' }}>
-                                  {especialidadesMedicas
-                                    .filter(opt => {
-                                      if (especialidadSearch.trim() === '') return true
-                                      if (opt.isHeader) return false
-                                      return opt.label.toLowerCase().includes(especialidadSearch.toLowerCase())
-                                    })
-                                    .map((opt, index) => {
-                                      if (opt.isHeader) {
-                                        return (
-                                          <div
-                                            key={index}
-                                            style={{
-                                              padding: '6px 12px', fontSize: '11px', fontWeight: 'bold',
-                                              color: '#9CA3AF', backgroundColor: '#F3F4F6', cursor: 'default',
-                                              borderTop: index > 0 ? '1px solid #E5E7EB' : 'none',
-                                              borderBottom: '1px solid #E5E7EB',
-                                              userSelect: 'none',
-                                            }}
-                                          >
-                                            {opt.label}
-                                          </div>
-                                        )
-                                      }
-                                      return (
-                                        <div
-                                          key={index}
-                                          onClick={(e) => {
-                                            e.stopPropagation()
-                                            if (especialidadMedica.includes(opt.label)) {
-                                              setEspecialidadMedica(especialidadMedica.filter(d => d !== opt.label))
-                                            } else {
-                                              setEspecialidadMedica([...especialidadMedica, opt.label])
-                                            }
-                                          }}
-                                          style={{
-                                            padding: '8px 12px 8px 20px', fontSize: '13px', cursor: 'pointer',
-                                            backgroundColor: especialidadMedica.includes(opt.label) ? '#E6F6F4' : '#fff',
-                                            color: especialidadMedica.includes(opt.label) ? '#00AC99' : '#1F2937',
-                                            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                                            fontWeight: especialidadMedica.includes(opt.label) ? 600 : 400
-                                          }}
-                                        >
-                                          {opt.label}
-                                          {especialidadMedica.includes(opt.label) && (
-                                            <CheckIcon />
-                                          )}
-                                        </div>
-                                      )
-                                    })}
-                                  {especialidadesMedicas.filter(o => !o.isHeader && o.label.toLowerCase().includes(especialidadSearch.toLowerCase())).length === 0 && especialidadSearch.trim() !== '' && (
-                                    <div style={{ padding: '12px', fontSize: '13px', color: '#9CA3AF', textAlign: 'center' }}>Sin resultados para "{especialidadSearch}"</div>
-                                  )}
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        ) : (
-                          /* If not Medico, Ámbito de la Matrícula goes here */
-                          <div style={{ position: 'relative' }}>
-                            <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
-                              Ámbito de la Matrícula <span style={{ color: '#EF4444' }}>*</span>
-                            </label>
-                            <div
-                              onClick={() => {
-                                setAmbitoMatriculaDropdownOpen(!ambitoMatriculaDropdownOpen)
-                                setTipoProfesionDropdownOpen(false)
-                                setEspecialidadDropdownOpen(false)
-                              }}
-                              style={{
-                                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                                border: '1px solid #D1D5DB', borderRadius: '6px',
-                                padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
-                                backgroundColor: '#fff', cursor: 'pointer', userSelect: 'none', boxSizing: 'border-box',
-                              }}
-                            >
-                              <span>{ambitoMatricula}</span>
-                              <ChevronDownIcon />
-                            </div>
-
-                            {ambitoMatriculaDropdownOpen && (
-                              <div style={{
-                                position: 'absolute', top: '100%', left: 0, right: 0,
-                                marginTop: '4px', backgroundColor: '#fff', border: '1px solid #D1D5DB',
-                                borderRadius: '6px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
-                                zIndex: 1010, maxHeight: '200px', overflowY: 'auto',
-                              }}>
-                                {ambitoMatriculaOptions.map((opt) => (
-                                  <div
-                                    key={opt}
-                                    onClick={() => {
-                                      setAmbitoMatricula(opt)
-                                      setAmbitoMatriculaDropdownOpen(false)
-                                    }}
-                                    style={{
-                                      padding: '8px 12px', fontSize: '13px', cursor: 'pointer',
-                                      backgroundColor: ambitoMatricula === opt ? '#00AC99' : '#fff',
-                                      color: ambitoMatricula === opt ? '#fff' : '#1F2937',
-                                    }}
-                                  >
-                                    {opt}
-                                  </div>
-                                ))}
-                              </div>
-                            )}
-                          </div>
-                        )}
-
-                        {/* ROW 2:
-                      If 'Medico':
-                        Col 1: Ámbito de la Matrícula
-                        Col 2: Número de Matrícula...
-                      If not 'Medico':
-                        Col 1: Número de Matrícula...
-                        Col 2: Empty slot
-                  */}
-                        {tipoProfesion === 'Medico' ? (
-                          <>
-                            {/* Col 1: Ámbito de la Matrícula */}
-                            <div style={{ position: 'relative' }}>
-                              <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
-                                Ámbito de la Matrícula <span style={{ color: '#EF4444' }}>*</span>
-                              </label>
-                              <div
-                                onClick={() => {
-                                  setAmbitoMatriculaDropdownOpen(!ambitoMatriculaDropdownOpen)
-                                  setTipoProfesionDropdownOpen(false)
-                                  setEspecialidadDropdownOpen(false)
-                                }}
-                                style={{
-                                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                                  border: '1px solid #D1D5DB', borderRadius: '6px',
-                                  padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
-                                  backgroundColor: '#fff', cursor: 'pointer', userSelect: 'none', boxSizing: 'border-box',
-                                }}
-                              >
-                                <span>{ambitoMatricula}</span>
-                                <ChevronDownIcon />
-                              </div>
-
-                              {ambitoMatriculaDropdownOpen && (
-                                <div style={{
-                                  position: 'absolute', top: '100%', left: 0, right: 0,
-                                  marginTop: '4px', backgroundColor: '#fff', border: '1px solid #D1D5DB',
-                                  borderRadius: '6px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
-                                  zIndex: 1010, maxHeight: '200px', overflowY: 'auto',
-                                }}>
-                                  {ambitoMatriculaOptions.map((opt) => (
-                                    <div
-                                      key={opt}
-                                      onClick={() => {
-                                        setAmbitoMatricula(opt)
-                                        setAmbitoMatriculaDropdownOpen(false)
-                                      }}
-                                      style={{
-                                        padding: '8px 12px', fontSize: '13px', cursor: 'pointer',
-                                        backgroundColor: ambitoMatricula === opt ? '#00AC99' : '#fff',
-                                        color: ambitoMatricula === opt ? '#fff' : '#1F2937',
-                                      }}
-                                    >
-                                      {opt}
-                                    </div>
-                                  ))}
-                                </div>
-                              )}
-                            </div>
-
-                            {/* Número de Matrícula (Full Width Row) */}
-                            <div style={{ gridColumn: '1 / -1', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '28px' }}>
-                              {/* Left: Input & Checkbox */}
-                              <div>
-                                <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
-                                  Número de Matrícula Profesional o Registro Provincial <span style={{ color: '#EF4444' }}>*</span>
-                                </label>
-                                <input
-                                  type="text"
-                                  value={numMatricula}
-                                  disabled={noTengoMatricula}
-                                  onChange={(e) => setNumMatricula(e.target.value)}
-                                  style={{
-                                    width: '100%', border: (!noTengoMatricula && validationErrors.includes('Número de Matrícula')) ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px',
-                                    padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
-                                    outline: 'none', boxSizing: 'border-box',
-                                    backgroundColor: noTengoMatricula ? '#F3F4F6' : '#fff'
-                                  }}
-                                />
-                                <div style={{ display: 'flex', alignItems: 'center', marginTop: '8px', gap: '8px' }}>
-                                  <input
-                                    type="checkbox"
-                                    id="noTengoMatricula1"
-                                    checked={noTengoMatricula}
-                                    onChange={(e) => {
-                                      setNoTengoMatricula(e.target.checked);
-                                      if (e.target.checked) setNumMatricula('');
-                                    }}
-                                    style={{ width: '16px', height: '16px', cursor: 'pointer' }}
-                                  />
-                                  <label htmlFor="noTengoMatricula1" style={{ fontSize: '13px', color: '#374151', cursor: 'pointer' }}>
-                                    No tengo Número de Matrícula
-                                  </label>
-                                </div>
-                                {!noTengoMatricula && validationErrors.includes('Número de Matrícula') && (
-                                  <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>El número de matrícula es requerido</p>
-                                )}
-                              </div>
-
-                              {/* Right: File Upload (Constancia de Matrícula) */}
-                              <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start' }}>
-                                <AttachmentRow
-                                  title="Constancia de Matrícula"
-                                  fileName={noTengoMatricula ? null : step2AttachedFiles['constancia_matricula']}
-                                  onAttach={() => handleAttachFileStep2('constancia_matricula')}
-                                  disabled={noTengoMatricula}
-                                />
-                              </div>
-                            </div>
-
-                            {/* Copia de Título — aparece debajo cuando NO tengo matrícula */}
-                            {noTengoMatricula && (
-                              <div style={{ gridColumn: '1 / -1' }}>
-                                <AttachmentRow
-                                  title="Copia de Título"
-                                  fileName={step2AttachedFiles['copia_titulo']}
-                                  onAttach={() => handleAttachFileStep2('copia_titulo')}
-                                />
-                              </div>
-                            )}
-
                             {/* Por cada especialidad seleccionada: Matrícula + Constancia */}
                             {especialidadMedica.length > 0 && (
-                              <div style={{ gridColumn: '1 / -1', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginTop: '16px' }}>
                                 <p style={{ fontSize: '11.5px', fontWeight: 700, color: '#4B5563', letterSpacing: '0.08em', textTransform: 'uppercase', margin: '4px 0 0 0' }}>
                                   Datos por Especialidad
                                 </p>
@@ -2738,73 +2606,82 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                                 })}
                               </div>
                             )}
-                          </>
-                        ) : (
-                          <>
-                            {/* Número de Matrícula (Full Width Row) */}
-                            <div style={{ gridColumn: '1 / -1', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '28px' }}>
-                              {/* Left: Input & Checkbox */}
-                              <div>
-                                <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
-                                  Número de Matrícula Profesional o Registro Provincial <span style={{ color: '#EF4444' }}>*</span>
-                                </label>
-                                <input
-                                  type="text"
-                                  value={numMatricula}
-                                  disabled={noTengoMatricula}
-                                  onChange={(e) => setNumMatricula(e.target.value)}
-                                  style={{
-                                    width: '100%', border: (!noTengoMatricula && validationErrors.includes('Número de Matrícula')) ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px',
-                                    padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
-                                    outline: 'none', boxSizing: 'border-box',
-                                    backgroundColor: noTengoMatricula ? '#F3F4F6' : '#fff'
-                                  }}
-                                />
-                                <div style={{ display: 'flex', alignItems: 'center', marginTop: '8px', gap: '8px' }}>
-                                  <input
-                                    type="checkbox"
-                                    id="noTengoMatricula2"
-                                    checked={noTengoMatricula}
-                                    onChange={(e) => {
-                                      setNoTengoMatricula(e.target.checked);
-                                      if (e.target.checked) setNumMatricula('');
-                                    }}
-                                    style={{ width: '16px', height: '16px', cursor: 'pointer' }}
-                                  />
-                                  <label htmlFor="noTengoMatricula2" style={{ fontSize: '13px', color: '#374151', cursor: 'pointer' }}>
-                                    No tengo Número de Matrícula
-                                  </label>
-                                </div>
-                                {!noTengoMatricula && validationErrors.includes('Número de Matrícula') && (
-                                  <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>El número de matrícula es requerido</p>
-                                )}
-                              </div>
-
-                              {/* Right: File Upload (Constancia de Matrícula) */}
-                              <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start' }}>
-                                <AttachmentRow
-                                  title="Constancia de Matrícula"
-                                  fileName={noTengoMatricula ? null : step2AttachedFiles['constancia_matricula']}
-                                  onAttach={() => handleAttachFileStep2('constancia_matricula')}
-                                  disabled={noTengoMatricula}
-                                />
-                              </div>
-                            </div>
-
-                            {/* Copia de Título — aparece debajo cuando NO tengo matrícula */}
-                            {noTengoMatricula && (
-                              <div style={{ gridColumn: '1 / -1' }}>
-                                <AttachmentRow
-                                  title="Copia de Título"
-                                  fileName={step2AttachedFiles['copia_titulo']}
-                                  onAttach={() => handleAttachFileStep2('copia_titulo')}
-                                />
-                              </div>
-                            )}
-                          </>
+                          </div>
                         )}
 
                       </div>
+
+                      {/* Transporte-specific section (Persona Fisica) */}
+                      {tipoProfesion === 'Transporte de pacientes bajo tratamiento cronico' && (
+                        <div style={{ marginBottom: '20px' }}>
+                          {/* Documentación del transporte */}
+                          <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '8px' }}>
+                            Documentación del transporte <span style={{ color: '#EF4444' }}>*</span>
+                          </label>
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '20px' }}>
+                            {['Cédula Verde / Título del vehículo', 'Licencia de conducir'].map((docName) => (
+                              <AttachmentRow
+                                key={docName}
+                                title={docName}
+                                fileName="Matricula5.pdf"
+                                onAttach={() => { }}
+                              />
+                            ))}
+                          </div>
+
+                          {/* Listado de conductores */}
+                          <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '8px' }}>
+                            Listado de conductores autorizados
+                          </label>
+                          <div style={{ border: '1px solid #E5E7EB', borderRadius: '8px', overflow: 'hidden', marginBottom: '4px' }}>
+                            {conductoresList.map((c, idx) => (
+                              <div key={idx} style={{
+                                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                                padding: '12px 16px', borderBottom: idx < conductoresList.length - 1 ? '1px solid #F3F4F6' : 'none',
+                                backgroundColor: '#fff',
+                              }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                  <div style={{ width: '34px', height: '34px', borderRadius: '50%', backgroundColor: '#E6F6F4', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <PersonIcon />
+                                  </div>
+                                  <div>
+                                    <p style={{ fontSize: '13px', fontWeight: 700, color: '#111827', margin: 0 }}>{c.nombre}</p>
+                                    <p style={{ fontSize: '12px', color: '#6B7280', margin: '2px 0 0 0' }}>
+                                      CUIT/CUIL: {c.cuit} &nbsp; Licencia de conducir: {c.licenciaConducir ? 'Si' : 'No'} &nbsp; Autorizacion de manejo: {c.autorizacionManejo ? 'Si' : 'No'}
+                                    </p>
+                                  </div>
+                                </div>
+                                <div style={{ display: 'flex', gap: '8px' }}>
+                                  <button style={{ padding: '6px 8px', border: '1px solid #D1D5DB', borderRadius: '6px', backgroundColor: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+                                    <PencilEditIcon />
+                                  </button>
+                                  <button
+                                    onClick={() => setConductoresList(conductoresList.filter((_, i) => i !== idx))}
+                                    style={{ padding: '6px 8px', border: '1px solid #FCA5A5', borderRadius: '6px', backgroundColor: '#FFF5F5', cursor: 'pointer', display: 'flex', alignItems: 'center', color: '#EF4444' }}
+                                  >
+                                    <TrashIcon />
+                                  </button>
+                                </div>
+                              </div>
+                            ))}
+                            {/* Agregar conductor */}
+                            <div
+                              onClick={() => { setConductorNombre('Juan'); setConductorApellido('Pérez'); setConductorCuit('20-30405060-7'); setConductorCargo('Chofer principal'); setShowConductorModal(true) }}
+                              style={{
+                                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                                padding: '12px 16px', cursor: 'pointer', color: '#00AC99',
+                                borderTop: conductoresList.length > 0 ? '1px solid #F3F4F6' : 'none',
+                              }}
+                            >
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <span style={{ fontSize: '18px', fontWeight: 300 }}>+</span>
+                                <span style={{ fontSize: '13px', fontWeight: 600 }}>Agregar conductor autorizado</span>
+                              </div>
+                              <ChevronDownIcon />
+                            </div>
+                          </div>
+                        </div>
+                      )}
 
                       {/* ── ADDITIONAL DISABILITY SECTION ── */}
                       {isDisabilityCategory && (
@@ -5118,7 +4995,20 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
               onClick={() => {
                 setShowSuccessModal(false)
                 if (estadoPostulacion === 'aceptado') {
-                  navigate('/fin-prototipo')
+                  if (onComplete) {
+                    onComplete({
+                      cuit: cuit || cidiData?.cuit || '30-12345678-9',
+                      represented: cidiData?.represented || 'Camila Gonzales',
+                      categoria: cidiData?.category || 'Profesional de la salud',
+                      profesion: tipoProfesion !== 'Selecciona' ? tipoProfesion : undefined,
+                      especialidades: especialidadMedica,
+                      nivelAtencion: nivelAtencion !== 'Selecciona' ? nivelAtencion : undefined,
+                      tipoInstitucionNivel: tipoInstitucionNivel !== 'Selecciona' ? tipoInstitucionNivel : undefined,
+                      tipoInstitucion: tipoInstitucion !== 'Selecciona' ? tipoInstitucion : undefined,
+                    })
+                  } else {
+                    navigate('/')
+                  }
                 } else if (onComplete) {
                   onComplete({
                     cuit: cuit || cidiData?.cuit || '30-12345678-9',
@@ -5225,7 +5115,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                   }
                 }}
                 style={{ flex: 1, padding: '11px', borderRadius: '6px', border: 'none', backgroundColor: '#00AC99', color: '#fff', fontSize: '14px', fontWeight: 600, cursor: 'pointer' }}>
-                Continuar
+                Confirmar
               </button>
             </div>
           </div>

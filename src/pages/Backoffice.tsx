@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { ChevronDownIcon } from '../components/Icons'
 
 interface BackofficeProps {
-  submittedPostulacion?: {
+  submittedPostulaciones?: Array<{
     cuit?: string
     represented?: string
     categoria?: string
@@ -12,7 +12,7 @@ interface BackofficeProps {
     tipoInstitucionNivel?: string
     tipoInstitucion?: string
     estado?: string
-  } | null
+  }>
 }
 
 function BackofficeHeader() {
@@ -150,7 +150,8 @@ const AREA_TASKS = [
   ['Validar certificado de CBU', 'Validar titularidad de cuenta']
 ]
 
-export default function Backoffice({ submittedPostulacion }: BackofficeProps) {
+export default function Backoffice({ submittedPostulaciones = [] }: BackofficeProps) {
+  const submittedPostulacion = submittedPostulaciones[0] || null
   const [view, setView] = useState<'list' | 'ficha'>('list')
   const [activeTab, setActiveTab] = useState('Datos del perfil')
 
@@ -1018,16 +1019,16 @@ export default function Backoffice({ submittedPostulacion }: BackofficeProps) {
             <div style={{ display: 'flex', alignItems: 'center', padding: '16px 20px', borderBottom: '1px solid #E5E7EB', gap: '24px' }}>
               <span style={{ fontSize: '16px', fontWeight: 700, color: '#374151', minWidth: '120px' }}>1 resultado</span>
               <div style={{ display: 'flex', gap: '12px', flex: 1 }}>
-                {['Rechazados', 'Pre-Inscriptos', 'Postulados', 'Prestadores Activos'].map(tab => (
+                {['Todos', 'Nuevo', 'A Revisar', 'En Espera', 'Observado', 'Aprobado', 'Corregido', 'Activo'].map(tab => (
                   <button key={tab} style={{
                     flex: 1,
                     padding: '10px 16px',
                     borderRadius: '4px',
-                    border: tab === 'Postulados' ? 'none' : '1px solid #D1D5DB',
-                    backgroundColor: tab === 'Postulados' ? '#00AC99' : '#fff',
-                    color: tab === 'Postulados' ? '#fff' : '#4B5563',
+                    border: tab === 'Todos' ? 'none' : '1px solid #D1D5DB',
+                    backgroundColor: tab === 'Todos' ? '#00AC99' : '#fff',
+                    color: tab === 'Todos' ? '#fff' : '#4B5563',
                     fontSize: '13px',
-                    fontWeight: tab === 'Postulados' ? 600 : 500,
+                    fontWeight: tab === 'Todos' ? 600 : 500,
                     cursor: 'pointer'
                   }}>
                     {tab}
@@ -1038,7 +1039,12 @@ export default function Backoffice({ submittedPostulacion }: BackofficeProps) {
 
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 20px', borderBottom: '1px solid #E5E7EB', backgroundColor: '#F9FAFB' }}>
               <div style={{ display: 'flex', gap: '12px' }}>
-                <button style={{ padding: '8px 16px', borderRadius: '16px', border: '1px solid #D1D5DB', backgroundColor: '#fff', color: '#4B5563', fontSize: '12px', fontWeight: 500, cursor: 'pointer' }}>Seleccionar todos</button>
+                <button 
+                  onClick={() => setIsRowChecked(!isRowChecked)}
+                  style={{ padding: '8px 16px', borderRadius: '16px', border: '1px solid #D1D5DB', backgroundColor: '#fff', color: '#4B5563', fontSize: '12px', fontWeight: 500, cursor: 'pointer' }}
+                >
+                  Seleccionar todos
+                </button>
                 <button
                   disabled={!isRowChecked || !canInteract}
                   onClick={() => setShowAprobarModal(true)}
@@ -1069,58 +1075,104 @@ export default function Backoffice({ submittedPostulacion }: BackofficeProps) {
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>
                 <tr style={{ borderBottom: '1px solid #E5E7EB' }}>
-                  <th style={{ padding: '12px 20px', textAlign: 'center', fontSize: '12px', fontWeight: 700, color: '#4B5563', borderRight: '1px solid #E5E7EB' }}>Check</th>
+                  <th style={{ padding: '12px 20px', textAlign: 'center', fontSize: '12px', fontWeight: 700, color: '#4B5563', borderRight: '1px solid #E5E7EB', width: '40px' }}>
+                    <input 
+                      type="checkbox" 
+                      disabled={!canInteract} 
+                      checked={isRowChecked} 
+                      onChange={(e) => setIsRowChecked(e.target.checked)} 
+                      style={{ width: '16px', height: '16px', borderRadius: '4px', border: '1px solid #D1D5DB', cursor: canInteract ? 'pointer' : 'not-allowed' }} 
+                    />
+                  </th>
                   <th style={{ padding: '12px 20px', textAlign: 'left', fontSize: '12px', fontWeight: 700, color: '#4B5563', borderRight: '1px solid #E5E7EB' }}>Estado</th>
-                  <th style={{ padding: '12px 20px', textAlign: 'left', fontSize: '12px', fontWeight: 700, color: '#4B5563', borderRight: '1px solid #E5E7EB' }}>Categoría</th>
-                  <th style={{ padding: '12px 20px', textAlign: 'left', fontSize: '12px', fontWeight: 700, color: '#4B5563', borderRight: '1px solid #E5E7EB' }}>Iniciador</th>
-                  <th style={{ padding: '12px 20px', textAlign: 'left', fontSize: '12px', fontWeight: 700, color: '#4B5563', borderRight: '1px solid #E5E7EB' }}>Cuil</th>
-                  <th style={{ padding: '12px 20px', textAlign: 'left', fontSize: '12px', fontWeight: 700, color: '#4B5563', borderRight: '1px solid #E5E7EB' }}>Nombre</th>
-                  <th style={{ padding: '12px 20px', textAlign: 'left', fontSize: '12px', fontWeight: 700, color: '#4B5563', borderRight: '1px solid #E5E7EB' }}>Fecha</th>
-                  <th style={{ padding: '12px 20px', textAlign: 'left', fontSize: '12px', fontWeight: 700, color: '#4B5563', borderRight: '1px solid #E5E7EB' }}>Área actual</th>
+                  <th style={{ padding: '12px 20px', textAlign: 'left', fontSize: '12px', fontWeight: 700, color: '#4B5563', borderRight: '1px solid #E5E7EB' }}>Postulante</th>
+                  <th style={{ padding: '12px 20px', textAlign: 'left', fontSize: '12px', fontWeight: 700, color: '#4B5563', borderRight: '1px solid #E5E7EB' }}>Profesión</th>
+                  <th style={{ padding: '12px 20px', textAlign: 'left', fontSize: '12px', fontWeight: 700, color: '#4B5563', borderRight: '1px solid #E5E7EB' }}>Lugar de atención</th>
+                  <th style={{ padding: '12px 20px', textAlign: 'left', fontSize: '12px', fontWeight: 700, color: '#4B5563', borderRight: '1px solid #E5E7EB' }}>Fecha de Postulación</th>
+                  <th style={{ padding: '12px 20px', textAlign: 'center', fontSize: '12px', fontWeight: 700, color: '#4B5563', borderRight: '1px solid #E5E7EB' }}>Área actual</th>
                   <th style={{ padding: '12px 20px', textAlign: 'center', fontSize: '12px', fontWeight: 700, color: '#4B5563' }}>Acciones</th>
                 </tr>
               </thead>
               <tbody>
                 {isVisible ? (
-                  <tr style={{ borderBottom: '1px solid #E5E7EB', backgroundColor: '#fff' }}>
-                    <td style={{ padding: '16px 20px', textAlign: 'center', borderRight: '1px solid #E5E7EB' }}>
-                      <input type="checkbox" disabled={!canInteract} checked={isRowChecked} onChange={(e) => setIsRowChecked(e.target.checked)} style={{ width: '16px', height: '16px', borderRadius: '4px', border: '1px solid #D1D5DB', cursor: canInteract ? 'pointer' : 'not-allowed' }} />
-                    </td>
-                    <td style={{ padding: '16px 20px', borderRight: '1px solid #E5E7EB' }}>
-                      <span style={{
-                        display: 'inline-block', padding: '4px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: 600,
-                        backgroundColor: isAprobadoFinal ? '#E6F6F4' : isRechazadoFinal ? '#FEE2E2' : '#fff',
-                        color: isAprobadoFinal ? '#00AC99' : isRechazadoFinal ? '#FF3300' : '#4B5563',
-                        border: isAprobadoFinal ? '1px solid #00AC99' : isRechazadoFinal ? '1px solid #FF3300' : '1px solid #D1D5DB'
-                      }}>
-                        {isAprobadoFinal ? 'Aprobado' : isRechazadoFinal ? 'Rechazado' : 'Nuevo'}
-                      </span>
-                    </td>
-                    <td style={{ padding: '16px 20px', fontSize: '13px', color: '#6B7280', borderRight: '1px solid #E5E7EB' }}>
-                      Pre-inscripcion
-                    </td>
-                    <td style={{ padding: '16px 20px', fontSize: '13px', color: '#6B7280', borderRight: '1px solid #E5E7EB' }}>
-                      Fernando Javie Hidalgo<br />
-                      201234567
-                    </td>
-                    <td style={{ padding: '16px 20px', fontSize: '13px', color: '#6B7280', borderRight: '1px solid #E5E7EB' }}>
-                      2026661523
-                    </td>
-                    <td style={{ padding: '16px 20px', fontSize: '13px', color: '#374151', fontWeight: 500, borderRight: '1px solid #E5E7EB' }}>
-                      Maria Marta Gomez
-                    </td>
-                    <td style={{ padding: '16px 20px', fontSize: '13px', color: '#6B7280', borderRight: '1px solid #E5E7EB' }}>25/05/2021</td>
-                    <td style={{ padding: '16px 20px', borderRight: '1px solid #E5E7EB' }}>
-                      <span style={{ padding: '6px 12px', border: '1px solid #D1D5DB', borderRadius: '4px', fontSize: '11px', color: '#4B5563', whiteSpace: 'nowrap' }}>
-                        {AREAS[applicantStage]}
-                      </span>
-                    </td>
-                    <td style={{ padding: '12px' }}>
-                      <button onClick={() => setView('ficha')} style={{ width: '100%', padding: '10px 16px', borderRadius: '4px', border: '1px solid #374151', backgroundColor: '#fff', color: '#374151', fontSize: '13px', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap', display: 'flex', justifyContent: 'center' }}>
-                        Ver Ficha de postulante
-                      </button>
-                    </td>
-                  </tr>
+                  <>
+                    <tr style={{ borderBottom: '1px solid #E5E7EB', backgroundColor: '#fff' }}>
+                      <td style={{ padding: '16px 20px', textAlign: 'center', borderRight: '1px solid #E5E7EB' }}>
+                        <input type="checkbox" disabled={!canInteract} checked={isRowChecked} onChange={(e) => setIsRowChecked(e.target.checked)} style={{ width: '16px', height: '16px', borderRadius: '4px', border: '1px solid #D1D5DB', cursor: canInteract ? 'pointer' : 'not-allowed' }} />
+                      </td>
+                      <td style={{ padding: '16px 20px', borderRight: '1px solid #E5E7EB' }}>
+                        <span style={{
+                          display: 'inline-block', padding: '4px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: 600,
+                          backgroundColor: isAprobadoFinal ? '#E6F6F4' : isRechazadoFinal ? '#FEE2E2' : '#fff',
+                          color: isAprobadoFinal ? '#00AC99' : isRechazadoFinal ? '#FF3300' : '#4B5563',
+                          border: isAprobadoFinal ? '1px solid #00AC99' : isRechazadoFinal ? '1px solid #FF3300' : '1px solid #D1D5DB'
+                        }}>
+                          {isAprobadoFinal ? 'Aprobado' : isRechazadoFinal ? 'Rechazado' : 'Nuevo'}
+                        </span>
+                      </td>
+                      <td style={{ padding: '16px 20px', fontSize: '13px', color: '#6B7280', borderRight: '1px solid #E5E7EB' }}>
+                        Fernando Javie Hidalgo<br />
+                        201234567
+                      </td>
+                      <td style={{ padding: '16px 20px', fontSize: '13px', color: '#6B7280', borderRight: '1px solid #E5E7EB' }}>
+                        Fonoaudióloga
+                      </td>
+                      <td style={{ padding: '16px 20px', fontSize: '13px', color: '#6B7280', borderRight: '1px solid #E5E7EB' }}>
+                        Sanatorio Allende - Cerro de las rosas
+                      </td>
+                      <td style={{ padding: '16px 20px', fontSize: '13px', color: '#6B7280', borderRight: '1px solid #E5E7EB' }}>
+                        25/05/2021
+                      </td>
+                      <td style={{ padding: '16px 20px', textAlign: 'center', borderRight: '1px solid #E5E7EB' }}>
+                        <span style={{ padding: '6px 12px', border: '1px solid #D1D5DB', borderRadius: '4px', fontSize: '11px', color: '#4B5563', whiteSpace: 'nowrap' }}>
+                          {AREAS[applicantStage]}
+                        </span>
+                      </td>
+                      <td style={{ padding: '12px' }}>
+                        <button onClick={() => setView('ficha')} style={{ width: '100%', padding: '10px 16px', borderRadius: '4px', border: '1px solid #374151', backgroundColor: '#fff', color: '#374151', fontSize: '13px', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap', display: 'flex', justifyContent: 'center' }}>
+                          Ver Ficha de postulante
+                        </button>
+                      </td>
+                    </tr>
+                    <tr style={{ borderBottom: '1px solid #E5E7EB', backgroundColor: '#fff' }}>
+                      <td style={{ padding: '16px 20px', textAlign: 'center', borderRight: '1px solid #E5E7EB' }}>
+                        <input type="checkbox" disabled={!canInteract} checked={isRowChecked} onChange={(e) => setIsRowChecked(e.target.checked)} style={{ width: '16px', height: '16px', borderRadius: '4px', border: '1px solid #D1D5DB', cursor: canInteract ? 'pointer' : 'not-allowed' }} />
+                      </td>
+                      <td style={{ padding: '16px 20px', borderRight: '1px solid #E5E7EB' }}>
+                        <span style={{
+                          display: 'inline-block', padding: '4px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: 600,
+                          backgroundColor: isAprobadoFinal ? '#E6F6F4' : isRechazadoFinal ? '#FEE2E2' : '#fff',
+                          color: isAprobadoFinal ? '#00AC99' : isRechazadoFinal ? '#FF3300' : '#4B5563',
+                          border: isAprobadoFinal ? '1px solid #00AC99' : isRechazadoFinal ? '1px solid #FF3300' : '1px solid #D1D5DB'
+                        }}>
+                          {isAprobadoFinal ? 'Aprobado' : isRechazadoFinal ? 'Rechazado' : 'Nuevo'}
+                        </span>
+                      </td>
+                      <td style={{ padding: '16px 20px', fontSize: '13px', color: '#6B7280', borderRight: '1px solid #E5E7EB' }}>
+                        María Florencia Gomez<br />
+                        2734567891
+                      </td>
+                      <td style={{ padding: '16px 20px', fontSize: '13px', color: '#6B7280', borderRight: '1px solid #E5E7EB' }}>
+                        Psicóloga
+                      </td>
+                      <td style={{ padding: '16px 20px', fontSize: '13px', color: '#6B7280', borderRight: '1px solid #E5E7EB' }}>
+                        Hospital Privado Universitario de Córdoba
+                      </td>
+                      <td style={{ padding: '16px 20px', fontSize: '13px', color: '#6B7280', borderRight: '1px solid #E5E7EB' }}>
+                        26/05/2021
+                      </td>
+                      <td style={{ padding: '16px 20px', textAlign: 'center', borderRight: '1px solid #E5E7EB' }}>
+                        <span style={{ padding: '6px 12px', border: '1px solid #D1D5DB', borderRadius: '4px', fontSize: '11px', color: '#4B5563', whiteSpace: 'nowrap' }}>
+                          {AREAS[applicantStage]}
+                        </span>
+                      </td>
+                      <td style={{ padding: '12px' }}>
+                        <button onClick={() => setView('ficha')} style={{ width: '100%', padding: '10px 16px', borderRadius: '4px', border: '1px solid #374151', backgroundColor: '#fff', color: '#374151', fontSize: '13px', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap', display: 'flex', justifyContent: 'center' }}>
+                          Ver Ficha de postulante
+                        </button>
+                      </td>
+                    </tr>
+                  </>
                 ) : (
                   <tr>
                     <td colSpan={9} style={{ padding: '40px 20px', textAlign: 'center', color: '#6B7280', fontSize: '14px' }}>
