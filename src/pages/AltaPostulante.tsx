@@ -547,6 +547,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
           if (parsed.responsabilidadFiscal) setResponsabilidadFiscal(parsed.responsabilidadFiscal)
           if (parsed.ingresosBrutos) setIngresosBrutos(parsed.ingresosBrutos)
           if (parsed.tipoProfesion) setTipoProfesion(parsed.tipoProfesion)
+          if (parsed.ambitoMatricula) setAmbitoMatricula(parsed.ambitoMatricula)
           if (parsed.numMatricula) setNumMatricula(parsed.numMatricula)
           if (parsed.especialidadesData && typeof parsed.especialidadesData === 'object') setEspecialidadesData(parsed.especialidadesData)
           if (parsed.especialidadMedica) {
@@ -851,7 +852,13 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
 
     if (activeStep === 2) {
       if (!isInstitucionNivel && !isInstitucionDiscapacidad) {
-        if (!numMatricula.trim() && !noTengoMatricula) errors.push('Número de Matrícula')
+        if (tipoProfesion === 'Transporte de pacientes bajo tratamiento cronico') {
+          if (!ambitoMatricula.trim() || ambitoMatricula === 'Selecciona') {
+            errors.push('Disposición de Categorización (ANDIS)')
+          }
+        } else {
+          if (!numMatricula.trim() && !noTengoMatricula) errors.push('Número de Matrícula')
+        }
         if (tipoProfesion === 'Medico' && especialidadMedica.length > 0) {
           especialidadMedica.forEach(esp => {
             if (!(especialidadesData[esp]?.matricula || '').trim()) {
@@ -1148,13 +1155,20 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                                   ))}
                                 </div>
                               )}
-                              <div>
-                                <span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>N° de Matrícula Profesional/Registro Provincial</span>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                  <strong style={{ color: '#374151' }}>{numMatricula}</strong>
-                                  <span style={{ color: '#10B981', fontSize: '12px', fontWeight: 600 }}>✓ Constancia</span>
+                              {tipoProfesion === 'Transporte de pacientes bajo tratamiento cronico' ? (
+                                <div>
+                                  <span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Disposición de Categorización (ANDIS)</span>
+                                  <strong style={{ color: '#374151' }}>{ambitoMatricula}</strong>
                                 </div>
-                              </div>
+                              ) : (
+                                <div>
+                                  <span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>N° de Matrícula Profesional/Registro Provincial</span>
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    <strong style={{ color: '#374151' }}>{numMatricula}</strong>
+                                    <span style={{ color: '#10B981', fontSize: '12px', fontWeight: 600 }}>✓ Constancia</span>
+                                  </div>
+                                </div>
+                              )}
                             </>
                           ) : isInstitucionDiscapacidad ? (
                             <div><span style={{ color: '#6B7280', display: 'block', fontSize: '12px', marginBottom: '2px' }}>Disposición ANDIS</span><strong style={{ color: '#374151' }}>{disposicionAndis}</strong></div>
@@ -2288,6 +2302,11 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                                   onClick={() => {
                                     setTipoProfesion(opt)
                                     setTipoProfesionDropdownOpen(false)
+                                    if (opt === 'Transporte de pacientes bajo tratamiento cronico') {
+                                      setAmbitoMatricula('')
+                                    } else {
+                                      setAmbitoMatricula('Selecciona')
+                                    }
                                   }}
                                   style={{
                                     padding: '8px 12px', fontSize: '13px', cursor: 'pointer',
@@ -2308,26 +2327,57 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                         {/* Field 2: Ámbito de la Matrícula */}
                         <div style={{ position: 'relative' }}>
                           <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
-                            Ámbito de la Matrícula <span style={{ color: '#EF4444' }}>*</span>
+                            {tipoProfesion === 'Transporte de pacientes bajo tratamiento cronico'
+                              ? 'Disposición de Categorización (ANDIS)'
+                              : 'Ámbito de la Matrícula'}{' '}
+                            <span style={{ color: '#EF4444' }}>*</span>
                           </label>
-                          <div
-                            onClick={() => {
-                              setAmbitoMatriculaDropdownOpen(!ambitoMatriculaDropdownOpen)
-                              setTipoProfesionDropdownOpen(false)
-                              setEspecialidadDropdownOpen(false)
-                            }}
-                            style={{
-                              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                              border: '1px solid #D1D5DB', borderRadius: '6px',
-                              padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
-                              backgroundColor: '#fff', cursor: 'pointer', userSelect: 'none', boxSizing: 'border-box',
-                            }}
-                          >
-                            <span>{ambitoMatricula}</span>
-                            <ChevronDownIcon />
-                          </div>
 
-                          {ambitoMatriculaDropdownOpen && (
+                          {tipoProfesion === 'Transporte de pacientes bajo tratamiento cronico' ? (
+                            <input
+                              type="text"
+                              value={ambitoMatricula === 'Selecciona' ? '' : ambitoMatricula}
+                              onChange={(e) => setAmbitoMatricula(e.target.value)}
+                              placeholder="DI-2026-12345678-APN-DNDI#ANDIS"
+                              style={{
+                                width: '100%',
+                                border: validationErrors.includes('Disposición de Categorización (ANDIS)') ? '1px solid #EF4444' : '1px solid #D1D5DB',
+                                borderRadius: '6px',
+                                padding: '7.5px 12px',
+                                fontSize: '13.5px',
+                                color: '#1F2937',
+                                outline: 'none',
+                                boxSizing: 'border-box',
+                              }}
+                            />
+                          ) : (
+                            <div
+                              onClick={() => {
+                                setAmbitoMatriculaDropdownOpen(!ambitoMatriculaDropdownOpen)
+                                setTipoProfesionDropdownOpen(false)
+                                setEspecialidadDropdownOpen(false)
+                              }}
+                              style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                border: '1px solid #D1D5DB',
+                                borderRadius: '6px',
+                                padding: '7px 12px',
+                                fontSize: '13.5px',
+                                color: '#1F2937',
+                                backgroundColor: '#fff',
+                                cursor: 'pointer',
+                                userSelect: 'none',
+                                boxSizing: 'border-box',
+                              }}
+                            >
+                              <span>{ambitoMatricula}</span>
+                              <ChevronDownIcon />
+                            </div>
+                          )}
+
+                          {tipoProfesion !== 'Transporte de pacientes bajo tratamiento cronico' && ambitoMatriculaDropdownOpen && (
                             <div style={{
                               position: 'absolute', top: '100%', left: 0, right: 0,
                               marginTop: '4px', backgroundColor: '#fff', border: '1px solid #D1D5DB',
@@ -2352,57 +2402,62 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                               ))}
                             </div>
                           )}
+                          {tipoProfesion === 'Transporte de pacientes bajo tratamiento cronico' && validationErrors.includes('Disposición de Categorización (ANDIS)') && (
+                            <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>La Disposición de Categorización (ANDIS) es requerida</p>
+                          )}
                         </div>
 
                         {/* Número de Matrícula (Full Width Row) */}
-                        <div style={{ gridColumn: '1 / -1', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '28px' }}>
-                          {/* Left: Input & Checkbox */}
-                          <div>
-                            <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
-                              Número de Matrícula Profesional o Registro Provincial <span style={{ color: '#EF4444' }}>*</span>
-                            </label>
-                            <input
-                              type="text"
-                              value={numMatricula}
-                              disabled={noTengoMatricula}
-                              onChange={(e) => setNumMatricula(e.target.value)}
-                              style={{
-                                width: '100%', border: (!noTengoMatricula && validationErrors.includes('Número de Matrícula')) ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px',
-                                padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
-                                outline: 'none', boxSizing: 'border-box',
-                                backgroundColor: noTengoMatricula ? '#F3F4F6' : '#fff'
-                              }}
-                            />
-                            <div style={{ display: 'flex', alignItems: 'center', marginTop: '8px', gap: '8px' }}>
-                              <input
-                                type="checkbox"
-                                id="noTengoMatricula1"
-                                checked={noTengoMatricula}
-                                onChange={(e) => {
-                                  setNoTengoMatricula(e.target.checked);
-                                  if (e.target.checked) setNumMatricula('');
-                                }}
-                                style={{ width: '16px', height: '16px', cursor: 'pointer' }}
-                              />
-                              <label htmlFor="noTengoMatricula1" style={{ fontSize: '13px', color: '#374151', cursor: 'pointer' }}>
-                                No tengo Número de Matrícula
+                        {tipoProfesion !== 'Transporte de pacientes bajo tratamiento cronico' && (
+                          <div style={{ gridColumn: '1 / -1', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '28px' }}>
+                            {/* Left: Input & Checkbox */}
+                            <div>
+                              <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
+                                Número de Matrícula Profesional o Registro Provincial <span style={{ color: '#EF4444' }}>*</span>
                               </label>
+                              <input
+                                type="text"
+                                value={numMatricula}
+                                disabled={noTengoMatricula}
+                                onChange={(e) => setNumMatricula(e.target.value)}
+                                style={{
+                                  width: '100%', border: (!noTengoMatricula && validationErrors.includes('Número de Matrícula')) ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px',
+                                  padding: '7px 12px', fontSize: '13.5px', color: '#1F2937',
+                                  outline: 'none', boxSizing: 'border-box',
+                                  backgroundColor: noTengoMatricula ? '#F3F4F6' : '#fff'
+                                }}
+                              />
+                              <div style={{ display: 'flex', alignItems: 'center', marginTop: '8px', gap: '8px' }}>
+                                <input
+                                  type="checkbox"
+                                  id="noTengoMatricula1"
+                                  checked={noTengoMatricula}
+                                  onChange={(e) => {
+                                    setNoTengoMatricula(e.target.checked);
+                                    if (e.target.checked) setNumMatricula('');
+                                  }}
+                                  style={{ width: '16px', height: '16px', cursor: 'pointer' }}
+                                />
+                                <label htmlFor="noTengoMatricula1" style={{ fontSize: '13px', color: '#374151', cursor: 'pointer' }}>
+                                  No tengo Número de Matrícula
+                                </label>
+                              </div>
+                              {!noTengoMatricula && validationErrors.includes('Número de Matrícula') && (
+                                <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>El número de matrícula es requerido</p>
+                              )}
                             </div>
-                            {!noTengoMatricula && validationErrors.includes('Número de Matrícula') && (
-                              <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>El número de matrícula es requerido</p>
-                            )}
-                          </div>
 
-                          {/* Right: File Upload (Constancia de Matrícula) */}
-                          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start' }}>
-                            <AttachmentRow
-                              title="Constancia de Matrícula"
-                              fileName={noTengoMatricula ? null : step2AttachedFiles['constancia_matricula']}
-                              onAttach={() => handleAttachFileStep2('constancia_matricula')}
-                              disabled={noTengoMatricula}
-                            />
+                            {/* Right: File Upload (Constancia de Matrícula) */}
+                            <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start' }}>
+                              <AttachmentRow
+                                title="Constancia de Matrícula"
+                                fileName={noTengoMatricula ? null : step2AttachedFiles['constancia_matricula']}
+                                onAttach={() => handleAttachFileStep2('constancia_matricula')}
+                                disabled={noTengoMatricula}
+                              />
+                            </div>
                           </div>
-                        </div>
+                        )}
 
                         {/* Copia de Título — aparece debajo cuando NO tengo matrícula */}
                         {noTengoMatricula && (
@@ -2614,19 +2669,38 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                       {/* Transporte-specific section (Persona Fisica) */}
                       {tipoProfesion === 'Transporte de pacientes bajo tratamiento cronico' && (
                         <div style={{ marginBottom: '20px' }}>
+                          {/* Seguros de transporte */}
+                          <SectionTitle>
+                            Seguros de transporte <span style={{ color: '#EF4444' }}>*</span>
+                          </SectionTitle>
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '24px' }}>
+                            <AttachmentRow
+                              title="Seguro de vehículo"
+                              fileName={step2AttachedFiles['seguro_de_transporte']}
+                              onAttach={() => handleAttachFileStep2('seguro_de_transporte')}
+                            />
+                            <AttachmentRow
+                              title="Seguro de inscripción para transporte especial"
+                              fileName={step2AttachedFiles['seguro_de_inscripcion_para_transporte_especial']}
+                              onAttach={() => handleAttachFileStep2('seguro_de_inscripcion_para_transporte_especial')}
+                            />
+                          </div>
+
                           {/* Documentación del transporte */}
-                          <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '8px' }}>
+                          <SectionTitle>
                             Documentación del transporte <span style={{ color: '#EF4444' }}>*</span>
-                          </label>
-                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '20px' }}>
-                            {['Cédula Verde / Título del vehículo', 'Licencia de conducir'].map((docName) => (
-                              <AttachmentRow
-                                key={docName}
-                                title={docName}
-                                fileName="Matricula5.pdf"
-                                onAttach={() => { }}
-                              />
-                            ))}
+                          </SectionTitle>
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '24px' }}>
+                            <AttachmentRow
+                              title="Cédula Verde / Título del vehículo"
+                              fileName={step2AttachedFiles['cedula_verde_titulo_del_vehiculo'] !== undefined ? step2AttachedFiles['cedula_verde_titulo_del_vehiculo'] : 'Matricula5.pdf'}
+                              onAttach={() => handleAttachFileStep2('cedula_verde_titulo_del_vehiculo')}
+                            />
+                            <AttachmentRow
+                              title="Licencia de conducir"
+                              fileName={step2AttachedFiles['licencia_de_conducir'] !== undefined ? step2AttachedFiles['licencia_de_conducir'] : 'Matricula5.pdf'}
+                              onAttach={() => handleAttachFileStep2('licencia_de_conducir')}
+                            />
                           </div>
 
                           {/* Listado de conductores */}
