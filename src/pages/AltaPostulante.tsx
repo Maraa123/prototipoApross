@@ -20,7 +20,7 @@ interface AltaPostulanteProps {
     tipoInstitucionNivel?: string
     tipoInstitucion?: string
   }) => void
-  fase?: 'borrador' | 'aceptado'
+  fase?: 'borrador' | 'seleccionado'
 }
 
 const steps = [
@@ -314,7 +314,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
   const isPersonaJuridica = cidiData?.represented === 'Sanatorio Allende S.A.'
   const isPersonaFisica = !isPersonaJuridica
 
-  const [estadoPostulacion, setEstadoPostulacion] = useState<'borrador' | 'en_revision' | 'aceptado'>(fase)
+  const [estadoPostulacion, setEstadoPostulacion] = useState<'borrador' | 'en_revision' | 'seleccionado'>(fase)
 
   const location = useLocation()
   const navigate = useNavigate()
@@ -338,10 +338,10 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
       { path: 'revision-inscripcion', name: 'Revisión' }
     ];
 
-  const activeTabs = estadoPostulacion === 'aceptado' ? inscripcionTabs : postulacionTabs;
+  const activeTabs = estadoPostulacion === 'seleccionado' ? inscripcionTabs : postulacionTabs;
   const stepPaths = activeTabs.map(t => t.path);
 
-  const currentPath = location.pathname.split('/').pop() || (estadoPostulacion === 'aceptado' ? 'datos-fiscales' : (isPersonaFisica ? 'datos-perfil' : 'datos-institucion'));
+  const currentPath = location.pathname.split('/').pop() || (estadoPostulacion === 'seleccionado' ? 'datos-fiscales' : (isPersonaFisica ? 'datos-perfil' : 'datos-institucion'));
   const activeStepIndex = stepPaths.indexOf(currentPath)
 
   const sectionMap: Record<string, number> = {
@@ -356,7 +356,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
     'revision-inscripcion': 9,
     'datos-institucion': 10,
   }
-  const activeStep = sectionMap[currentPath] || (estadoPostulacion === 'aceptado' ? 1 : (isPersonaFisica ? 2 : 10))
+  const activeStep = sectionMap[currentPath] || (estadoPostulacion === 'seleccionado' ? 1 : (isPersonaFisica ? 2 : 10))
 
   const setActiveStep = (_stepNum?: number) => {
     // Keep this function around to not break existing callbacks unexpectedly, but we'll modify handleNextStep to not use it
@@ -1073,7 +1073,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginBottom: '32px' }}>
 
-                {estadoPostulacion === 'aceptado' && (
+                {estadoPostulacion === 'seleccionado' && (
                   <>
                     {/* 1. Datos Fiscales (Full width) */}
                     <div style={{ backgroundColor: '#fff', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
@@ -1243,7 +1243,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                     </>
                   )}
 
-                  {estadoPostulacion === 'aceptado' && (
+                  {estadoPostulacion === 'seleccionado' && (
                     <>
                       {/* 2. Seguro y Habilitaciones (Only for Fisica in Inscripcion) */}
                       {isPersonaFisica && (
@@ -1404,7 +1404,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                 </p>
                 <button
                   onClick={() => {
-                    setEstadoPostulacion('aceptado')
+                    setEstadoPostulacion('seleccionado')
                     navigate('/alta/datos-fiscales')
                   }}
                   style={{
@@ -2421,7 +2421,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                             <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
                               Seleccioná tu especialidad médica <span style={{ color: '#EF4444' }}>*</span>
                             </label>
-                            
+
                             <div style={{ position: 'relative' }}>
                               <div
                                 onClick={() => {
@@ -4976,7 +4976,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
               marginBottom: '12px',
               lineHeight: 1.3,
             }}>
-              {estadoPostulacion === 'aceptado' ? '¡Pre-inscripción exitosa!' : '¡Postulación exitosa!'}
+              {estadoPostulacion === 'seleccionado' ? '¡Pre-inscripción exitosa!' : '¡Postulación exitosa!'}
             </h3>
 
             <p style={{
@@ -4986,15 +4986,15 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
               maxWidth: '540px',
               margin: '0 auto 36px auto',
             }}>
-              {estadoPostulacion === 'aceptado'
+              {estadoPostulacion === 'seleccionado'
                 ? 'Tu pre-inscripción ha sido registrada correctamente.'
-                : 'Tus datos quedarán en nuestra base y, si tu perfil avanza a la etapa de inscripción, el sistema te habilitará la carga de la documentación necesaria.'}
+                : 'Tus datos quedarán en nuestra base y, si tu perfil avanza a la etapa de pre-inscripción, el sistema te habilitará la carga de la documentación necesaria.'}
             </p>
 
             <button
               onClick={() => {
                 setShowSuccessModal(false)
-                if (estadoPostulacion === 'aceptado') {
+                if (estadoPostulacion === 'seleccionado') {
                   if (onComplete) {
                     onComplete({
                       cuit: cuit || cidiData?.cuit || '30-12345678-9',
@@ -5041,7 +5041,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
               onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#009584'}
               onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#00AC99'}
             >
-              {estadoPostulacion === 'aceptado' ? 'Siguiente' : 'Ir al inicio'}
+              {estadoPostulacion === 'seleccionado' ? 'Siguiente' : 'Ir al inicio'}
             </button>
           </div>
         </div>

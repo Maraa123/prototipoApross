@@ -13,6 +13,7 @@ interface LandingPostulanteProps {
     tipoInstitucionNivel?: string
     tipoInstitucion?: string
     estado: string
+    isPreinscrito?: boolean
   }>
   onSimularAprobacion?: (index?: number) => void
   onSimularNuevo?: () => void
@@ -23,6 +24,8 @@ export default function LandingPostulante({ onStart, submittedPostulaciones = []
   const lastPostulacion = submittedPostulaciones[submittedPostulaciones.length - 1] || null
   const isBioquimico = lastPostulacion?.profesion === 'Bioquímico' || lastPostulacion?.profesion === 'Bioquimico'
   const first = submittedPostulaciones[0] || null
+  const firstEstado = first?.estado === 'Inscripto' ? 'En revisión' : first?.estado
+  const firstIsPreinscrito = first?.isPreinscrito || first?.estado === 'Inscripto'
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', backgroundColor: '#f4f4f4' }}>
@@ -92,24 +95,24 @@ export default function LandingPostulante({ onStart, submittedPostulaciones = []
                     <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '20px', paddingBottom: '16px', borderBottom: '1px solid #F3F4F6' }}>
                       <div style={{
                         width: '40px', height: '40px', borderRadius: '50%', flexShrink: 0,
-                        backgroundColor: first.estado === 'Inscripto' ? '#D1FAE5' : first.estado === 'Aceptado' ? '#D1FAE5' : '#FEF3C7',
+                        backgroundColor: firstEstado === 'Seleccionado' ? '#D1FAE5' : '#FEF3C7',
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        color: first.estado === 'Inscripto' ? '#10B981' : first.estado === 'Aceptado' ? '#10B981' : '#D97706',
+                        color: firstEstado === 'Seleccionado' ? '#10B981' : '#D97706',
                       }}>
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                          {(first.estado === 'Aceptado' || first.estado === 'Inscripto')
+                          {firstEstado === 'Seleccionado'
                             ? <path d="M20 6L9 17l-5-5" />
                             : <><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></>}
                         </svg>
                       </div>
                       <div>
                         <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#1F2937', margin: '0 0 2px 0' }}>
-                          {first.estado === 'Inscripto' ? 'Pre-inscripción completada' : `Tu postulación está ${first.estado.toLowerCase()}`}
+                          {firstIsPreinscrito ? 'Tu pre-inscripción está en revisión' : firstEstado === 'Seleccionado' ? 'Tu postulación fue seleccionada' : `Tu postulación está ${firstEstado?.toLowerCase()}`}
                         </h3>
                         <p style={{ margin: 0, fontSize: '12px', color: '#6B7280' }}>
-                          {first.estado === 'Inscripto'
-                            ? 'Has completado el flujo de postulación e inscripción.'
-                            : first.estado === 'Aceptado'
+                          {firstIsPreinscrito
+                            ? 'Nuestro equipo está evaluando la documentación de tu pre-inscripción.'
+                            : firstEstado === 'Seleccionado'
                             ? 'Podés continuar con la inscripción.'
                             : 'Nuestro equipo está evaluando tus datos iniciales.'}
                         </p>
@@ -119,6 +122,8 @@ export default function LandingPostulante({ onStart, submittedPostulaciones = []
                     {/* Rows — one per postulacion */}
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
                       {submittedPostulaciones.map((p, index) => {
+                        const estado = p.estado === 'Inscripto' ? 'En revisión' : p.estado
+                        const isPreinscrito = p.isPreinscrito || p.estado === 'Inscripto'
                         const isProfessional = p.categoria === 'Profesional de la salud'
                         const isInstitution = p.categoria === 'Institución'
                         const isDisability = p.categoria === 'Prestador de discapacidad'
@@ -126,8 +131,23 @@ export default function LandingPostulante({ onStart, submittedPostulaciones = []
                           <div key={index}>
                             {index > 0 && <div style={{ height: '1px', backgroundColor: '#F3F4F6', margin: '14px 0' }} />}
                             <div style={{ backgroundColor: '#F9FAFB', borderRadius: '10px', border: '1px solid #F3F4F6', padding: '14px 18px', position: 'relative', display: 'flex', flexDirection: 'column', gap: '7px' }}>
-                              <div style={{ paddingRight: '135px' }}>
+                              <div style={{ paddingRight: '135px', display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
                                 <span style={{ fontSize: '14px', color: '#374151', fontWeight: 600 }}>{p.represented || 'Camila Gonzales'}</span>
+                                {isPreinscrito && (
+                                  <span style={{
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    padding: '2px 8px',
+                                    backgroundColor: '#EFF6FF',
+                                    border: '1px solid #BFDBFE',
+                                    borderRadius: '4px',
+                                    fontSize: '11px',
+                                    fontWeight: 600,
+                                    color: '#1D4ED8'
+                                  }}>
+                                    Pre-inscripción
+                                  </span>
+                                )}
                               </div>
                               <span style={{ fontSize: '13px', color: '#6B7280' }}>CUIT/CUIL: <strong style={{ color: '#1F2937' }}>{p.cuit || '27-457475-9'}</strong></span>
                               <span style={{ fontSize: '13px', color: '#6B7280' }}>Categoría: <strong style={{ color: '#1F2937' }}>{p.categoria}</strong></span>
@@ -146,26 +166,19 @@ export default function LandingPostulante({ onStart, submittedPostulaciones = []
 
                               {/* Status pill */}
                               <div style={{ position: 'absolute', right: '18px', top: '14px' }}>
-                                {p.estado === 'Inscripto' ? (
-                                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', backgroundColor: '#D1FAE5', border: '1px solid #A7F3D0', borderRadius: '24px', padding: '5px 12px' }}>
-                                    <span style={{ width: '7px', height: '7px', borderRadius: '50%', backgroundColor: '#10B981' }} />
-                                    <span style={{ fontSize: '11px', fontWeight: 700, color: '#065F46', textTransform: 'uppercase', letterSpacing: '0.04em' }}>INSCRIPTO</span>
-                                  </div>
-                                ) : (
-                                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', backgroundColor: p.estado === 'Aceptado' ? '#D1FAE5' : '#FFFBEB', border: `1px solid ${p.estado === 'Aceptado' ? '#A7F3D0' : '#FDE68A'}`, borderRadius: '24px', padding: '5px 12px' }}>
-                                    <span style={{ width: '7px', height: '7px', borderRadius: '50%', backgroundColor: p.estado === 'Aceptado' ? '#10B981' : '#F59E0B' }} />
-                                    <span style={{ fontSize: '11px', fontWeight: 700, color: p.estado === 'Aceptado' ? '#065F46' : '#B45309', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{p.estado}</span>
-                                  </div>
-                                )}
+                                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', backgroundColor: estado === 'Seleccionado' ? '#D1FAE5' : '#FFFBEB', border: `1px solid ${estado === 'Seleccionado' ? '#A7F3D0' : '#FDE68A'}`, borderRadius: '24px', padding: '5px 12px' }}>
+                                  <span style={{ width: '7px', height: '7px', borderRadius: '50%', backgroundColor: estado === 'Seleccionado' ? '#10B981' : '#F59E0B' }} />
+                                  <span style={{ fontSize: '11px', fontWeight: 700, color: estado === 'Seleccionado' ? '#065F46' : '#B45309', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{estado}</span>
+                                </div>
                               </div>
 
                               {/* Inscripcion button OR completion banner */}
-                              {p.estado === 'Inscripto' ? (
+                              {isPreinscrito ? (
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '10px', padding: '10px 14px', backgroundColor: '#ECFDF5', border: '1px solid #A7F3D0', borderRadius: '8px' }}>
                                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
                                   <span style={{ fontSize: '13px', color: '#065F46', fontWeight: 600 }}>Fin del flujo — Pre-inscripción enviada correctamente.</span>
                                 </div>
-                              ) : p.estado === 'Aceptado' && onStartInscripcion && !(p.profesion === 'Bioquímico' || p.profesion === 'Bioquimico') ? (
+                              ) : estado === 'Seleccionado' && onStartInscripcion && !(p.profesion === 'Bioquímico' || p.profesion === 'Bioquimico') ? (
                                 <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '6px' }}>
                                   <button
                                     onClick={() => onStartInscripcion(index)}
@@ -261,8 +274,10 @@ export default function LandingPostulante({ onStart, submittedPostulaciones = []
             Simular Nuevo
           </button>
         )}
-        {onSimularAprobacion && submittedPostulaciones.map((p, i) =>
-          p.estado === 'En revisión' ? (
+        {onSimularAprobacion && submittedPostulaciones.map((p, i) => {
+          const estado = p.estado === 'Inscripto' ? 'En revisión' : p.estado
+          const isPreinscrito = p.isPreinscrito || p.estado === 'Inscripto'
+          return (estado === 'En revisión' && !isPreinscrito) ? (
             <button
               key={i}
               onClick={() => onSimularAprobacion(i)}
@@ -271,7 +286,7 @@ export default function LandingPostulante({ onStart, submittedPostulaciones = []
               Aprobar #{i + 1} ({p.profesion || p.categoria})
             </button>
           ) : null
-        )}
+        })}
         <button onClick={() => window.location.href = '/backoffice'} style={{ padding: '8px 12px', backgroundColor: '#00AC99', color: 'white', border: 'none', borderRadius: '6px', fontSize: '12px', fontWeight: 600, cursor: 'pointer', textAlign: 'left' }}>
           Ir al Backoffice
         </button>

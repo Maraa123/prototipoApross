@@ -19,9 +19,10 @@ function App() {
     tipoInstitucionNivel?: string
     tipoInstitucion?: string
     estado: string
+    isPreinscrito?: boolean
   }[]>([])
 
-  const [fase, setFase] = useState<'borrador' | 'aceptado'>('borrador')
+  const [fase, setFase] = useState<'borrador' | 'seleccionado'>('borrador')
   // Tracks which postulacion is being inscripted (null = new postulacion flow)
   const [activeInscripcionIndex, setActiveInscripcionIndex] = useState<number | null>(null)
 
@@ -86,12 +87,16 @@ function App() {
     tipoInstitucionNivel?: string
     tipoInstitucion?: string
   }) => {
-    if (fase === 'aceptado' && activeInscripcionIndex !== null) {
-      // Completing the inscription flow → mark that postulacion as 'Inscripto'
+    if (fase === 'seleccionado' && activeInscripcionIndex !== null) {
+      // Completing the inscription flow → set back to 'En revisión' but mark as isPreinscrito
       setSubmittedPostulaciones(prev => {
         const next = [...prev]
         if (next[activeInscripcionIndex]) {
-          next[activeInscripcionIndex] = { ...next[activeInscripcionIndex], estado: 'Inscripto' }
+          next[activeInscripcionIndex] = {
+            ...next[activeInscripcionIndex],
+            estado: 'En revisión',
+            isPreinscrito: true
+          }
         }
         return next
       })
@@ -116,7 +121,7 @@ function App() {
   const handleSimularAprobacion = (index: number = 0) => {
     setSubmittedPostulaciones(prev => {
       const next = [...prev]
-      if (next[index]) next[index] = { ...next[index], estado: 'Aceptado' }
+      if (next[index]) next[index] = { ...next[index], estado: 'Seleccionado' }
       return next
     })
   }
@@ -130,7 +135,7 @@ function App() {
     if (postulacion) {
       setCidiData({ represented: postulacion.represented, category: postulacion.categoria, cuit: postulacion.cuit })
       setActiveInscripcionIndex(index)
-      setFase('aceptado')
+      setFase('seleccionado')
       navigate('/alta/datos-fiscales')
     }
   }
