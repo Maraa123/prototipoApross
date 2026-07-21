@@ -869,7 +869,11 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
         if (!tipoProfesion.trim() || tipoProfesion === 'Selecciona') errors.push('Tipo de Profesión')
       }
       if (isInstitucionDiscapacidad || isInstitucionNivel) {
-        if (!numMatricula.trim() && !noTengoMatricula) errors.push('Número de Matrícula')
+        if (isInstitucionDiscapacidad && tipoInstitucion === 'Transporte') {
+          // No se requiere número de matrícula para institución de transporte
+        } else {
+          if (!numMatricula.trim() && !noTengoMatricula) errors.push('Número de Matrícula')
+        }
       }
       if (isInstitucionDiscapacidad) {
         if (!disposicionAndis.trim()) errors.push('Disposición ANDIS')
@@ -2032,6 +2036,98 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                           <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>La disposición ANDIS es requerida</p>
                         )}
                       </div>
+
+                      {/* Transporte-specific section (Persona Juridica) */}
+                      {tipoInstitucion === 'Transporte' && (
+                        <div style={{ marginBottom: '20px' }}>
+                          <hr style={{ border: 'none', borderTop: '1px solid #ebebeb', margin: '24px 0' }} />
+                          {/* Seguros de transporte */}
+                          <SectionTitle>
+                            Seguros de transporte <span style={{ color: '#EF4444' }}>*</span>
+                          </SectionTitle>
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '24px' }}>
+                            <AttachmentRow
+                              title="Seguro de vehículo"
+                              fileName={step2AttachedFiles['seguro_de_transporte']}
+                              onAttach={() => handleAttachFileStep2('seguro_de_transporte')}
+                            />
+                            <AttachmentRow
+                              title="Seguro de inscripción para transporte especial"
+                              fileName={step2AttachedFiles['seguro_de_inscripcion_para_transporte_especial']}
+                              onAttach={() => handleAttachFileStep2('seguro_de_inscripcion_para_transporte_especial')}
+                            />
+                          </div>
+
+                          {/* Documentación del transporte */}
+                          <SectionTitle>
+                            Documentación del transporte <span style={{ color: '#EF4444' }}>*</span>
+                          </SectionTitle>
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '24px' }}>
+                            <AttachmentRow
+                              title="Cédula Verde / Título del vehículo"
+                              fileName={step2AttachedFiles['cedula_verde_titulo_del_vehiculo'] !== undefined ? step2AttachedFiles['cedula_verde_titulo_del_vehiculo'] : 'Matricula5.pdf'}
+                              onAttach={() => handleAttachFileStep2('cedula_verde_titulo_del_vehiculo')}
+                            />
+                            <AttachmentRow
+                              title="Licencia de conducir"
+                              fileName={step2AttachedFiles['licencia_de_conducir'] !== undefined ? step2AttachedFiles['licencia_de_conducir'] : 'Matricula5.pdf'}
+                              onAttach={() => handleAttachFileStep2('licencia_de_conducir')}
+                            />
+                          </div>
+
+                          {/* Listado de conductores */}
+                          <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '8px' }}>
+                            Listado de conductores autorizados
+                          </label>
+                          <div style={{ border: '1px solid #E5E7EB', borderRadius: '8px', overflow: 'hidden', marginBottom: '4px' }}>
+                            {conductoresList.map((c, idx) => (
+                              <div key={idx} style={{
+                                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                                padding: '12px 16px', borderBottom: idx < conductoresList.length - 1 ? '1px solid #F3F4F6' : 'none',
+                                backgroundColor: '#fff',
+                              }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                  <div style={{ width: '34px', height: '34px', borderRadius: '50%', backgroundColor: '#E6F6F4', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <PersonIcon />
+                                  </div>
+                                  <div>
+                                    <p style={{ fontSize: '13px', fontWeight: 700, color: '#111827', margin: 0 }}>{c.nombre}</p>
+                                    <p style={{ fontSize: '12px', color: '#6B7280', margin: '2px 0 0 0' }}>
+                                      CUIT/CUIL: {c.cuit} &nbsp; Licencia de conducir: {c.licenciaConducir ? 'Si' : 'No'} &nbsp; Autorizacion de manejo: {c.autorizacionManejo ? 'Si' : 'No'}
+                                    </p>
+                                  </div>
+                                </div>
+                                <div style={{ display: 'flex', gap: '8px' }}>
+                                  <button style={{ padding: '6px 8px', border: '1px solid #D1D5DB', borderRadius: '6px', backgroundColor: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+                                    <PencilEditIcon />
+                                  </button>
+                                  <button
+                                    onClick={() => setConductoresList(conductoresList.filter((_, i) => i !== idx))}
+                                    style={{ padding: '6px 8px', border: '1px solid #FCA5A5', borderRadius: '6px', backgroundColor: '#FFF5F5', cursor: 'pointer', display: 'flex', alignItems: 'center', color: '#EF4444' }}
+                                  >
+                                    <TrashIcon />
+                                  </button>
+                                </div>
+                              </div>
+                            ))}
+                            {/* Agregar conductor */}
+                            <div
+                              onClick={() => { setConductorNombre('Juan'); setConductorApellido('Pérez'); setConductorCuit('20-30405060-7'); setConductorCargo('Chofer principal'); setShowConductorModal(true) }}
+                              style={{
+                                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                                padding: '12px 16px', cursor: 'pointer', color: '#00AC99',
+                                borderTop: conductoresList.length > 0 ? '1px solid #F3F4F6' : 'none',
+                              }}
+                            >
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <span style={{ fontSize: '18px', fontWeight: 300 }}>+</span>
+                                <span style={{ fontSize: '13px', fontWeight: 600 }}>Agregar conductor autorizado</span>
+                              </div>
+                              <ChevronDownIcon />
+                            </div>
+                          </div>
+                        </div>
+                      )}
 
                       {/* RNP Section */}
                       <hr style={{ border: 'none', borderTop: '1px solid #ebebeb', margin: '4px 0 20px 0' }} />
