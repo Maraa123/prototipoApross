@@ -661,7 +661,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
     'Centro de día',
     'Centro Educativo Terapéutico',
     'Hogar',
-    'Transporte'
+    'Transporte de pacientes bajo tratamiento cronico'
   ]
 
   const nivelAtencionOptions = [
@@ -869,7 +869,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
         if (!tipoProfesion.trim() || tipoProfesion === 'Selecciona') errors.push('Tipo de Profesión')
       }
       if (isInstitucionDiscapacidad || isInstitucionNivel) {
-        if (isInstitucionDiscapacidad && tipoInstitucion === 'Transporte') {
+        if (isInstitucionDiscapacidad && (tipoInstitucion === 'Transporte' || tipoInstitucion === 'Transporte de pacientes bajo tratamiento cronico')) {
           // No se requiere número de matrícula para institución de transporte
         } else {
           if (!numMatricula.trim() && !noTengoMatricula) errors.push('Número de Matrícula')
@@ -884,7 +884,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
     }
 
     if (activeStep === 3) {
-      // Staff is optional, no validation required
+      if (staffList.length === 0) errors.push('Debe agregar al menos un integrante al staff')
     }
 
     if (activeStep === 4) {
@@ -955,6 +955,7 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
     } else {
       setStaffList([...staffList, newMember])
     }
+    setValidationErrors(prev => prev.filter(err => err !== 'Debe agregar al menos un integrante al staff'))
     setShowStaffModal(false)
   }
 
@@ -1981,64 +1982,66 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
 
                       <SectionTitle>TIPO DE INSTITUCION</SectionTitle>
 
-                      {/* Tipo de Institución dropdown */}
-                      <div style={{ position: 'relative', marginBottom: '20px' }}>
-                        <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
-                          Tipo de Institucion <span style={{ color: '#EF4444' }}>*</span>
-                        </label>
-                        <div
-                          onClick={() => setTipoInstitucionDropdownOpen(!tipoInstitucionDropdownOpen)}
-                          style={{
-                            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                            border: '1px solid #D1D5DB', borderRadius: '6px',
-                            padding: '9px 12px', fontSize: '13.5px', color: '#1F2937',
-                            backgroundColor: '#fff', cursor: 'pointer', userSelect: 'none', boxSizing: 'border-box',
-                          }}
-                        >
-                          <span>{tipoInstitucion}</span>
-                          <ChevronDownIcon />
-                        </div>
-                        {tipoInstitucionDropdownOpen && (
-                          <div style={{
-                            position: 'absolute', top: '100%', left: 0, right: 0,
-                            marginTop: '4px', backgroundColor: '#fff', border: '1px solid #D1D5DB',
-                            borderRadius: '6px', boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
-                            zIndex: 1010, maxHeight: '220px', overflowY: 'auto',
-                          }}>
-                            {tipoInstitucionOptions.map((opt) => (
-                              <div
-                                key={opt}
-                                onClick={() => { setTipoInstitucion(opt); setTipoInstitucionDropdownOpen(false) }}
-                                style={{
-                                  padding: '9px 12px', fontSize: '13px', cursor: 'pointer',
-                                  backgroundColor: tipoInstitucion === opt ? '#00AC99' : '#fff',
-                                  color: tipoInstitucion === opt ? '#fff' : '#1F2937',
-                                }}
-                              >{opt}</div>
-                            ))}
+                      {/* Tipo de Institución y Disposición ANDIS en la misma línea */}
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
+                        {/* Tipo de Institución dropdown */}
+                        <div style={{ position: 'relative' }}>
+                          <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
+                            Tipo de Institución <span style={{ color: '#EF4444' }}>*</span>
+                          </label>
+                          <div
+                            onClick={() => setTipoInstitucionDropdownOpen(!tipoInstitucionDropdownOpen)}
+                            style={{
+                              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                              border: '1px solid #D1D5DB', borderRadius: '6px',
+                              padding: '9px 12px', fontSize: '13.5px', color: '#1F2937',
+                              backgroundColor: '#fff', cursor: 'pointer', userSelect: 'none', boxSizing: 'border-box',
+                            }}
+                          >
+                            <span>{tipoInstitucion}</span>
+                            <ChevronDownIcon />
                           </div>
-                        )}
-                      </div>
+                          {tipoInstitucionDropdownOpen && (
+                            <div style={{
+                              position: 'absolute', top: '100%', left: 0, right: 0,
+                              marginTop: '4px', backgroundColor: '#fff', border: '1px solid #D1D5DB',
+                              borderRadius: '6px', boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                              zIndex: 1010, maxHeight: '220px', overflowY: 'auto',
+                            }}>
+                              {tipoInstitucionOptions.map((opt) => (
+                                <div
+                                  key={opt}
+                                  onClick={() => { setTipoInstitucion(opt); setTipoInstitucionDropdownOpen(false) }}
+                                  style={{
+                                    padding: '9px 12px', fontSize: '13px', cursor: 'pointer',
+                                    backgroundColor: tipoInstitucion === opt ? '#00AC99' : '#fff',
+                                    color: tipoInstitucion === opt ? '#fff' : '#1F2937',
+                                  }}
+                                >{opt}</div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
 
-
-                      {/* Disposición ANDIS */}
-                      <div style={{ marginBottom: '20px' }}>
-                        <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
-                          Disposición de Categorización (ANDIS) <span style={{ color: '#EF4444' }}>*</span>
-                        </label>
-                        <input
-                          type="text"
-                          value={disposicionAndis}
-                          onChange={(e) => setDisposicionAndis(e.target.value)}
-                          style={{ width: '100%', border: validationErrors.includes('Disposición ANDIS') ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px', padding: '9px 12px', fontSize: '13.5px', color: '#1F2937', outline: 'none', boxSizing: 'border-box' }}
-                        />
-                        {validationErrors.includes('Disposición ANDIS') && (
-                          <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>La disposición ANDIS es requerida</p>
-                        )}
+                        {/* Disposición ANDIS */}
+                        <div>
+                          <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '5px' }}>
+                            Disposición de Categorización (ANDIS) <span style={{ color: '#EF4444' }}>*</span>
+                          </label>
+                          <input
+                            type="text"
+                            value={disposicionAndis}
+                            onChange={(e) => setDisposicionAndis(e.target.value)}
+                            style={{ width: '100%', border: validationErrors.includes('Disposición ANDIS') ? '1px solid #EF4444' : '1px solid #D1D5DB', borderRadius: '6px', padding: '9px 12px', fontSize: '13.5px', color: '#1F2937', outline: 'none', boxSizing: 'border-box' }}
+                          />
+                          {validationErrors.includes('Disposición ANDIS') && (
+                            <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 0 0' }}>La disposición ANDIS es requerida</p>
+                          )}
+                        </div>
                       </div>
 
                       {/* Transporte-specific section (Persona Juridica) */}
-                      {tipoInstitucion === 'Transporte' && (
+                      {(tipoInstitucion === 'Transporte' || tipoInstitucion === 'Transporte de pacientes bajo tratamiento cronico') && (
                         <div style={{ marginBottom: '20px' }}>
                           <hr style={{ border: 'none', borderTop: '1px solid #ebebeb', margin: '24px 0' }} />
                           {/* Seguros de transporte */}
@@ -2896,10 +2899,10 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                   // ── STEP 3: STAFF ──
                   <div>
                     <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#111827', marginBottom: '4px' }}>
-                      Staff
+                      Staff <span style={{ color: '#EF4444' }}>*</span>
                     </h3>
                     <p style={{ fontSize: '13px', color: '#6B7280', marginBottom: '24px' }}>
-                      Añadir integrantes del staff es opcional. Podés avanzar sin cargar miembros.
+                      Cargá el staff de profesionales de la institución.
                     </p>
 
                     <SectionTitle>Staff de profesionales</SectionTitle>
@@ -2983,6 +2986,10 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                         <ChevronDownIcon />
                       </span>
                     </div>
+
+                    {validationErrors.includes('Debe agregar al menos un integrante al staff') && (
+                      <p style={{ color: '#EF4444', fontSize: '11px', margin: '4px 0 16px 0' }}>Debe agregar al menos un integrante al staff</p>
+                    )}
 
                     {/* Live List of Added Professionals */}
                     {staffList.length > 0 && (
@@ -3238,6 +3245,16 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
                       {!isPersonaFisica ? 'Seguro y Habilitaciones' : <>Seguros <span style={{ color: '#EF4444' }}>*</span></>}
                     </h3>
 
+                    {!isPersonaFisica && (
+                      <div style={{ marginBottom: '24px' }}>
+                        <AttachmentRow
+                          title="Póliza de seguro de responsabilidad civil de la institución"
+                          fileName={step5AttachedFiles['Póliza de seguro de responsabilidad civil de la institución']}
+                          onAttach={() => handleAttachFile('Póliza de seguro de responsabilidad civil de la institución')}
+                        />
+                      </div>
+                    )}
+
                     {/* Symmetrical Grid for Insurance Company Details */}
                     <div style={{
                       display: 'grid',
@@ -3349,14 +3366,6 @@ export default function AltaPostulante({ cidiData, onGoBack, onComplete, fase = 
 
                     {!isPersonaFisica ? (
                       <>
-                        <div style={{ marginBottom: '32px' }}>
-                          <AttachmentRow
-                            title="Póliza de seguro de responsabilidad civil de la institución"
-                            fileName={step5AttachedFiles['Póliza de seguro de responsabilidad civil de la institución']}
-                            onAttach={() => handleAttachFile('Póliza de seguro de responsabilidad civil de la institución')}
-                          />
-                        </div>
-
                         <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#111827', marginBottom: '8px' }}>
                           Habilitaciones
                         </h3>
